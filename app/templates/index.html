@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ app_name }} — Платформенный фундамент</title>
+    <!-- Tailwind CSS (Zero-Build CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Local CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Mermaid.js (Zero-Build CDN) -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
+    <!-- Header -->
+    <header class="bg-indigo-700 text-white shadow-md">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-indigo-500 flex items-center justify-center font-bold text-xl shadow">
+                    LMS
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight">{{ app_name }}</h1>
+                    <p class="text-xs text-indigo-200">Локальная платформа изучения ООП в Python • v{{ version }}</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="/docs" target="_blank" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-md text-sm font-medium transition shadow-sm border border-indigo-400">
+                    Swagger API Docs
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-6 py-8 flex-1 w-full space-y-8">
+        <!-- Hero & Architecture Status Cards -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">Инженерный мониторинг платформы</h2>
+                    <p class="text-sm text-slate-500">Автономный Zero-Build каркас: FastAPI + SQLite + RunnerService</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span id="overall-status-badge" class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
+                        Проверка состояния...
+                    </span>
+                </div>
+            </div>
+
+            <!-- Status Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                <!-- Backend Status -->
+                <div class="p-4 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between">
+                    <div>
+                        <div class="text-xs uppercase font-semibold text-slate-500 tracking-wider">Бэкенд</div>
+                        <div id="status-backend-text" class="text-base font-bold text-slate-700 mt-1">Опрос...</div>
+                    </div>
+                    <div id="status-backend-indicator" class="w-4 h-4 rounded-full bg-slate-300"></div>
+                </div>
+
+                <!-- Database Status -->
+                <div class="p-4 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between">
+                    <div>
+                        <div class="text-xs uppercase font-semibold text-slate-500 tracking-wider">База данных SQLite</div>
+                        <div id="status-db-text" class="text-base font-bold text-slate-700 mt-1">Опрос...</div>
+                    </div>
+                    <div id="status-db-indicator" class="w-4 h-4 rounded-full bg-slate-300"></div>
+                </div>
+
+                <!-- Runner Status -->
+                <div class="p-4 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between">
+                    <div>
+                        <div class="text-xs uppercase font-semibold text-slate-500 tracking-wider">RunnerService Sandbox</div>
+                        <div id="status-runner-text" class="text-base font-bold text-slate-700 mt-1">Опрос...</div>
+                    </div>
+                    <div id="status-runner-indicator" class="w-4 h-4 rounded-full bg-slate-300"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Smoke Test Runner Section -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">Интерактивный Smoke-тест раннера</h2>
+                    <p class="text-sm text-slate-500">Запуск эталонной задачи в изолированной песочнице с проверкой AST и таймаута</p>
+                </div>
+                <button id="btn-run-smoke" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-semibold transition shadow-sm flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Smoke-тест раннера</span>
+                </button>
+            </div>
+
+            <!-- Smoke Test Results Box -->
+            <div id="smoke-result-container" class="hidden mt-4 p-4 rounded-lg border border-slate-200 bg-slate-50 space-y-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs uppercase font-bold text-slate-500 tracking-wider">Результат:</span>
+                        <span id="smoke-badge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold"></span>
+                    </div>
+                    <div class="text-xs text-slate-500">
+                        Время: <span id="smoke-time" class="font-mono font-semibold text-slate-700">0 ms</span>
+                    </div>
+                </div>
+                <div class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Лог выполнения (stdout / stderr):</div>
+                <pre id="smoke-output" class="p-3 bg-slate-900 text-slate-100 rounded text-xs font-mono overflow-x-auto whitespace-pre-wrap"></pre>
+            </div>
+        </section>
+
+        <!-- Domain Model UML Section -->
+        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+            <div>
+                <h2 class="text-lg font-bold text-slate-900">UML-модель домена Avtobys (Mermaid.js CDN)</h2>
+                <p class="text-sm text-slate-500">Вводная диаграмма классов для студентов: инкапсуляция пассажира и валидатора</p>
+            </div>
+            <div class="p-6 bg-slate-50 rounded-lg border border-slate-200 flex justify-center overflow-x-auto">
+                <div class="mermaid">
+classDiagram
+    class Passenger {
+        +str full_name
+        +str card_id
+        +float balance
+        +top_up(amount: float) None
+        +has_sufficient_balance(fare: float) bool
+    }
+    class Validator {
+        +str bus_id
+        +str route_number
+        +float standard_fare
+        +validate_ticket(passenger: Passenger) bool
+    }
+    Validator ..> Passenger : validates
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+        Web-OOP Mini-LMS • Образовательная платформа КазНУ им. аль-Фараби • Zero-Build Архитектура
+    </footer>
+
+    <!-- Vanilla JS Script -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
