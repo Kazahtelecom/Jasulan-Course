@@ -1,0 +1,114 @@
+project:
+  name: web-oop
+  repo: local/web-oop
+  branch: main
+
+tfw:
+  version: "3.9.2"
+  installed_from: "https://github.com/saubakirov/trace-first-starter@v3.9.2"
+  upstream: "https://github.com/saubakirov/trace-first-starter"
+  content_language: ru
+
+  task_containers: [workspace]
+
+  id_format: "{PREFIX}_{YYYYMMDD}-{HHMMSS}_{ABBR}"
+  legacy_id_format: "{prefix}-{seq}"
+  task_prefix: OOP
+
+  scope_budgets:
+    decomposition_trigger_files: 50
+    decomposition_trigger_loc: 5000
+    owner_escalation_multiplier: 2
+
+  templates:
+    hl: .tfw/templates/HL.md
+    ts: .tfw/templates/TS.md
+    res: .tfw/templates/RES.md
+    rf: .tfw/templates/RF.md
+    onb: .tfw/templates/ONB.md
+    review: .tfw/templates/REVIEW.md
+    knowledge: .tfw/templates/KNOWLEDGE.md
+    release: .tfw/templates/RELEASE.md
+
+  workflows:
+    plan: .tfw/workflows/plan.md
+    research: .tfw/workflows/research/base.md
+    handoff: .tfw/workflows/handoff.md
+    review: .tfw/workflows/review.md
+    docs: .tfw/workflows/docs.md
+    release: .tfw/workflows/release.md
+    update: .tfw/workflows/update.md
+    init: .tfw/workflows/init.md
+    knowledge: .tfw/workflows/knowledge.md
+    config: .tfw/workflows/config.md
+    economics: .tfw/workflows/economics.md
+
+  economics:
+    rate_cache: "~/.tfw/rates"
+    quote_fresh_days: 30
+
+  research:
+    max_web_queries_per_stage: 5
+    max_files_per_stage: 15
+    max_questions_per_turn: 3
+    max_passes: 3
+    min_iterations: 2
+    default_mode: focused
+    modes:
+      focused:
+        loops_per_stage: 1
+        verify_user_tech_claims: true
+      deep:
+        loops_per_stage: 3
+        verify_user_tech_claims: true
+        require_counter_evidence: true
+
+  statuses:
+    - id: TODO
+      emoji: "⬜"
+      description: "Task registered, work not started"
+    - id: HL_DRAFT
+      emoji: "📝"
+      description: "HL being drafted or discussed"
+      role: coordinator
+    - id: RES
+      emoji: "🔬"
+      description: "Research in progress (optional)"
+      role: researcher
+    - id: PHASES
+      emoji: "🧩"
+      description: "Phases are running; each phase carries its own state"
+      role: coordinator
+    - id: TS_DRAFT
+      emoji: "🟡"
+      description: "TS written, awaiting approval"
+      role: coordinator
+    - id: ONB
+      emoji: "🟠"
+      description: "Onboarding report written; the executor is working toward the RF, re-entry after a 🔄 REVISE included"
+      role: executor
+    - id: RF
+      emoji: "🟢"
+      description: "Execution complete, RF written"
+      role: executor
+    - id: REV
+      emoji: "🔍"
+      description: "Review in progress"
+      role: reviewer
+    - id: KNW
+      emoji: "📚"
+      description: "Knowledge capture (tfw-docs + tfw-knowledge)"
+      role: coordinator
+    - id: DONE
+      emoji: "✅"
+      description: "Task closed"
+    - id: BLOCKED
+      emoji: "❌"
+      description: "Blocked by dependency"
+    - id: REJECTED
+      emoji: "❌"
+      description: "Closed unsuccessfully, terminal, trace retained"
+
+build:
+  lint: python -m pytest tests/ -q --collect-only
+  test: pytest

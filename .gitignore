@@ -1,0 +1,24 @@
+# Environment and cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+venv/
+.env
+
+# TFW and User Preferences
+.user_preferences.md
+tfw/
+
+# SQLite database local file
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
