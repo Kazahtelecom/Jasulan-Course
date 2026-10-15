@@ -3,7 +3,7 @@ id: OOP_20261015-022500_CORE
 title: "Платформенный фундамент и базовый запуск мини-LMS (Zero-Build & FastAPI)"
 goal: "Создать работающий самодостаточный локальный каркас мини-LMS с бэкендом, БД, песочницей и Zero-Build UI"
 value: "Обеспечивает надежную и безопасную техническую основу для последующей загрузки учебного контента ООП"
-lifecycle: KNW
+lifecycle: DONE
 owner: zhasulan
 authority: HL-OOP_20261015-022500_CORE.md
 coordinator_route: "antigravity:coordinator"
@@ -14,7 +14,7 @@ coordination_authority: "HL-OOP_20261015-022500_CORE.md @ 5724adc39f0aee04827376
 reporting: native-gates
 selection_ref: baseline
 created: 20261015-022500
-updated: 20261015-155139
+updated: 20261015-155800
 ---
 
 **Task state.** This file is the only authority for this task's live state. Any downstream projection is disposable and never outranks it.

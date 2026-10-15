@@ -25,17 +25,19 @@ missing authorized decision. No generated index, original chat or task-archive s
 
 ### Architecture Decisions
 
-- **D1 (Стек):** Python 3.12 (FastAPI, SQLAlchemy, SQLite, Pytest, Jinja2, Tailwind). Единый процесс без node_modules.
+- **D1 (Стек):** Python 3.12 (FastAPI, SQLAlchemy 2.0, SQLite, Pytest, Jinja2, Tailwind). Единый процесс без node_modules.
 - **D2 (Домен):** Сквозной домен Avtobys (Алматы / Казахстан) для целостного понимания ООП от инвариантов до Clean Architecture.
-- **D3 (Верификатор):** Двухуровневая проверка кода: статический AST-анализ классов и методов + изолированный запуск pytest с таймаутом.
+- **D3 (Верификатор):** Двухуровневая проверка кода: статический AST-анализ классов и методов + изолированный запуск pytest с таймаутом (5 сек).
 - **D4 (Документация):** Исчерпывающее документирование архитектуры, UML-диаграмм и API в папке `docs/`.
+- **D5 (Zero-Build интерфейс):** Статические файлы UI (Tailwind CDN, Vanilla JS ES-модули, Mermaid.js) монтируются сервером без этапа сборки и внешних пакетных менеджеров.
 
 ## 2. Key Artifacts
 
 - **Конфигурация TFW:** `.tfw/project_config.yaml`
 - **Профили участников:** `team/zhasulan.md` (автор/студент), `team/saubakirov.md` (преподаватель/ментор)
 - **Исходные материалы ООП:** `C:\Users\kz444\OneDrive\Desktop\OOP` (9 лекций, 9 лабораторок, силлабус CS2203)
-- **Инициализирующая задача:** `workspace/2026/OOP_20261015-015123_INIT/status.md`
+- **Инициализирующая задача:** `workspace/2026/OOP_20261015-015123_INIT/status.md` (DONE)
+- **Каркас платформы (Задача 1):** `workspace/2026/OOP_20261015-022500_CORE/status.md` (DONE)
 
 ## 3. Legacy & Deprecation
 
@@ -46,3 +48,4 @@ missing authorized decision. No generated index, original chat or task-archive s
 - **F1 (Аудитория и формат):** Студенты 2 курса специальности «Программная инженерия». 3 недели: 1ч лекция, 1ч практика, 1ч ДЗ + итоговый экзамен.
 - **F2 (Оценивание):** Преподаватель Санжар Аубакиров (`saubakirov`) оценивает работы студентов, ведущий разработчик — Жасулан Куандыков (`zhasulan`).
 - **F3 (Локальный запуск):** Проект функционирует локально на рабочей машине без внешнего облачного деплоя.
+- **F4 (Изоляция RunnerService):** Студенческий код запускается в `tempfile.TemporaryDirectory` с принудительным `timeout=5.0s` и предварительной блокировкой запрещенных модулей (`os`, `sys`, `subprocess`, `shutil`, `socket`) и вызовов (`eval`, `exec`).
