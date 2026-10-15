@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ lecture.title }} — {{ app_name }}</title>
+    <!-- Tailwind CSS (Zero-Build CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Local CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Mermaid.js (Zero-Build CDN) -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+        window.mermaid = mermaid;
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
+    <!-- Header -->
+    <header class="bg-indigo-700 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-3 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <a href="/" class="p-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 transition text-xs font-semibold flex items-center gap-1 shadow-sm border border-indigo-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    <span>Дашборд</span>
+                </a>
+                <div>
+                    <h1 class="text-base sm:text-lg font-bold tracking-tight leading-tight">{{ lecture.title }}</h1>
+                    <p class="text-xs text-indigo-200">Студент: <span class="font-semibold text-white">{{ student.full_name }}</span> ({{ student.username }})</p>
+                </div>
+            </div>
+
+            <!-- Progress Badges -->
+            <div class="flex items-center gap-3">
+                <div class="flex items-center bg-indigo-800/80 px-3 py-1.5 rounded-lg border border-indigo-500/50 shadow-inner">
+                    <span class="text-xs text-indigo-200 mr-2">Итоговый балл:</span>
+                    <span id="header-score-badge" class="font-mono font-bold text-sm text-amber-300">
+                        {{ progress.score }} / 20.0 б.
+                    </span>
+                </div>
+                <span id="header-status-badge" class="px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider shadow-sm transition {% if progress.is_completed %}bg-emerald-500 text-white{% else %}bg-amber-500 text-white{% endif %}">
+                    {% if progress.is_completed %}Сдано (Зачет){% else %}В процессе{% endif %}
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Subheader Tabs Navigation -->
+    <nav class="bg-white border-b border-slate-200 shadow-sm sticky top-[61px] z-40">
+        <div class="max-w-6xl mx-auto px-6 flex flex-wrap gap-2 sm:gap-6">
+            <button id="tab-btn-lecture" class="tab-button active py-3.5 px-3 text-sm font-semibold border-b-2 border-indigo-600 text-indigo-600 flex items-center gap-2 transition" data-target="tab-lecture">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                </svg>
+                <span>Лекция</span>
+            </button>
+
+            <button id="tab-btn-quiz" class="tab-button py-3.5 px-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition" data-target="tab-quiz">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>Квиз</span>
+                <span id="badge-quiz-score" class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-mono font-medium">
+                    {{ progress.quiz_score }} / 3 б.
+                </span>
+            </button>
+
+            <button id="tab-btn-practice" class="tab-button py-3.5 px-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition" data-target="tab-practice">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                </svg>
+                <span>Практикум: TransitCard</span>
+                <span id="badge-practice-score" class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-mono font-medium">
+                    {{ progress.practice_score }} / 7 б.
+                </span>
+            </button>
+
+            <button id="tab-btn-lab" class="tab-button py-3.5 px-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition" data-target="tab-lab">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                </svg>
+                <span>Лабораторная №1</span>
+                <span id="badge-lab-score" class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-mono font-medium">
+                    {{ progress.lab_score }} / 10 б.
+                </span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="max-w-6xl mx-auto px-6 py-8 flex-1 w-full">
+        <!-- ================= TAB 1: LECTURE ================= -->
+        <section id="tab-lecture" class="tab-pane block space-y-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8 space-y-6">
+                <div class="border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-2 text-xs font-semibold text-indigo-600 uppercase tracking-wider">
+                        <span>Теоретический модуль</span> • <span>Расчетное время: {{ lecture.estimated_time }}</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-900 mt-1">{{ lecture.title }}</h2>
+                    <p class="text-slate-600 mt-2 leading-relaxed">{{ lecture.summary }}</p>
+                </div>
+
+                <!-- Lecture Sections -->
+                {% for section in lecture.sections %}
+                <article class="space-y-3 pt-2">
+                    <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        {{ section.title }}
+                    </h3>
+                    <div class="prose max-w-none text-slate-700 text-sm leading-relaxed whitespace-pre-line bg-slate-50/50 p-4 rounded-lg border border-slate-200/60 font-sans">
+{{ section.content }}
+                    </div>
+                </article>
+                {% endfor %}
+
+                <!-- Mermaid Diagrams Section -->
+                <div class="pt-6 border-t border-slate-100 space-y-6">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900">Интерактивные архитектурные диаграммы (Mermaid.js)</h3>
+                        <p class="text-sm text-slate-500">UML диаграмма классов и диаграмма последовательности валидации проезда</p>
+                    </div>
+
+                    <!-- Class Diagram -->
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 space-y-3">
+                        <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wider">1. Диаграмма классов домена Avtobys (Rich Domain Model)</h4>
+                        <div class="flex justify-center overflow-x-auto bg-white p-4 rounded-lg border border-slate-200">
+                            <div class="mermaid">
+{{ lecture.mermaid_diagrams.class_diagram }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sequence Diagram -->
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 space-y-3">
+                        <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wider">2. Диаграмма последовательности: Сценарии оплаты и защиты инвариантов</h4>
+                        <div class="flex justify-center overflow-x-auto bg-white p-4 rounded-lg border border-slate-200">
+                            <div class="mermaid">
+{{ lecture.mermaid_diagrams.sequence_diagram }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-4">
+                    <button id="btn-next-to-quiz" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-semibold transition flex items-center gap-2 shadow-sm">
+                        <span>Перейти к квизу</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: QUIZ ================= -->
+        <section id="tab-quiz" class="tab-pane hidden space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8 space-y-6">
+                <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                    <div>
+                        <div class="text-xs font-semibold text-indigo-600 uppercase tracking-wider">Проверка понимания теории</div>
+                        <h2 class="text-2xl font-bold text-slate-900 mt-1">Концептуальный квиз по инкапсуляции</h2>
+                        <p class="text-slate-500 text-sm mt-1">Ответьте на 5 вопросов. Максимальный балл: 3.0 (автоматический пересчет и подробные объяснения к каждому варианту).</p>
+                    </div>
+                    <div class="bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 text-right">
+                        <div class="text-xs text-amber-700 uppercase font-semibold">Текущий балл за квиз:</div>
+                        <div id="quiz-score-display" class="text-xl font-bold font-mono text-amber-900">{{ progress.quiz_score }} / 3.0 б.</div>
+                    </div>
+                </div>
+
+                <!-- Quiz Questions Form -->
+                <form id="quiz-form" class="space-y-6">
+                    {% for q in quiz_questions %}
+                    <div class="p-5 rounded-xl border border-slate-200 bg-slate-50/50 space-y-4 question-block" data-qid="{{ q.id }}">
+                        <div class="flex items-start gap-3">
+                            <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                                {{ loop.index }}
+                            </span>
+                            <div class="font-semibold text-slate-900 text-sm sm:text-base">
+                                {{ q.question }}
+                            </div>
+                        </div>
+
+                        <div class="space-y-2.5 pl-9">
+                            {% for option in q.options %}
+                            <label class="flex items-start gap-3 p-3 rounded-lg border border-slate-200 bg-white hover:bg-indigo-50/40 cursor-pointer transition text-xs sm:text-sm text-slate-700">
+                                <input type="radio" name="{{ q.id }}" value="{{ loop.index0 }}" class="mt-0.5 text-indigo-600 focus:ring-indigo-500">
+                                <span>{{ option }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Feedback Box (Hidden initially) -->
+                        <div id="feedback-{{ q.id }}" class="hidden pl-9 pt-2">
+                            <div class="p-3.5 rounded-lg text-xs leading-relaxed font-sans feedback-body border"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100">
+                        <button type="submit" id="btn-submit-quiz" class="w-full sm:w-auto px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-semibold transition shadow flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Проверить ответы и сохранить балл</span>
+                        </button>
+                        <div id="quiz-status-msg" class="text-xs text-slate-500 italic"></div>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: PRACTICE ================= -->
+        <section id="tab-practice" class="tab-pane hidden space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8 space-y-6">
+                <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                    <div>
+                        <div class="text-xs font-semibold text-indigo-600 uppercase tracking-wider">Практический тренажер (1 час)</div>
+                        <h2 class="text-2xl font-bold text-slate-900 mt-1">{{ practice.title }}</h2>
+                        <p class="text-slate-500 text-sm mt-1">{{ practice.description }}</p>
+                    </div>
+                    <div class="bg-indigo-50 border border-indigo-200 rounded-lg px-4 py-2 text-right">
+                        <div class="text-xs text-indigo-700 uppercase font-semibold">Балл за практикум:</div>
+                        <div id="practice-score-display" class="text-xl font-bold font-mono text-indigo-900">{{ progress.practice_score }} / 7.0 б.</div>
+                    </div>
+                </div>
+
+                <!-- Invariants Checklist -->
+                <div class="p-4 rounded-lg bg-amber-50/70 border border-amber-200 text-xs text-amber-900 space-y-2">
+                    <div class="font-bold flex items-center gap-2">
+                        <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        <span>Инварианты TransitCard (проверяются 7 скрытыми автотестами):</span>
+                    </div>
+                    <ul class="list-disc list-inside space-y-1 pl-1 text-amber-800">
+                        <li>Баланс не может быть отрицательным при инициализации (ValueError).</li>
+                        <li>Скидка <code>discount_rate</code> обязана находиться строго в диапазоне [0.0, 1.0] (ValueError).</li>
+                        <li>Минимальная сумма пополнения — 100 тенге; пополнение меньше 100 или отрицательное возбуждает <code>InvalidAmountError</code>.</li>
+                        <li>Заблокированную карту нельзя пополнить или оплатить проезд — возбуждается <code>CardBlockedError</code>.</li>
+                        <li>При оплате <code>effective_fare = fare * (1 - discount_rate)</code>; при нехватке средств возбуждается <code>InsufficientFundsError</code>, баланс не изменяется.</li>
+                    </ul>
+                </div>
+
+                <!-- Code Editor Area -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Редактор кода (Python 3.12 • Автосохранение в LocalStorage)</span>
+                        <div class="flex items-center gap-2">
+                            <button id="btn-practice-reset" class="text-xs px-2.5 py-1 text-slate-500 hover:text-slate-800 rounded border border-slate-200 hover:bg-slate-100 transition">
+                                Сбросить к шаблону
+                            </button>
+                        </div>
+                    </div>
+                    <textarea id="practice-code-editor" class="w-full h-80 font-mono text-xs p-4 bg-slate-900 text-slate-100 rounded-xl border border-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none" spellcheck="false">{{ practice.starter_code }}</textarea>
+                </div>
+
+                <!-- Action & Status Bar -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+                    <button id="btn-run-practice" class="w-full sm:w-auto px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-semibold transition shadow flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Запустить 7 автотестов RunnerService</span>
+                    </button>
+                    <div id="practice-auto-save-status" class="text-xs text-slate-400">Черновик сохранен в LocalStorage</div>
+                </div>
+
+                <!-- Execution Results Panel -->
+                <div id="practice-result-box" class="hidden p-5 rounded-xl border border-slate-200 bg-slate-50 space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs uppercase font-bold text-slate-500">Статус:</span>
+                            <span id="practice-status-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold"></span>
+                            <span id="practice-tests-badge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-200 text-slate-700"></span>
+                        </div>
+                        <div class="text-xs text-slate-500">
+                            Время выполнения: <span id="practice-execution-time" class="font-mono font-semibold text-slate-700">0 ms</span>
+                        </div>
+                    </div>
+                    <div class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Лог песочницы (pytest stdout / stderr):</div>
+                    <pre id="practice-log-output" class="p-3 bg-slate-900 text-slate-100 rounded-lg text-xs font-mono overflow-x-auto whitespace-pre-wrap max-h-60"></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 4: LAB ================= -->
+        <section id="tab-lab" class="tab-pane hidden space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8 space-y-6">
+                <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                    <div>
+                        <div class="text-xs font-semibold text-indigo-600 uppercase tracking-wider">Лабораторная работа (1 час)</div>
+                        <h2 class="text-2xl font-bold text-slate-900 mt-1">{{ lab.title }}</h2>
+                        <p class="text-slate-500 text-sm mt-1">{{ lab.description }}</p>
+                    </div>
+                    <div class="bg-emerald-50 border border-emerald-200 rounded-lg px-4 py-2 text-right">
+                        <div class="text-xs text-emerald-700 uppercase font-semibold">Балл за лабу:</div>
+                        <div id="lab-score-display" class="text-xl font-bold font-mono text-emerald-900">{{ progress.lab_score }} / 10.0 б.</div>
+                    </div>
+                </div>
+
+                <!-- Invariants Checklist -->
+                <div class="p-4 rounded-lg bg-indigo-50/70 border border-indigo-200 text-xs text-indigo-900 space-y-2">
+                    <div class="font-bold flex items-center gap-2">
+                        <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                        <span>Инварианты SingleTripTicket и Bus (проверяются 10 скрытыми автотестами):</span>
+                    </div>
+                    <ul class="list-disc list-inside space-y-1 pl-1 text-indigo-800">
+                        <li><code>SingleTripTicket.is_validated</code> — свойство только для чтения. Попытка прямой записи обязана выбрасывать <code>AttributeError</code>.</li>
+                        <li>Метод <code>validate(bus)</code> при первом вызове переводит <code>_is_validated</code> в True. Повторный вызов возбуждает <code>TicketAlreadyUsedError</code>.</li>
+                        <li>Если с момента <code>issued_at</code> прошло более <code>valid_duration</code> (60 минут), вызов <code>validate(bus)</code> возбуждает <code>TicketExpiredError</code>.</li>
+                        <li>Класс <code>Bus</code> хранит <code>route_number</code> и список <code>validations</code>. Метод <code>process_payment</code> полиморфно обслуживает и <code>TransitCard</code> (списывая проезд), и <code>SingleTripTicket</code> (валидируя билет).</li>
+                    </ul>
+                </div>
+
+                <!-- Code Editor Area -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Редактор кода решения (Python 3.12 • Автосохранение в LocalStorage)</span>
+                        <div class="flex items-center gap-2">
+                            <button id="btn-lab-reset" class="text-xs px-2.5 py-1 text-slate-500 hover:text-slate-800 rounded border border-slate-200 hover:bg-slate-100 transition">
+                                Сбросить к шаблону
+                            </button>
+                        </div>
+                    </div>
+                    <textarea id="lab-code-editor" class="w-full h-96 font-mono text-xs p-4 bg-slate-900 text-slate-100 rounded-xl border border-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none" spellcheck="false">{{ lab.starter_code }}</textarea>
+                </div>
+
+                <!-- Action & Status Bar -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+                    <button id="btn-run-lab" class="w-full sm:w-auto px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-semibold transition shadow flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Запустить 10 автотестов RunnerService</span>
+                    </button>
+                    <div id="lab-auto-save-status" class="text-xs text-slate-400">Черновик сохранен в LocalStorage</div>
+                </div>
+
+                <!-- Execution Results Panel -->
+                <div id="lab-result-box" class="hidden p-5 rounded-xl border border-slate-200 bg-slate-50 space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs uppercase font-bold text-slate-500">Статус:</span>
+                            <span id="lab-status-badge" class="px-2.5 py-0.5 rounded-full text-xs font-bold"></span>
+                            <span id="lab-tests-badge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-200 text-slate-700"></span>
+                        </div>
+                        <div class="text-xs text-slate-500">
+                            Время выполнения: <span id="lab-execution-time" class="font-mono font-semibold text-slate-700">0 ms</span>
+                        </div>
+                    </div>
+                    <div class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Лог песочницы (pytest stdout / stderr):</div>
+                    <pre id="lab-log-output" class="p-3 bg-slate-900 text-slate-100 rounded-lg text-xs font-mono overflow-x-auto whitespace-pre-wrap max-h-60"></pre>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+        Web-OOP Mini-LMS • Неделя 1: Основы ООП и инкапсуляция • Zero-Build Архитектура
+    </footer>
+
+    <!-- Templates starter code storage for reset -->
+    <script>
+        window.WEEK1_TEMPLATES = {
+            practiceStarter: {{ practice.starter_code | tojson }},
+            labStarter: {{ lab.starter_code | tojson }}
+        };
+    </script>
+
+    <!-- Client Script -->
+    <script src="/static/js/week1.js"></script>
+</body>
+</html>
