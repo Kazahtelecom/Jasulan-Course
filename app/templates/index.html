@@ -9,7 +9,7 @@
     <!-- Zero-Build reference: cdn.jsdelivr.net/npm/mermaid kept in docs/domain_model_uml.md -->
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
-<body class="min-h-screen flex flex-col font-sans selection:bg-sky-500 selection:text-slate-950">
+<body data-active-week="{{ active_week|default(1) }}" class="min-h-screen flex flex-col font-sans selection:bg-sky-500 selection:text-slate-950">
 
     <!-- Top Brand & Navigation Header (Matches Reference Layout in Dark Cyberpunk / Tech Modern Style) -->
     <header class="border-b border-sky-500/20 bg-slate-950/90 backdrop-blur-md sticky top-0 z-50">
@@ -50,13 +50,12 @@
 
             <!-- Row 1: Week Selector Pills -->
             <div class="flex items-center gap-3 overflow-x-auto pb-1">
-                <button type="button" onclick="switchSubTab('home')" class="week-pill-active px-5 py-2.5 rounded-xl text-sm font-bold transition shrink-0">
+                <a href="/week1" class="{% if active_week|default(1) == 1 %}week-pill-active font-bold{% else %}text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-transparent hover:border-slate-800 font-medium{% endif %} px-5 py-2.5 rounded-xl text-sm transition shrink-0">
                     Неделя 1 · Инкапсуляция
-                </button>
-                <button type="button" onclick="showLockedWeekToast('Неделя 2 · SOLID и DI')" class="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-transparent hover:border-slate-800 transition shrink-0 flex items-center gap-2">
-                    <span>Неделя 2 · SOLID и DI</span>
-                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Скоро</span>
-                </button>
+                </a>
+                <a href="/week2" class="{% if active_week|default(1) == 2 %}week-pill-active font-bold{% else %}text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-transparent hover:border-slate-800 font-medium{% endif %} px-5 py-2.5 rounded-xl text-sm transition shrink-0">
+                    Неделя 2 · SOLID и DI
+                </a>
                 <button type="button" onclick="showLockedWeekToast('Неделя 3 · Паттерны GoF')" class="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-transparent hover:border-slate-800 transition shrink-0 flex items-center gap-2">
                     <span>Неделя 3 · Паттерны GoF</span>
                     <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Скоро</span>
@@ -191,10 +190,17 @@
         <!-- ================================================================= -->
         <section id="panel-theory" class="subtab-panel hidden space-y-8">
             <div class="cyber-card rounded-2xl p-6 sm:p-8 border-l-4 border-l-sky-400">
+                {% if active_week|default(1) == 2 %}
+                <h2 class="text-2xl font-extrabold text-white">Теория: 5 Принципов SOLID и Dependency Injection (с нуля)</h2>
+                <p class="text-sm text-slate-300 mt-2 leading-relaxed">
+                    По материалам Лекций 4–5 и Лабораторных 4–5: разберем за 4 простых шага на примере терминала <code class="text-sky-400 font-mono">TerminalValidator</code>, студенческого тарифа <code class="text-sky-400 font-mono">StudentFareService (50 ₸)</code> и <code class="text-sky-400 font-mono">BluetoothPayment</code>, как писать модульный код без «Классов-Монстров».
+                </p>
+                {% else %}
                 <h2 class="text-2xl font-extrabold text-white">Теория: Основы ООП и Инкапсуляция (с нуля)</h2>
                 <p class="text-sm text-slate-300 mt-2 leading-relaxed">
                     Прочитайте эти 4 коротких шага. Всё, что здесь разобрано на примере карты <code class="text-sky-400 font-mono">SmartCard</code>, вы сможете потрогать в тренажере «Практика» и легко сдать в «Тестировании».
                 </p>
+                {% endif %}
             </div>
 
             {% for sec in theory_sections %}
@@ -285,7 +291,7 @@
         <!-- ================================================================= -->
         <section id="panel-practice" class="subtab-panel hidden space-y-8">
 
-            <!-- Part A: Walkthrough Example (Passenger & Validator) -->
+            <!-- Part A: Walkthrough Example -->
             <div class="cyber-card rounded-2xl p-6 sm:p-8 space-y-6">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-4">
                     <div>
@@ -298,7 +304,11 @@
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                     <div class="lg:col-span-7 rounded-xl bg-slate-950 border border-slate-800 p-4 overflow-x-auto">
                         <div class="text-xs font-mono text-slate-400 mb-2 border-b border-slate-800 pb-2">
+                            {% if active_week|default(1) == 2 %}
+                            example_solid_di.py — Готовый образец модульного терминала TerminalValidator (SOLID & DI)
+                            {% else %}
                             example_avtobys.py — Готовый образец классов Passenger и Validator
+                            {% endif %}
                         </div>
                         <pre class="text-xs font-mono text-sky-100 leading-relaxed">{{ walkthrough.code }}</pre>
                     </div>
@@ -321,7 +331,13 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <span class="text-xs font-mono font-bold text-emerald-400 uppercase">Часть 2 · Свободный тренажер (БЕЗ ОЦЕНКИ — не влияет на баллы)</span>
-                        <h3 class="text-xl font-extrabold text-white mt-1">Попробуйте собрать класс SmartCard или разберите готовое решение</h3>
+                        <h3 class="text-xl font-extrabold text-white mt-1">
+                            {% if active_week|default(1) == 2 %}
+                            Попробуйте собрать модули SOLID и DI (StudentFareService 50 ₸, BluetoothPayment, TerminalValidator) или разберите готовое решение
+                            {% else %}
+                            Попробуйте собрать класс SmartCard или разберите готовое решение
+                            {% endif %}
+                        </h3>
                         <p class="text-xs sm:text-sm text-slate-400">
                             Новичкам не обязательно писать код с нуля! Вы можете попробовать сами или нажать кнопку <strong class="text-sky-300">«✨ Вставить готовое решение»</strong> и посмотреть, как оно проходит проверку.
                         </p>
@@ -389,7 +405,7 @@
 
                             {% if not loop.last %}
                             <div class="pt-2 border-t border-slate-800/80 flex justify-end">
-                                <button type="button" onclick="switchPracticeTask('task_{{ task.step_number + 1 }}')" class="text-xs font-bold text-sky-400 hover:text-sky-300">
+                                <button type="button" onclick="switchPracticeTask('{{ practice_tasks[loop.index0 + 1].id }}')" class="text-xs font-bold text-sky-400 hover:text-sky-300">
                                     Следующий шаг ({{ task.step_number + 1 }} из 3) →
                                 </button>
                             </div>
@@ -468,7 +484,7 @@
             <div class="cyber-card rounded-2xl p-6 sm:p-8 border-l-4 border-l-indigo-400 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <span class="text-xs font-mono font-bold text-indigo-400 uppercase">Зачет недели • 20 баллов (порог зачета: 12 баллов)</span>
-                    <h2 class="text-2xl font-extrabold text-white mt-1">Итоговое Тестирование по Неделе 1</h2>
+                    <h2 class="text-2xl font-extrabold text-white mt-1">Итоговое Тестирование по Неделе {{ active_week|default(1) }} ({{ overview.badge }})</h2>
                     <p class="text-sm text-slate-300 mt-1">
                         Все баллы за неделю начисляются именно за этот тест! Выберите правильные варианты ответа во всех 10 вопросах и нажмите «Проверить ответы».
                     </p>
@@ -529,7 +545,7 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <span class="text-xs font-mono font-bold text-sky-400 uppercase">Сводка успеваемости</span>
-                        <h2 class="text-2xl font-extrabold text-white mt-1">Результаты: Неделя 1 · Инкапсуляция</h2>
+                        <h2 class="text-2xl font-extrabold text-white mt-1">Результаты: {{ overview.badge }}</h2>
                         <p class="text-sm text-slate-400">Оценка недели формируется на 100% из итогового Тестирования (практика — свободный тренажер без снятия баллов).</p>
                     </div>
                     <div class="text-right">
@@ -563,35 +579,18 @@
                         </button>
                     </div>
 
+                    {% for task in practice_tasks %}
+                    {% set t_prog = progress.tasks[task.id] %}
                     <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 space-y-2">
-                        <div class="text-xs text-slate-400">Тренажер 1 · Чертеж и info()</div>
-                        <div id="res-status-task_1" class="text-base font-bold font-mono text-slate-200">
-                            {% if progress.tasks.task_1.is_completed %}✅ Пройдено{% else %}По желанию{% endif %}
+                        <div class="text-xs text-slate-400">Тренажер {{ task.step_number }} · {{ task.difficulty }}</div>
+                        <div id="res-status-{{ task.id }}" class="text-base font-bold font-mono text-slate-200">
+                            {% if t_prog.is_completed %}✅ Пройдено{% else %}По желанию{% endif %}
                         </div>
-                        <button type="button" onclick="switchSubTab('practice'); switchPracticeTask('task_1');" class="text-xs text-sky-400 hover:underline">
+                        <button type="button" onclick="switchSubTab('practice'); switchPracticeTask('{{ task.id }}');" class="text-xs text-sky-400 hover:underline">
                             Открыть тренажер →
                         </button>
                     </div>
-
-                    <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 space-y-2">
-                        <div class="text-xs text-slate-400">Тренажер 2 · _balance и top_up()</div>
-                        <div id="res-status-task_2" class="text-base font-bold font-mono text-slate-200">
-                            {% if progress.tasks.task_2.is_completed %}✅ Пройдено{% else %}По желанию{% endif %}
-                        </div>
-                        <button type="button" onclick="switchSubTab('practice'); switchPracticeTask('task_2');" class="text-xs text-sky-400 hover:underline">
-                            Открыть тренажер →
-                        </button>
-                    </div>
-
-                    <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 space-y-2">
-                        <div class="text-xs text-slate-400">Тренажер 3 · Оплата pay()</div>
-                        <div id="res-status-task_3" class="text-base font-bold font-mono text-slate-200">
-                            {% if progress.tasks.task_3.is_completed %}✅ Пройдено{% else %}По желанию{% endif %}
-                        </div>
-                        <button type="button" onclick="switchSubTab('practice'); switchPracticeTask('task_3');" class="text-xs text-sky-400 hover:underline">
-                            Открыть тренажер →
-                        </button>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </section>
@@ -600,7 +599,7 @@
 
     <!-- Footer -->
     <footer class="border-t border-slate-800/80 bg-slate-950/80 py-5 text-center text-xs text-slate-500">
-        Web-OOP • Учебная платформа ООП (КазНУ им. аль-Фараби) • Неделя 1: Инкапсуляция
+        Web-OOP • Учебная платформа ООП (КазНУ им. аль-Фараби) • {{ overview.badge }}
     </footer>
 
     <script src="/static/js/app.js"></script>

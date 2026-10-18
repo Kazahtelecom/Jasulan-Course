@@ -44,6 +44,7 @@ def build_platform_context(request: Request, db: Session) -> dict[str, Any]:
         "request": request,
         "app_name": settings.app_name,
         "version": settings.app_version,
+        "active_week": 1,
         "student": student,
         "progress": progress,
         "overview": WEEK1_OVERVIEW,

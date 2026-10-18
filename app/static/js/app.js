@@ -1,8 +1,9 @@
 /**
- * Web-OOP Learning Platform Frontend Controller (Week 1: Quiz-only grading, Practice as ungraded trainer)
+ * Web-OOP Learning Platform Frontend Controller (Week 1 & Week 2: Quiz-only grading, Practice as ungraded trainer)
  */
 
-const STORAGE_PREFIX = "weboop_w1_draft_";
+const ACTIVE_WEEK = (document.body && document.body.dataset.activeWeek) ? document.body.dataset.activeWeek : "1";
+const STORAGE_PREFIX = `weboop_w${ACTIVE_WEEK}_draft_`;
 const quizSelections = {};
 
 /**
@@ -35,7 +36,7 @@ function switchSubTab(tabId) {
 }
 
 /**
- * Switch active practice task step: 'task_1' | 'task_2' | 'task_3'
+ * Switch active practice task step
  */
 function switchPracticeTask(taskId) {
     document.querySelectorAll(".practice-step-btn").forEach((btn) => {
@@ -113,7 +114,7 @@ async function runPracticeTask(taskId) {
     runBtn.innerHTML = `<span>⏳ Запуск в песочнице...</span>`;
 
     try {
-        const res = await fetch(`/api/week1/practice/${taskId}/run`, {
+        const res = await fetch(`/api/week${ACTIVE_WEEK}/practice/${taskId}/run`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ code }),
@@ -176,7 +177,7 @@ function selectQuizOption(questionId, optionIndex) {
 }
 
 /**
- * Submit final quiz answers to API
+ * Submit final quiz answers to API for the active week
  */
 async function submitWeek1Quiz() {
     const submitBtn = document.getElementById("btn-submit-quiz");
@@ -188,7 +189,7 @@ async function submitWeek1Quiz() {
     submitBtn.innerHTML = "<span>Проверка ответов...</span>";
 
     try {
-        const res = await fetch("/api/week1/quiz/check", {
+        const res = await fetch(`/api/week${ACTIVE_WEEK}/quiz/check`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ answers: quizSelections }),
@@ -212,7 +213,7 @@ async function submitWeek1Quiz() {
                         <p class="text-xs opacity-90 mt-1">
                             ${
                                 isGood
-                                    ? "🎉 Поздравляем! Зачет по Неделе 1 получен!"
+                                    ? `🎉 Поздравляем! Зачет по Неделе ${ACTIVE_WEEK} получен!`
                                     : "Для зачета нужно минимум 12 баллов из 20 (6 правильных ответов из 10). Посмотрите подсказки под вопросами и попробуйте еще раз!"
                             }
                         </p>
@@ -290,7 +291,7 @@ function updateProgressUI(progress) {
     }
 
     if (progress.tasks) {
-        ["task_1", "task_2", "task_3"].forEach((tid) => {
+        Object.keys(progress.tasks).forEach((tid) => {
             const tinfo = progress.tasks[tid];
             if (!tinfo) return;
             setTxt(`step-status-${tid}`, tinfo.is_completed ? "✅ Разобрано" : "Тренажер");
@@ -312,7 +313,7 @@ function showLockedWeekToast(weekTitle) {
     const toast = document.getElementById("locked-week-toast");
     const label = document.getElementById("locked-week-toast-text");
     if (!toast || !label) return;
-    label.textContent = `${weekTitle} откроется после прохождения Недели 1 · Инкапсуляция.`;
+    label.textContent = `${weekTitle} откроется в следующем учебном модуле.`;
     toast.classList.remove("hidden");
     setTimeout(() => {
         toast.classList.add("hidden");
