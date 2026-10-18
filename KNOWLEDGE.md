@@ -30,6 +30,7 @@ missing authorized decision. No generated index, original chat or task-archive s
 - **D3 (Верификатор):** Двухуровневая проверка кода: статический AST-анализ классов и методов + изолированный запуск pytest с таймаутом (5 сек).
 - **D4 (Документация):** Исчерпывающее документирование архитектуры, UML-диаграмм и API в папке `docs/`.
 - **D5 (Zero-Build интерфейс):** Статические файлы UI (Tailwind CDN, Vanilla JS ES-модули, Mermaid.js) монтируются сервером без этапа сборки и внешних пакетных менеджеров.
+- **D6 (Модуль Недели 1: Dark Cyberpunk UI, свободный тренажер и 20-балльный квиз):** Пятисекционная воронка (`Главная`, `Теория`, `Практика`, `Тестирование`, `Результаты`) без рендеринга Mermaid UML на сайте (схемы хранятся в `docs/domain_model_uml.md`), с 3 растровыми Cyberpunk-иллюстрациями, свободным кодовым тренажером `SmartCard` (`0.0` баллов, кнопка подстановки эталонного кода `fillSolutionCode`) и 20-балльным итоговым квизом (`10 × 2.0 = 20.0` б., порог зачета `12.0` б., защита High-Water Mark в `ScoringService`). Запись: [REC-OOP_20261018-213107_W1MAT-tech-week1-funnel.md](knowledge/records/REC-OOP_20261018-213107_W1MAT-tech-week1-funnel.md).
 
 ## 2. Key Artifacts
 
@@ -38,6 +39,7 @@ missing authorized decision. No generated index, original chat or task-archive s
 - **Исходные материалы ООП:** `C:\Users\kz444\OneDrive\Desktop\OOP` (9 лекций, 9 лабораторок, силлабус CS2203)
 - **Инициализирующая задача:** `workspace/2026/OOP_20261015-015123_INIT/status.md` (DONE)
 - **Каркас платформы (Задача 1):** `workspace/2026/OOP_20261015-022500_CORE/status.md` (DONE)
+- **Редизайн Недели 1 для начинающих (Задача 2):** `workspace/2026/OOP_20261018-213107_W1MAT/status.md` (DONE)
 
 ## 3. Legacy & Deprecation
 
@@ -49,3 +51,5 @@ missing authorized decision. No generated index, original chat or task-archive s
 - **F2 (Оценивание):** Преподаватель Санжар Аубакиров (`saubakirov`) оценивает работы студентов, ведущий разработчик — Жасулан Куандыков (`zhasulan`).
 - **F3 (Локальный запуск):** Проект функционирует локально на рабочей машине без внешнего облачного деплоя.
 - **F4 (Изоляция RunnerService):** Студенческий код запускается в `tempfile.TemporaryDirectory` с принудительным `timeout=5.0s` и предварительной блокировкой запрещенных модулей (`os`, `sys`, `subprocess`, `shutil`, `socket`) и вызовов (`eval`, `exec`).
+- **F5 (Педагогическая воронка для новичков и 20-балльный квиз):** Курс ориентирован на малую группу с начинающими студентами: теория дается пошагово с нуля на одном сквозном классе (`SmartCard`), практика работает как безопасный тренажер с построчным разбором (`Passenger`/`Validator`) и кнопкой готового решения без снятия баллов, а все `20.0` баллов недели начисляются за финальный тест из 10 вопросов в конце модуля. Запись: [REC-OOP_20261018-213107_W1MAT-human-beginner-format.md](knowledge/records/REC-OOP_20261018-213107_W1MAT-human-beginner-format.md).
+
