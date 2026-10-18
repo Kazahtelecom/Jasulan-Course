@@ -31,6 +31,7 @@ missing authorized decision. No generated index, original chat or task-archive s
 - **D4 (Документация):** Исчерпывающее документирование архитектуры, UML-диаграмм и API в папке `docs/`.
 - **D5 (Zero-Build интерфейс):** Статические файлы UI (Tailwind CDN, Vanilla JS ES-модули, Mermaid.js) монтируются сервером без этапа сборки и внешних пакетных менеджеров.
 - **D6 (Модуль Недели 1: Dark Cyberpunk UI, свободный тренажер и 20-балльный квиз):** Пятисекционная воронка (`Главная`, `Теория`, `Практика`, `Тестирование`, `Результаты`) без рендеринга Mermaid UML на сайте (схемы хранятся в `docs/domain_model_uml.md`), с 3 растровыми Cyberpunk-иллюстрациями, свободным кодовым тренажером `SmartCard` (`0.0` баллов, кнопка подстановки эталонного кода `fillSolutionCode`) и 20-балльным итоговым квизом (`10 × 2.0 = 20.0` б., порог зачета `12.0` б., защита High-Water Mark в `ScoringService`). Запись: [REC-OOP_20261018-213107_W1MAT-tech-week1-funnel.md](knowledge/records/REC-OOP_20261018-213107_W1MAT-tech-week1-funnel.md).
+- **D7 (Мультинедельная архитектура и модуль Недели 2: SOLID и DI):** Недели 1 и 2 обслуживаются единым `app/templates/index.html` и `app/static/js/app.js` через `data-active-week`, маршруты `/week{N}` и `/api/week{N}/...`; `ScoringService` принимает `week_number` (по умолчанию `1`) и реестр `WEEK_TASK_IDS`, прогресс изолирован префиксами `topic_id` без миграции БД. Неделя 2: 4 шага теории, тренажер `w2_task_1..3` (`StudentFareService` 100/50 ₸, `BluetoothPayment`, `TerminalValidator` с DI, `0.0` б.) и квиз `w2_q1..w2_q10` (`10 × 2.0 = 20.0` б.). Запись: [REC-OOP_20261018-222800_W2SOL-tech-week2-multiweek.md](knowledge/records/REC-OOP_20261018-222800_W2SOL-tech-week2-multiweek.md).
 
 ## 2. Key Artifacts
 
@@ -40,6 +41,7 @@ missing authorized decision. No generated index, original chat or task-archive s
 - **Инициализирующая задача:** `workspace/2026/OOP_20261015-015123_INIT/status.md` (DONE)
 - **Каркас платформы (Задача 1):** `workspace/2026/OOP_20261015-022500_CORE/status.md` (DONE)
 - **Редизайн Недели 1 для начинающих (Задача 2):** `workspace/2026/OOP_20261018-213107_W1MAT/status.md` (DONE)
+- **Модуль Недели 2: SOLID и DI (Задача 3):** `workspace/2026/OOP_20261018-222800_W2SOL/status.md` (DONE)
 
 ## 3. Legacy & Deprecation
 
