@@ -30,7 +30,6 @@ missing authorized decision. No generated index, original chat or task-archive s
 - **D3 (Верификатор):** Двухуровневая проверка кода: статический AST-анализ классов и методов + изолированный запуск pytest с таймаутом (5 сек).
 - **D4 (Документация):** Исчерпывающее документирование архитектуры, UML-диаграмм и API в папке `docs/`.
 - **D5 (Zero-Build интерфейс):** Статические файлы UI (Tailwind CDN, Vanilla JS ES-модули, Mermaid.js) монтируются сервером без этапа сборки и внешних пакетных менеджеров.
-- **D6 (Модуль Недели 1 и High-Water Mark):** Единый многовкладочный интерфейс ([Лекция] · [Квиз] · [Практикум] · [Лабораторная]) с LocalStorage автосохранением черновиков, изолированной автопроверкой через RunnerService (7 тестов TransitCard + 10 тестов SingleTripTicket/Bus), начислением 0..20 баллов (порог зачета >= 12) и защитой от понижения баллов по правилу max.
 
 ## 2. Key Artifacts
 
@@ -39,7 +38,6 @@ missing authorized decision. No generated index, original chat or task-archive s
 - **Исходные материалы ООП:** `C:\Users\kz444\OneDrive\Desktop\OOP` (9 лекций, 9 лабораторок, силлабус CS2203)
 - **Инициализирующая задача:** `workspace/2026/OOP_20261015-015123_INIT/status.md` (DONE)
 - **Каркас платформы (Задача 1):** `workspace/2026/OOP_20261015-022500_CORE/status.md` (DONE)
-- **Модуль Недели 1 (Задача 2):** `workspace/2026/OOP_20261015-162432_W1MAT/status.md` (DONE)
 
 ## 3. Legacy & Deprecation
 
@@ -51,4 +49,3 @@ missing authorized decision. No generated index, original chat or task-archive s
 - **F2 (Оценивание):** Преподаватель Санжар Аубакиров (`saubakirov`) оценивает работы студентов, ведущий разработчик — Жасулан Куандыков (`zhasulan`).
 - **F3 (Локальный запуск):** Проект функционирует локально на рабочей машине без внешнего облачного деплоя.
 - **F4 (Изоляция RunnerService):** Студенческий код запускается в `tempfile.TemporaryDirectory` с принудительным `timeout=5.0s` и предварительной блокировкой запрещенных модулей (`os`, `sys`, `subprocess`, `shutil`, `socket`) и вызовов (`eval`, `exec`).
-- **F5 (Rich Domain Model & Инварианты Недели 1):** Сущности TransitCard и SingleTripTicket строго защищают свои инварианты (readonly is_validated через @property без сеттера с защитой AttributeError, детерминированное время через issued_at, однократность прохода, срок 60 мин, запрет отрицательного баланса и отрицательного тарифа).

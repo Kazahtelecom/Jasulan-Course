@@ -11,7 +11,6 @@ from fastapi.templating import Jinja2Templates
 from app.config import settings
 from app.database.session import init_db
 from app.routers import health_router, runner_router
-from app.routers.week1 import router as week1_router
 
 templates = Jinja2Templates(directory=str(settings.templates_dir))
 
@@ -40,7 +39,6 @@ app.mount("/static", StaticFiles(directory=str(settings.static_dir)), name="stat
 # Include routers
 app.include_router(health_router)
 app.include_router(runner_router)
-app.include_router(week1_router)
 
 
 @app.get("/", response_class=HTMLResponse)
