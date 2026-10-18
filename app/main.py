@@ -3,14 +3,15 @@
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from sqlalchemy.orm import Session
 
 from app.config import settings
-from app.database.session import init_db
-from app.routers import health_router, runner_router
+from app.database.session import get_db, init_db
+from app.routers import health_router, runner_router, week1
 
 templates = Jinja2Templates(directory=str(settings.templates_dir))
 
@@ -39,16 +40,19 @@ app.mount("/static", StaticFiles(directory=str(settings.static_dir)), name="stat
 # Include routers
 app.include_router(health_router)
 app.include_router(runner_router)
+app.include_router(week1.router)
 
 
 @app.get("/", response_class=HTMLResponse)
-def index(request: Request) -> HTMLResponse:
-    """Render the zero-build foundation dashboard."""
+def index(
+    request: Request,
+    db: Session = Depends(get_db),
+) -> HTMLResponse:
+    """Render the unified Web-OOP learning platform."""
+    ctx = week1.build_platform_context(request, db)
     return templates.TemplateResponse(
         request=request,
         name="index.html",
-        context={
-            "app_name": settings.app_name,
-            "version": settings.app_version,
-        },
+        context=ctx,
     )
+

@@ -1,153 +1,608 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ app_name }} — Платформенный фундамент</title>
+    <title>Учебная платформа ООП — {{ app_name }}</title>
     <!-- Tailwind CSS (Zero-Build CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Local CSS -->
+    <!-- Zero-Build reference: cdn.jsdelivr.net/npm/mermaid kept in docs/domain_model_uml.md -->
     <link rel="stylesheet" href="/static/css/style.css">
-    <!-- Mermaid.js (Zero-Build CDN) -->
-    <script type="module">
-        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
-        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
-    </script>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
-    <!-- Header -->
-    <header class="bg-indigo-700 text-white shadow-md">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-lg bg-indigo-500 flex items-center justify-center font-bold text-xl shadow">
-                    LMS
-                </div>
-                <div>
-                    <h1 class="text-xl font-bold tracking-tight">{{ app_name }}</h1>
-                    <p class="text-xs text-indigo-200">Локальная платформа изучения ООП в Python • v{{ version }}</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-3">
-                <a href="/docs" target="_blank" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-md text-sm font-medium transition shadow-sm border border-indigo-400">
-                    Swagger API Docs
-                </a>
-            </div>
-        </div>
-    </header>
+<body class="min-h-screen flex flex-col font-sans selection:bg-sky-500 selection:text-slate-950">
 
-    <!-- Main Content -->
-    <main class="max-w-6xl mx-auto px-6 py-8 flex-1 w-full space-y-8">
-        <!-- Hero & Architecture Status Cards -->
-        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5">
-                <div>
-                    <h2 class="text-lg font-bold text-slate-900">Инженерный мониторинг платформы</h2>
-                    <p class="text-sm text-slate-500">Автономный Zero-Build каркас: FastAPI + SQLite + RunnerService</p>
+    <!-- Top Brand & Navigation Header (Matches Reference Layout in Dark Cyberpunk / Tech Modern Style) -->
+    <header class="border-b border-sky-500/20 bg-slate-950/90 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 pt-5 pb-4 space-y-5">
+
+            <!-- Brand Row -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 via-sky-500 to-cyan-400 flex items-center justify-center font-extrabold text-lg tracking-wider text-white shadow-[0_0_25px_rgba(56,189,248,0.45)] border border-sky-300/40 select-none">
+                        ООП
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-extrabold tracking-tight text-white">
+                            Учебная платформа
+                        </h1>
+                        <p class="text-sm text-slate-400 font-medium">
+                            Учимся вместе • <span class="text-sky-400">{{ app_name }}</span>
+                        </p>
+                    </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span id="overall-status-badge" class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
-                        Проверка состояния...
+
+                <!-- Student & Live Score Pill -->
+                <div class="flex items-center gap-3 flex-wrap">
+                    <div class="px-3.5 py-2 rounded-xl bg-slate-900/90 border border-slate-800 text-xs text-slate-300">
+                        Студент: <span class="font-bold text-white">{{ student.full_name }}</span>
+                    </div>
+                    <div class="px-4 py-2 rounded-xl bg-slate-900/90 border border-sky-500/30 flex items-center gap-2 shadow-[0_0_15px_rgba(56,189,248,0.12)]">
+                        <span class="text-xs text-slate-400">Баллы (Тест):</span>
+                        <span id="header-total-score" class="font-mono font-bold text-sm text-sky-400">
+                            {{ progress.total_score }} / {{ progress.max_score }} б.
+                        </span>
+                    </div>
+                    <span id="header-status-badge" class="px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider {% if progress.is_completed %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/40{% else %}bg-sky-500/20 text-sky-300 border border-sky-500/40{% endif %}">
+                        {% if progress.is_completed %}ЗАЧЕТ ПОЛУЧЕН{% else %}В ПРОЦЕССЕ{% endif %}
                     </span>
                 </div>
             </div>
 
-            <!-- Status Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-                <!-- Backend Status -->
-                <div class="p-4 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between">
-                    <div>
-                        <div class="text-xs uppercase font-semibold text-slate-500 tracking-wider">Бэкенд</div>
-                        <div id="status-backend-text" class="text-base font-bold text-slate-700 mt-1">Опрос...</div>
-                    </div>
-                    <div id="status-backend-indicator" class="w-4 h-4 rounded-full bg-slate-300"></div>
-                </div>
-
-                <!-- Database Status -->
-                <div class="p-4 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between">
-                    <div>
-                        <div class="text-xs uppercase font-semibold text-slate-500 tracking-wider">База данных SQLite</div>
-                        <div id="status-db-text" class="text-base font-bold text-slate-700 mt-1">Опрос...</div>
-                    </div>
-                    <div id="status-db-indicator" class="w-4 h-4 rounded-full bg-slate-300"></div>
-                </div>
-
-                <!-- Runner Status -->
-                <div class="p-4 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between">
-                    <div>
-                        <div class="text-xs uppercase font-semibold text-slate-500 tracking-wider">RunnerService Sandbox</div>
-                        <div id="status-runner-text" class="text-base font-bold text-slate-700 mt-1">Опрос...</div>
-                    </div>
-                    <div id="status-runner-indicator" class="w-4 h-4 rounded-full bg-slate-300"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Smoke Test Runner Section -->
-        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h2 class="text-lg font-bold text-slate-900">Интерактивный Smoke-тест раннера</h2>
-                    <p class="text-sm text-slate-500">Запуск эталонной задачи в изолированной песочнице с проверкой AST и таймаута</p>
-                </div>
-                <button id="btn-run-smoke" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-semibold transition shadow-sm flex items-center justify-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>Smoke-тест раннера</span>
+            <!-- Row 1: Week Selector Pills -->
+            <div class="flex items-center gap-3 overflow-x-auto pb-1">
+                <button type="button" onclick="switchSubTab('home')" class="week-pill-active px-5 py-2.5 rounded-xl text-sm font-bold transition shrink-0">
+                    Неделя 1 · Инкапсуляция
+                </button>
+                <button type="button" onclick="showLockedWeekToast('Неделя 2 · SOLID и DI')" class="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-transparent hover:border-slate-800 transition shrink-0 flex items-center gap-2">
+                    <span>Неделя 2 · SOLID и DI</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Скоро</span>
+                </button>
+                <button type="button" onclick="showLockedWeekToast('Неделя 3 · Паттерны GoF')" class="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-transparent hover:border-slate-800 transition shrink-0 flex items-center gap-2">
+                    <span>Неделя 3 · Паттерны GoF</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Скоро</span>
                 </button>
             </div>
 
-            <!-- Smoke Test Results Box -->
-            <div id="smoke-result-container" class="hidden mt-4 p-4 rounded-lg border border-slate-200 bg-slate-50 space-y-3">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <span class="text-xs uppercase font-bold text-slate-500 tracking-wider">Результат:</span>
-                        <span id="smoke-badge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold"></span>
+            <!-- Row 2: Section Sub-Tabs (Главная | Теория | Практика | Тестирование | Результаты) -->
+            <nav class="flex items-center gap-2 sm:gap-3 overflow-x-auto pt-1 border-t border-slate-800/80">
+                <button type="button" data-tab="home" onclick="switchSubTab('home')" class="subtab-btn subtab-active text-sky-400 font-bold px-4 py-2 rounded-xl text-sm transition shrink-0">
+                    Главная
+                </button>
+                <button type="button" data-tab="theory" onclick="switchSubTab('theory')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
+                    Теория
+                </button>
+                <button type="button" data-tab="practice" onclick="switchSubTab('practice')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
+                    Практика
+                </button>
+                <button type="button" data-tab="quiz" onclick="switchSubTab('quiz')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
+                    Тестирование
+                </button>
+                <button type="button" data-tab="results" onclick="switchSubTab('results')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
+                    Результаты
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Locked Week Toast Notification -->
+    <div id="locked-week-toast" class="hidden fixed bottom-6 right-6 z-50 max-w-sm cyber-card border-sky-500/50 p-4 rounded-xl shadow-2xl text-xs text-sky-200">
+        <div class="font-bold text-sky-400 mb-1">🔒 Модуль в разработке</div>
+        <div id="locked-week-toast-text"></div>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="max-w-6xl mx-auto px-6 py-8 flex-1 w-full">
+
+        <!-- ================================================================= -->
+        <!-- TAB 1: ГЛАВНАЯ (OVERVIEW & LEARNING FUNNEL)                       -->
+        <!-- ================================================================= -->
+        <section id="panel-home" class="subtab-panel space-y-8">
+            <!-- Hero Cyberpunk Card -->
+            <div class="cyber-card rounded-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+                <div class="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between space-y-6">
+                    <div class="space-y-3">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-sky-500/15 text-sky-400 border border-sky-500/30">
+                            <span>⚡ {{ overview.badge }}</span>
+                            <span>•</span>
+                            <span>{{ overview.estimated_time }}</span>
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white leading-tight">
+                            {{ overview.title }}
+                        </h2>
+                        <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                            {{ overview.description }}
+                        </p>
                     </div>
-                    <div class="text-xs text-slate-500">
-                        Время: <span id="smoke-time" class="font-mono font-semibold text-slate-700">0 ms</span>
+
+                    <div class="flex flex-wrap items-center gap-4 pt-2">
+                        <button type="button" onclick="switchSubTab('theory')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-sm shadow-[0_0_20px_rgba(56,189,248,0.35)] transition flex items-center gap-2">
+                            <span>Начать с Теории</span>
+                            <span>→</span>
+                        </button>
+                        <button type="button" onclick="switchSubTab('quiz')" class="px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-sky-300 border border-sky-500/30 font-semibold text-sm transition">
+                            Перейти к Тестированию
+                        </button>
                     </div>
                 </div>
-                <div class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Лог выполнения (stdout / stderr):</div>
-                <pre id="smoke-output" class="p-3 bg-slate-900 text-slate-100 rounded text-xs font-mono overflow-x-auto whitespace-pre-wrap"></pre>
+
+                <div class="lg:col-span-5 relative min-h-[240px] bg-slate-950">
+                    <img src="{{ overview.hero_image }}" alt="Неделя 1 Инкапсуляция" class="w-full h-full object-cover opacity-90">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent lg:bg-gradient-to-r lg:from-slate-950/90 lg:to-transparent"></div>
+                </div>
+            </div>
+
+            <!-- 3-Step Connected Learning Funnel -->
+            <div class="space-y-4">
+                <div>
+                    <h3 class="text-lg font-bold text-white">Как устроено обучение на этой неделе</h3>
+                    <p class="text-xs sm:text-sm text-slate-400">Никакого обязательного кодинга на оценку: изучаете теорию, спокойно разбираете примеры в тренажере, а баллы получаете в финальном тесте!</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    {% for item in overview.roadmap %}
+                    <div onclick="switchSubTab('{{ item.tab }}')" class="cyber-card cyber-card-glow rounded-2xl p-6 cursor-pointer transition flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-sky-500/15 text-sky-400 border border-sky-500/30">
+                                    ШАГ {{ item.step }}
+                                </span>
+                                <span class="text-xs text-slate-400 font-mono">{{ item.badge }}</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-white">{{ item.title }}</h4>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">{{ item.desc }}</p>
+                        </div>
+                        <div class="text-xs font-bold text-sky-400 flex items-center gap-1 pt-2">
+                            <span>Открыть раздел</span>
+                            <span>→</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Quick Progress Snapshot -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="cyber-card rounded-xl p-5">
+                    <div class="text-xs text-slate-400 uppercase font-semibold">Баллы за неделю (только Квиз)</div>
+                    <div id="home-total-score" class="text-2xl font-extrabold font-mono text-sky-400 mt-1">
+                        {{ progress.total_score }} / {{ progress.max_score }} б.
+                    </div>
+                    <div class="text-xs text-slate-500 mt-1">Порог зачета: ≥ {{ progress.pass_threshold }} из {{ progress.max_score }} баллов</div>
+                </div>
+                <div class="cyber-card rounded-xl p-5">
+                    <div class="text-xs text-slate-400 uppercase font-semibold">Тренажер практики (без баллов)</div>
+                    <div id="home-tasks-done" class="text-2xl font-extrabold font-mono text-emerald-400 mt-1">
+                        {{ progress.tasks_completed }} / {{ progress.tasks_total }}
+                    </div>
+                    <div class="text-xs text-slate-500 mt-1">Свободная тренировка с готовыми ответами</div>
+                </div>
+                <div class="cyber-card rounded-xl p-5">
+                    <div class="text-xs text-slate-400 uppercase font-semibold">Итоговое тестирование</div>
+                    <div id="home-quiz-score" class="text-2xl font-extrabold font-mono text-indigo-400 mt-1">
+                        {{ progress.quiz_score }} / {{ progress.quiz_max }} б.
+                    </div>
+                    <div class="text-xs text-slate-500 mt-1">10 вопросов по 2.0 балла за ответ</div>
+                </div>
             </div>
         </section>
 
-        <!-- Domain Model UML Section -->
-        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
-            <div>
-                <h2 class="text-lg font-bold text-slate-900">UML-модель домена Avtobys (Mermaid.js CDN)</h2>
-                <p class="text-sm text-slate-500">Вводная диаграмма классов для студентов: инкапсуляция пассажира и валидатора</p>
+        <!-- ================================================================= -->
+        <!-- TAB 2: ТЕОРИЯ (BEGINNER-FRIENDLY, VISUAL, NO TINY MERMAID)        -->
+        <!-- ================================================================= -->
+        <section id="panel-theory" class="subtab-panel hidden space-y-8">
+            <div class="cyber-card rounded-2xl p-6 sm:p-8 border-l-4 border-l-sky-400">
+                <h2 class="text-2xl font-extrabold text-white">Теория: Основы ООП и Инкапсуляция (с нуля)</h2>
+                <p class="text-sm text-slate-300 mt-2 leading-relaxed">
+                    Прочитайте эти 4 коротких шага. Всё, что здесь разобрано на примере карты <code class="text-sky-400 font-mono">SmartCard</code>, вы сможете потрогать в тренажере «Практика» и легко сдать в «Тестировании».
+                </p>
             </div>
-            <div class="p-6 bg-slate-50 rounded-lg border border-slate-200 flex justify-center overflow-x-auto">
-                <div class="mermaid">
-classDiagram
-    class Passenger {
-        +str full_name
-        +str card_id
-        +float balance
-        +top_up(amount: float) None
-        +has_sufficient_balance(fare: float) bool
-    }
-    class Validator {
-        +str bus_id
-        +str route_number
-        +float standard_fare
-        +validate_ticket(passenger: Passenger) bool
-    }
-    Validator ..> Passenger : validates
+
+            {% for sec in theory_sections %}
+            <article class="cyber-card rounded-2xl p-6 sm:p-8 space-y-6">
+                <div class="flex items-center gap-3">
+                    <span class="px-3 py-1 rounded-lg text-xs font-mono font-bold bg-sky-500/20 text-sky-300 border border-sky-500/40">
+                        {{ sec.step_badge }}
+                    </span>
+                    <h3 class="text-xl font-bold text-white">{{ sec.title }}</h3>
+                </div>
+
+                <p class="text-sm sm:text-base text-sky-100/90 font-medium leading-relaxed">
+                    {{ sec.lead }}
+                </p>
+
+                <p class="text-sm text-slate-300 whitespace-pre-line leading-relaxed">
+                    {{ sec.explanation }}
+                </p>
+
+                {% if sec.image %}
+                <div class="rounded-xl overflow-hidden border border-sky-500/30 bg-slate-950">
+                    <img src="{{ sec.image }}" alt="{{ sec.title }}" class="w-full max-h-[380px] object-cover">
+                    <div class="p-3 text-center text-xs text-slate-400 bg-slate-950/90 border-t border-slate-800">
+                        {{ sec.image_caption }}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if sec.anatomy_cards %}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {% for card in sec.anatomy_cards %}
+                    <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-sky-400">{{ card.term }}</span>
+                            <span class="text-xs text-slate-400">{{ card.analogy }}</span>
+                        </div>
+                        <code class="block text-xs font-mono text-emerald-300 bg-slate-900 px-2.5 py-1.5 rounded border border-slate-800">
+                            {{ card.in_python }}
+                        </code>
+                        <p class="text-xs text-slate-300 pt-1">{{ card.meaning }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if sec.bad_code %}
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div class="rounded-xl bg-rose-950/20 border border-rose-500/30 p-4 space-y-2">
+                        <div class="text-xs font-bold text-rose-300">{{ sec.bad_code_title }}</div>
+                        <pre class="text-xs font-mono text-rose-100 overflow-x-auto leading-relaxed">{{ sec.bad_code }}</pre>
+                    </div>
+                    <div class="rounded-xl bg-emerald-950/20 border border-emerald-500/30 p-4 space-y-2">
+                        <div class="text-xs font-bold text-emerald-300">{{ sec.good_code_title }}</div>
+                        <pre class="text-xs font-mono text-emerald-100 overflow-x-auto leading-relaxed">{{ sec.good_code }}</pre>
+                    </div>
+                </div>
+                {% elif sec.good_code %}
+                <div class="rounded-xl bg-slate-950 border border-sky-500/30 p-4 space-y-2">
+                    <div class="text-xs font-bold text-sky-300">{{ sec.good_code_title }}</div>
+                    <pre class="text-xs sm:text-sm font-mono text-slate-100 overflow-x-auto leading-relaxed">{{ sec.good_code }}</pre>
+                </div>
+                {% endif %}
+
+                <div class="p-4 rounded-xl bg-sky-500/10 border border-sky-500/30 text-xs sm:text-sm text-sky-200">
+                    <strong>💡 Главный вывод:</strong> {{ sec.takeaway }}
+                </div>
+            </article>
+            {% endfor %}
+
+            <div class="cyber-card rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                    <h4 class="text-base font-bold text-white">Изучили теорию?</h4>
+                    <p class="text-xs text-slate-400">Можете потренироваться в песочнице «Практика» (с готовыми ответами) или сразу перейти к «Тестированию».</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="switchSubTab('practice')" class="px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-sm shadow-[0_0_20px_rgba(56,189,248,0.35)] transition">
+                        Потренироваться в Практике →
+                    </button>
+                    <button type="button" onclick="switchSubTab('quiz')" class="px-4 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-indigo-300 border border-indigo-500/30 font-semibold text-xs sm:text-sm transition">
+                        Сразу к Тестированию
+                    </button>
                 </div>
             </div>
         </section>
+
+        <!-- ================================================================= -->
+        <!-- TAB 3: ПРАКТИКА (UNGRADED TRAINER WITH 1-CLICK SOLUTION)          -->
+        <!-- ================================================================= -->
+        <section id="panel-practice" class="subtab-panel hidden space-y-8">
+
+            <!-- Part A: Walkthrough Example (Passenger & Validator) -->
+            <div class="cyber-card rounded-2xl p-6 sm:p-8 space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-4">
+                    <div>
+                        <span class="text-xs font-mono font-bold text-sky-400 uppercase">Часть 1 · Наглядный разбор готового кода</span>
+                        <h2 class="text-xl font-extrabold text-white mt-1">{{ walkthrough.title }}</h2>
+                        <p class="text-xs sm:text-sm text-slate-400">{{ walkthrough.subtitle }}</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    <div class="lg:col-span-7 rounded-xl bg-slate-950 border border-slate-800 p-4 overflow-x-auto">
+                        <div class="text-xs font-mono text-slate-400 mb-2 border-b border-slate-800 pb-2">
+                            example_avtobys.py — Готовый образец классов Passenger и Validator
+                        </div>
+                        <pre class="text-xs font-mono text-sky-100 leading-relaxed">{{ walkthrough.code }}</pre>
+                    </div>
+
+                    <div class="lg:col-span-5 space-y-3">
+                        <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Пояснение по шагам:</div>
+                        {% for st in walkthrough.steps %}
+                        <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1">
+                            <div class="text-[11px] font-mono text-sky-400">{{ st.line_ref }}</div>
+                            <div class="text-sm font-bold text-white">{{ st.title }}</div>
+                            <p class="text-xs text-slate-300 leading-relaxed">{{ st.text }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part B: 3 Step-by-Step Training Tasks (No points required!) -->
+            <div class="space-y-5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <span class="text-xs font-mono font-bold text-emerald-400 uppercase">Часть 2 · Свободный тренажер (БЕЗ ОЦЕНКИ — не влияет на баллы)</span>
+                        <h3 class="text-xl font-extrabold text-white mt-1">Попробуйте собрать класс SmartCard или разберите готовое решение</h3>
+                        <p class="text-xs sm:text-sm text-slate-400">
+                            Новичкам не обязательно писать код с нуля! Вы можете попробовать сами или нажать кнопку <strong class="text-sky-300">«✨ Вставить готовое решение»</strong> и посмотреть, как оно проходит проверку.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step Switcher Pills -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {% for task in practice_tasks %}
+                    {% set t_prog = progress.tasks[task.id] %}
+                    <button
+                        type="button"
+                        data-task="{{ task.id }}"
+                        onclick="switchPracticeTask('{{ task.id }}')"
+                        class="practice-step-btn {% if loop.first %}week-pill-active{% else %}bg-slate-900/70 text-slate-400 border-slate-800{% endif %} p-4 rounded-xl border text-left transition flex items-center justify-between"
+                    >
+                        <div class="flex items-center gap-3">
+                            <span id="step-dot-{{ task.id }}" class="w-2.5 h-2.5 rounded-full {% if t_prog.is_completed %}bg-emerald-400 shadow-[0_0_8px_#34d399]{% else %}bg-slate-600{% endif %}"></span>
+                            <div>
+                                <div class="text-xs font-bold">Шаг {{ task.step_number }} из 3</div>
+                                <div class="text-xs opacity-80 truncate max-w-[180px]">{{ task.difficulty }}</div>
+                            </div>
+                        </div>
+                        <span id="step-status-{{ task.id }}" class="font-mono text-xs font-bold px-2 py-1 rounded bg-slate-950/60">
+                            {% if t_prog.is_completed %}✅ Разобрано{% else %}Тренажер{% endif %}
+                        </span>
+                    </button>
+                    {% endfor %}
+                </div>
+
+                <!-- Task Cards -->
+                {% for task in practice_tasks %}
+                <div id="practice-card-{{ task.id }}" class="practice-task-card {% if not loop.first %}hidden{% endif %} cyber-card rounded-2xl p-6 sm:p-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                        <!-- Left Column: Task Description & Instructions -->
+                        <div class="lg:col-span-5 space-y-5">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                                        {{ task.difficulty }}
+                                    </span>
+                                    <span class="text-xs font-mono text-emerald-400">Без снятия баллов</span>
+                                </div>
+                                <h4 class="text-lg font-extrabold text-white">{{ task.title }}</h4>
+                                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">{{ task.story }}</p>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-slate-950/90 border border-slate-800 space-y-2.5">
+                                <div class="text-xs font-bold uppercase tracking-wider text-sky-400">Как устроен этот шаг:</div>
+                                <ol class="list-decimal list-inside space-y-2 text-xs sm:text-sm text-slate-200 leading-relaxed">
+                                    {% for inst in task.instructions %}
+                                    <li>{{ inst }}</li>
+                                    {% endfor %}
+                                </ol>
+                            </div>
+
+                            <!-- Hint Toggle -->
+                            <div class="space-y-2">
+                                <button type="button" onclick="toggleTaskHint('{{ task.id }}')" class="text-xs font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1.5 transition">
+                                    <span>💡 Показать текстовую подсказку</span>
+                                </button>
+                                <pre id="hint-box-{{ task.id }}" class="hidden p-4 rounded-xl bg-amber-950/30 border border-amber-500/40 text-xs font-mono text-amber-200 whitespace-pre-wrap leading-relaxed">{{ task.hint }}</pre>
+                            </div>
+
+                            {% if not loop.last %}
+                            <div class="pt-2 border-t border-slate-800/80 flex justify-end">
+                                <button type="button" onclick="switchPracticeTask('task_{{ task.step_number + 1 }}')" class="text-xs font-bold text-sky-400 hover:text-sky-300">
+                                    Следующий шаг ({{ task.step_number + 1 }} из 3) →
+                                </button>
+                            </div>
+                            {% else %}
+                            <div class="pt-2 border-t border-slate-800/80 flex justify-end">
+                                <button type="button" onclick="switchSubTab('quiz')" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition">
+                                    Перейти к итоговому Тестированию (зачет недели) →
+                                </button>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Right Column: Code Editor & Sandbox Output -->
+                        <div class="lg:col-span-7 space-y-4">
+                            <div class="rounded-xl overflow-hidden border border-sky-500/30 bg-slate-950 shadow-inner">
+                                <div class="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
+                                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
+                                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+                                        <span class="text-xs font-mono text-slate-400 ml-2">solution.py ({{ task.id }})</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <button type="button" onclick="fillSolutionCode('{{ task.id }}')" class="px-2.5 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/40 text-xs font-semibold text-sky-300 transition">
+                                            ✨ Вставить готовое решение
+                                        </button>
+                                        <button type="button" onclick="resetTaskCode('{{ task.id }}')" class="text-xs text-slate-400 hover:text-white transition">
+                                            ↺ Сбросить
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <textarea
+                                    id="editor-{{ task.id }}"
+                                    data-task="{{ task.id }}"
+                                    data-starter="{{ task.starter_code }}"
+                                    data-solution="{{ task.reference_solution }}"
+                                    rows="14"
+                                    spellcheck="false"
+                                    class="code-editor-textarea w-full p-4 bg-slate-950 text-sky-100 text-xs sm:text-sm focus:outline-none resize-y"
+                                >{{ task.starter_code }}</textarea>
+
+                                <div class="px-4 py-3 bg-slate-900/90 border-t border-slate-800 flex items-center justify-between">
+                                    <span class="text-[11px] text-slate-400">Тренажер запускает настоящий Python 3.12 + Pytest</span>
+                                    <button
+                                        id="run-btn-{{ task.id }}"
+                                        type="button"
+                                        onclick="runPracticeTask('{{ task.id }}')"
+                                        class="px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold text-xs sm:text-sm shadow-[0_0_15px_rgba(16,185,129,0.3)] transition"
+                                    >
+                                        ▶ Запустить код
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Execution Result Box -->
+                            <div id="result-box-{{ task.id }}" class="hidden rounded-xl bg-slate-950 border border-slate-800 p-4 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span id="verdict-badge-{{ task.id }}" class="px-3 py-1 rounded-full text-xs font-bold"></span>
+                                    <span class="text-xs text-slate-400 font-mono">Время: <strong id="time-label-{{ task.id }}">0 мс</strong></span>
+                                </div>
+                                <pre id="output-pre-{{ task.id }}" class="p-3 rounded-lg bg-slate-900 text-slate-200 text-xs font-mono overflow-x-auto whitespace-pre-wrap max-h-60"></pre>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- TAB 4: ТЕСТИРОВАНИЕ (FINAL QUIZ — 100% OF WEEK GRADE)             -->
+        <!-- ================================================================= -->
+        <section id="panel-quiz" class="subtab-panel hidden space-y-6">
+            <div class="cyber-card rounded-2xl p-6 sm:p-8 border-l-4 border-l-indigo-400 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <span class="text-xs font-mono font-bold text-indigo-400 uppercase">Зачет недели • 20 баллов (порог зачета: 12 баллов)</span>
+                    <h2 class="text-2xl font-extrabold text-white mt-1">Итоговое Тестирование по Неделе 1</h2>
+                    <p class="text-sm text-slate-300 mt-1">
+                        Все баллы за неделю начисляются именно за этот тест! Выберите правильные варианты ответа во всех 10 вопросах и нажмите «Проверить ответы».
+                    </p>
+                </div>
+            </div>
+
+            <div id="quiz-result-banner" class="hidden"></div>
+
+            <div class="space-y-5">
+                {% for q in quiz_questions %}
+                <div class="cyber-card rounded-2xl p-6 space-y-4">
+                    <div class="flex items-start gap-3">
+                        <span class="px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-mono font-bold shrink-0">
+                            Вопрос {{ q.number }} / {{ quiz_questions|length }}
+                        </span>
+                        <h3 class="text-base font-bold text-white leading-snug">{{ q.question }}</h3>
+                    </div>
+
+                    <div class="space-y-2.5">
+                        {% for opt in q.options %}
+                        <button
+                            type="button"
+                            data-index="{{ loop.index0 }}"
+                            onclick="selectQuizOption('{{ q.id }}', {{ loop.index0 }})"
+                            class="quiz-opt-{{ q.id }} w-full text-left p-3.5 rounded-xl border transition flex items-center gap-3 bg-slate-900/70 border-slate-800 text-slate-300 hover:border-slate-700"
+                        >
+                            <span class="w-6 h-6 rounded-lg bg-slate-950 border border-slate-700 flex items-center justify-center text-xs font-mono font-bold text-sky-400 shrink-0">
+                                {{ ["A", "B", "C", "D"][loop.index0] }}
+                            </span>
+                            <span class="text-xs sm:text-sm">{{ opt }}</span>
+                        </button>
+                        {% endfor %}
+                    </div>
+
+                    <div id="quiz-exp-{{ q.id }}" class="hidden"></div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="cyber-card rounded-2xl p-6 flex items-center justify-between">
+                <span class="text-xs text-slate-400">За каждый правильный ответ начисляется 2.0 балла (для зачета нужно набрать от 12.0 из 20.0 баллов)</span>
+                <button
+                    id="btn-submit-quiz"
+                    type="button"
+                    onclick="submitWeek1Quiz()"
+                    class="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-sky-500 hover:from-indigo-500 hover:to-sky-400 text-white font-bold text-sm shadow-[0_0_20px_rgba(99,102,241,0.4)] transition"
+                >
+                    Проверить ответы теста
+                </button>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- TAB 5: РЕЗУЛЬТАТЫ (DETAILED SCOREBOARD)                           -->
+        <!-- ================================================================= -->
+        <section id="panel-results" class="subtab-panel hidden space-y-8">
+            <div class="cyber-card rounded-2xl p-6 sm:p-8 space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <span class="text-xs font-mono font-bold text-sky-400 uppercase">Сводка успеваемости</span>
+                        <h2 class="text-2xl font-extrabold text-white mt-1">Результаты: Неделя 1 · Инкапсуляция</h2>
+                        <p class="text-sm text-slate-400">Оценка недели формируется на 100% из итогового Тестирования (практика — свободный тренажер без снятия баллов).</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xs text-slate-400">Баллы за неделю</div>
+                        <div id="results-total-score" class="text-3xl font-extrabold font-mono text-sky-400">
+                            {{ progress.total_score }} / {{ progress.max_score }} б.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="space-y-2">
+                    <div class="flex justify-between text-xs font-medium text-slate-300">
+                        <span>Прогресс зачета недели (порог зачета: 12.0 из 20.0 баллов в тесте)</span>
+                        <span id="results-percent-label" class="font-mono text-sky-400">{{ progress.progress_percent }}%</span>
+                    </div>
+                    <div class="w-full h-3 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
+                        <div id="results-progress-bar" class="h-full bg-gradient-to-r from-blue-600 via-sky-400 to-emerald-400 transition-all duration-500" style="width: {{ progress.progress_percent }}%"></div>
+                    </div>
+                </div>
+
+                <!-- Breakdown Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+                    <div class="p-4 rounded-xl bg-indigo-950/30 border border-indigo-500/40 space-y-2">
+                        <div class="text-xs text-indigo-300 font-bold">Итоговое Тестирование (Оценка)</div>
+                        <div id="results-quiz-score" class="text-xl font-bold font-mono text-indigo-400">
+                            {{ progress.quiz_score }} / {{ progress.quiz_max }} б.
+                        </div>
+                        <button type="button" onclick="switchSubTab('quiz')" class="text-xs text-indigo-300 hover:underline">
+                            Перейти к тесту →
+                        </button>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 space-y-2">
+                        <div class="text-xs text-slate-400">Тренажер 1 · Чертеж и info()</div>
+                        <div id="res-status-task_1" class="text-base font-bold font-mono text-slate-200">
+                            {% if progress.tasks.task_1.is_completed %}✅ Пройдено{% else %}По желанию{% endif %}
+                        </div>
+                        <button type="button" onclick="switchSubTab('practice'); switchPracticeTask('task_1');" class="text-xs text-sky-400 hover:underline">
+                            Открыть тренажер →
+                        </button>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 space-y-2">
+                        <div class="text-xs text-slate-400">Тренажер 2 · _balance и top_up()</div>
+                        <div id="res-status-task_2" class="text-base font-bold font-mono text-slate-200">
+                            {% if progress.tasks.task_2.is_completed %}✅ Пройдено{% else %}По желанию{% endif %}
+                        </div>
+                        <button type="button" onclick="switchSubTab('practice'); switchPracticeTask('task_2');" class="text-xs text-sky-400 hover:underline">
+                            Открыть тренажер →
+                        </button>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 space-y-2">
+                        <div class="text-xs text-slate-400">Тренажер 3 · Оплата pay()</div>
+                        <div id="res-status-task_3" class="text-base font-bold font-mono text-slate-200">
+                            {% if progress.tasks.task_3.is_completed %}✅ Пройдено{% else %}По желанию{% endif %}
+                        </div>
+                        <button type="button" onclick="switchSubTab('practice'); switchPracticeTask('task_3');" class="text-xs text-sky-400 hover:underline">
+                            Открыть тренажер →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
-        Web-OOP Mini-LMS • Образовательная платформа КазНУ им. аль-Фараби • Zero-Build Архитектура
+    <footer class="border-t border-slate-800/80 bg-slate-950/80 py-5 text-center text-xs text-slate-500">
+        Web-OOP • Учебная платформа ООП (КазНУ им. аль-Фараби) • Неделя 1: Инкапсуляция
     </footer>
 
-    <!-- Vanilla JS Script -->
     <script src="/static/js/app.js"></script>
 </body>
 </html>
