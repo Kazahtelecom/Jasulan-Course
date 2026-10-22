@@ -451,4 +451,324 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
+
+    // Initialize UML Viewer & Magnifier Lens listeners
+    initUmlViewer();
 });
+
+/* ========================================================================= */
+/* MODULE 9: UML DIAGRAM VIEWER & MAGNIFIER LENS (ЛУПА)                      */
+/* ========================================================================= */
+
+let umlLensActive = false;
+let currentUmlTab = "week";
+let modalZoomScale = 1.0;
+let modalPanX = 0;
+let modalPanY = 0;
+let isModalPanning = false;
+let panStartX = 0;
+let panStartY = 0;
+
+/**
+ * Quick jump from any tab/header to the UML diagram section in Theory
+ */
+function openUmlDiagramSection() {
+    switchSubTab("theory");
+    setTimeout(() => {
+        const sec = document.getElementById("uml-diagram-section");
+        if (sec) {
+            sec.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    }, 150);
+}
+
+/**
+ * Switch between Week Domain, Platform Architecture, and DB ERD diagrams
+ */
+function switchUmlDiagramTab(tabKey) {
+    currentUmlTab = tabKey;
+
+    document.querySelectorAll(".uml-tab-btn").forEach((btn) => {
+        const isCurrent = btn.dataset.diagramTab === tabKey;
+        if (isCurrent) {
+            btn.className =
+                "uml-tab-btn px-4 py-2 rounded-xl font-bold transition shrink-0 bg-sky-500/20 text-sky-300 border border-sky-500/50 shadow-[0_0_12px_rgba(56,189,248,0.2)]";
+        } else {
+            btn.className =
+                "uml-tab-btn px-4 py-2 rounded-xl font-medium transition shrink-0 bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200";
+        }
+    });
+
+    // Hide all panes
+    document.querySelectorAll(".uml-diagram-pane").forEach((pane) => pane.classList.add("hidden"));
+
+    // Show selected pane
+    if (tabKey === "week") {
+        const activeWeekId = ACTIVE_WEEK === "2" ? "uml-diagram-week2" : "uml-diagram-week1";
+        const pane = document.getElementById(activeWeekId);
+        if (pane) pane.classList.remove("hidden");
+    } else if (tabKey === "arch") {
+        const pane = document.getElementById("uml-diagram-arch");
+        if (pane) pane.classList.remove("hidden");
+    } else if (tabKey === "db") {
+        const pane = document.getElementById("uml-diagram-db");
+        if (pane) pane.classList.remove("hidden");
+    }
+
+    // Refresh lens content if lens is active
+    if (umlLensActive) {
+        syncUmlLensContent();
+    }
+}
+
+/**
+ * Toggle the interactive hovering magnifier lens
+ */
+function toggleUmlLens() {
+    umlLensActive = !umlLensActive;
+    const btn = document.getElementById("btn-toggle-lens");
+    const btnText = document.getElementById("btn-toggle-lens-text");
+    const hint = document.getElementById("uml-mode-hint");
+    const lens = document.getElementById("uml-lens");
+    const viewport = document.getElementById("uml-viewport");
+
+    if (umlLensActive) {
+        if (btn) {
+            btn.className =
+                "px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-cyan-500/20 text-cyan-300 border border-cyan-400 shadow-[0_0_20px_rgba(0,240,255,0.4)]";
+        }
+        if (btnText) btnText.textContent = "Выключить лупу";
+        if (hint) hint.textContent = "🔍 Лупа активна: ведите курсор по диаграмме для увеличения 2.5×.";
+        if (viewport) viewport.classList.add("lens-active");
+        syncUmlLensContent();
+    } else {
+        if (btn) {
+            btn.className =
+                "px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-sky-300 border border-sky-500/40 shadow-[0_0_15px_rgba(56,189,248,0.15)]";
+        }
+        if (btnText) btnText.textContent = "Включить лупу";
+        if (hint) hint.textContent = "Нажмите «Включить лупу» или дважды кликните по диаграмме для зума.";
+        if (lens) lens.classList.add("hidden");
+        if (viewport) viewport.classList.remove("lens-active");
+    }
+}
+
+/**
+ * Clone active SVG into the circular lens container
+ */
+function syncUmlLensContent() {
+    const lensContent = document.getElementById("uml-lens-content");
+    const viewport = document.getElementById("uml-viewport");
+    if (!lensContent || !viewport) return;
+
+    // Find currently visible SVG
+    const visiblePane = document.querySelector(".uml-diagram-pane:not(.hidden)");
+    if (!visiblePane) return;
+    const svg = visiblePane.querySelector("svg");
+    if (!svg) return;
+
+    lensContent.innerHTML = "";
+    const clonedSvg = svg.cloneNode(true);
+    clonedSvg.removeAttribute("id");
+    clonedSvg.style.width = `${viewport.clientWidth}px`;
+    clonedSvg.style.height = `${viewport.clientHeight}px`;
+    clonedSvg.style.maxWidth = "none";
+    clonedSvg.style.maxHeight = "none";
+    lensContent.appendChild(clonedSvg);
+}
+
+/**
+ * Initialize hovering magnifier lens tracking on the viewport
+ */
+function initUmlViewer() {
+    const viewport = document.getElementById("uml-viewport");
+    const lens = document.getElementById("uml-lens");
+    const lensContent = document.getElementById("uml-lens-content");
+    if (!viewport || !lens || !lensContent) return;
+
+    const handlePointerMove = (e) => {
+        if (!umlLensActive) return;
+
+        const rect = viewport.getBoundingClientRect();
+        const clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+        const clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
+
+        // Check if pointer is within bounds
+        if (x < 0 || x > rect.width || y < 0 || y > rect.height) {
+            lens.classList.add("hidden");
+            return;
+        }
+
+        lens.classList.remove("hidden");
+        lens.style.left = `${x}px`;
+        lens.style.top = `${y}px`;
+
+        // Lens radius is 96px (192px / 2). Magnification factor = 2.5
+        const zoom = 2.5;
+        const lensRadius = 96;
+        const tx = -(x * zoom - lensRadius);
+        const ty = -(y * zoom - lensRadius);
+
+        lensContent.style.transform = `translate(${tx}px, ${ty}px) scale(${zoom})`;
+    };
+
+    viewport.addEventListener("mousemove", handlePointerMove);
+    viewport.addEventListener("touchmove", handlePointerMove, { passive: true });
+
+    viewport.addEventListener("mouseleave", () => {
+        if (umlLensActive) lens.classList.add("hidden");
+    });
+
+    viewport.addEventListener("touchend", () => {
+        if (umlLensActive) lens.classList.add("hidden");
+    });
+
+    window.addEventListener("resize", () => {
+        if (umlLensActive) syncUmlLensContent();
+    });
+
+    // Close modal on Escape
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            closeUmlFullscreen();
+        }
+    });
+
+    // Setup modal drag listeners on window for smooth panning
+    window.addEventListener("mousemove", (e) => {
+        if (!isModalPanning) return;
+        modalPanX = e.clientX - panStartX;
+        modalPanY = e.clientY - panStartY;
+        applyUmlModalTransform();
+    });
+
+    window.addEventListener("mouseup", () => {
+        if (isModalPanning) {
+            isModalPanning = false;
+            const wrapper = document.getElementById("uml-modal-canvas-wrapper");
+            if (wrapper) {
+                wrapper.classList.remove("cursor-grabbing");
+                wrapper.classList.add("cursor-grab");
+            }
+        }
+    });
+}
+
+/**
+ * Open Fullscreen Modal with Zoom & Pan Controls
+ */
+function openUmlFullscreen() {
+    const modal = document.getElementById("uml-fullscreen-modal");
+    const modalContent = document.getElementById("uml-modal-content");
+    const modalTitle = document.getElementById("uml-modal-title");
+    if (!modal || !modalContent) return;
+
+    // Determine title
+    let title = "UML-диаграмма классов предметной области (Avtobys)";
+    if (currentUmlTab === "arch") {
+        title = "Архитектура платформы Web-OOP (WeekModule & Services)";
+    } else if (currentUmlTab === "db") {
+        title = "ER-диаграмма базы данных (SQLite: Student, Progress, Submissions)";
+    }
+    if (modalTitle) modalTitle.textContent = title;
+
+    // Find visible SVG and clone into modal
+    const visiblePane = document.querySelector(".uml-diagram-pane:not(.hidden)");
+    if (visiblePane) {
+        const svg = visiblePane.querySelector("svg");
+        if (svg) {
+            modalContent.innerHTML = "";
+            const cloned = svg.cloneNode(true);
+            cloned.removeAttribute("id");
+            cloned.style.width = "90vw";
+            cloned.style.height = "75vh";
+            cloned.style.maxWidth = "none";
+            cloned.style.maxHeight = "none";
+            modalContent.appendChild(cloned);
+        }
+    }
+
+    // Reset zoom and pan
+    modalZoomScale = 1.0;
+    modalPanX = 0;
+    modalPanY = 0;
+    applyUmlModalTransform();
+
+    modal.classList.remove("hidden");
+    document.body.classList.add("overflow-hidden");
+}
+
+/**
+ * Close Fullscreen Modal
+ */
+function closeUmlFullscreen() {
+    const modal = document.getElementById("uml-fullscreen-modal");
+    if (modal) {
+        modal.classList.add("hidden");
+        document.body.classList.remove("overflow-hidden");
+    }
+}
+
+/**
+ * Change modal zoom scale
+ */
+function zoomUmlModal(delta) {
+    modalZoomScale = Math.min(Math.max(0.5, modalZoomScale + delta), 3.5);
+    applyUmlModalTransform();
+}
+
+/**
+ * Reset modal zoom to 100% and center pan
+ */
+function resetUmlModalZoom() {
+    modalZoomScale = 1.0;
+    modalPanX = 0;
+    modalPanY = 0;
+    applyUmlModalTransform();
+}
+
+/**
+ * Mouse wheel zoom inside modal
+ */
+function onUmlWheel(e) {
+    e.preventDefault();
+    const delta = e.deltaY < 0 ? 0.15 : -0.15;
+    zoomUmlModal(delta);
+}
+
+/**
+ * Start mouse drag pan in modal
+ */
+function startUmlPan(e) {
+    if (e.target.closest("button")) return;
+    isModalPanning = true;
+    panStartX = e.clientX - modalPanX;
+    panStartY = e.clientY - modalPanY;
+
+    const wrapper = document.getElementById("uml-modal-canvas-wrapper");
+    if (wrapper) {
+        wrapper.classList.remove("cursor-grab");
+        wrapper.classList.add("cursor-grabbing");
+    }
+}
+
+/**
+ * Apply transform to modal content
+ */
+function applyUmlModalTransform() {
+    const content = document.getElementById("uml-modal-content");
+    const label = document.getElementById("uml-modal-zoom-label");
+    const ind = document.getElementById("uml-scale-indicator");
+
+    const percent = Math.round(modalZoomScale * 100);
+    if (label) label.textContent = `${percent}%`;
+    if (ind) ind.textContent = `${percent}%`;
+
+    if (content) {
+        content.style.transform = `translate(${modalPanX}px, ${modalPanY}px) scale(${modalZoomScale})`;
+    }
+}
+

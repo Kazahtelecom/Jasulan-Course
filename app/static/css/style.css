@@ -63,3 +63,32 @@ body {
 .status-error {
     background-color: #ef4444 !important;
 }
+
+/* UML Viewer & Interactive Magnifier Lens Styles */
+#uml-viewport {
+    touch-action: none;
+}
+
+#uml-viewport.lens-active {
+    cursor: none;
+}
+
+#uml-lens {
+    transform: translate(-50%, -50%);
+    will-change: left, top;
+    transition: opacity 0.15s ease-out;
+}
+
+.cursor-grab {
+    cursor: grab;
+}
+
+.cursor-grabbing {
+    cursor: grabbing !important;
+}
+
+#uml-modal-content svg {
+    max-width: none;
+    user-select: none;
+}
+
