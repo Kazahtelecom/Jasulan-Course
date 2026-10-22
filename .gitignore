@@ -14,8 +14,11 @@ tfw/
 
 # SQLite database local file
 *.db
+*.db-shm
+*.db-wal
 *.sqlite
 *.sqlite3
+data/
 
 # Local run scripts and tunnels
 run_public.bat
