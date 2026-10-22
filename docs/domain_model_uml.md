@@ -1,54 +1,126 @@
-# UML-модель предметной области Avtobys и схема базы данных
+# UML-модель предметной области Avtobys, модульная структура и схема базы данных
 
 ## 1. Контекст предметной области
 
-В качестве сквозной прикладной темы курса ООП выбрана транспортная система **Avtobys** (электронное билетирование, валидаторы в автобусах, учет баланса пассажиров и маршрутов). Эта предметная область интуитивно понятна студентам и идеально иллюстрирует фундаментальные принципы ООП: инкапсуляцию, полиморфизм валидаторов, наследование тарифов и композицию сущностей.
+В качестве сквозной прикладной темы курса ООП выбрана транспортная система **Avtobys** (электронное билетирование, валидаторы в автобусах, учет баланса пассажиров и маршрутов). Эта предметная область интуитивно понятна студентам и идеально иллюстрирует фундаментальные принципы ООП: инкапсуляцию, полиморфизм валидаторов, наследование тарифов, композицию сущностей и принципы SOLID (разделение интерфейсов и внедрение зависимостей).
 
 ---
 
-## 2. Диаграмма классов (UML Class Diagram)
+## 2. Диаграмма модульной архитектуры платформы (WeekModule & Registry)
 
-Вводная диаграмма классов демонстрирует взаимодействие пассажира (`Passenger`) и бортового валидатора (`Validator`):
+Модульная архитектура платформы обеспечивает расширяемость и устраняет дублирование кода между учебными неделями:
 
 ```mermaid
 classDiagram
-    class Passenger {
-        +int id
-        +str full_name
-        +str card_id
-        +float balance
-        +top_up(amount: float) None
-        +has_sufficient_balance(fare: float) bool
-        +deduct_fare(fare: float) bool
+    class WeekModule {
+        +int week_number
+        +str title
+        +dict overview
+        +list theory_sections
+        +dict walkthrough
+        +list practice_tasks
+        +list quiz_questions
+        +Callable evaluate_quiz_fn
+        +get_practice_task(task_id: str) dict
+        +evaluate_quiz(answers: dict) dict
+        +build_context(student, progress, request) dict
     }
 
-    class Validator {
-        +str validator_id
-        +str bus_id
-        +str route_number
-        +float standard_fare
-        +validate_ticket(passenger: Passenger) bool
+    class WeekRegistry {
+        -dict _modules
+        +register(module: WeekModule) None
+        +get(week_number: int) WeekModule
+        +get_all() list
     }
 
-    class ValidationResult {
-        +bool is_successful
-        +str message
-        +float remaining_balance
-        +datetime timestamp
+    class ScoringService {
+        +list STUDENTS
+        +get_or_create_student(db, username) Student
+        +record_task_submission(...) dict
+        +record_theory_completed(...) dict
+        +record_quiz_submission(...) dict
+        +get_progress_summary(...) dict
     }
 
-    Validator ..> Passenger : проверяет баланс и списывает оплату
-    Validator ..> ValidationResult : возвращает статус валидации
+    class RunnerService {
+        +run_code(code, test_code, timeout) RunResult
+    }
+
+    class ASTValidator {
+        +validate(code) tuple
+    }
+
+    WeekRegistry o-- WeekModule : регистрирует модули недель
+    WeekModule ..> ScoringService : привязка прогресса
+    RunnerService ..> ASTValidator : предварительный аудит безопасности
 ```
-
-### Описание сущностей:
-- `Passenger`: инкапсулирует данные о балансе транспортной карты пассажира. Предоставляет методы безопасного пополнения и списания средств без прямого неконтролируемого изменения баланса.
-- `Validator`: отвечает за логику проверки билета на конкретном маршруте автобуса. Проверяет наличие средств и подтверждает проезд.
-- `ValidationResult`: легковесный объект-значение (Value Object), инкапсулирующий результат операции валидации.
 
 ---
 
-## 3. Схема базы данных (Entity-Relationship Diagram)
+## 3. Диаграмма классов предметной области (UML Class Diagram)
+
+Взаимодействие пассажира (`Passenger`), транспортной карты (`SmartCard`), сервисов тарифа (`FareService`) и бортового валидатора (`TerminalValidator`):
+
+```mermaid
+classDiagram
+    class SmartCard {
+        +str owner
+        +int balance
+        +info() str
+    }
+
+    class Passenger {
+        +int id
+        +str full_name
+        +SmartCard card
+        +top_up(amount: int) None
+    }
+
+    class IFareService {
+        <<interface>>
+        +get_fare() int
+    }
+
+    class StandardFareService {
+        +get_fare() int
+    }
+
+    class StudentFareService {
+        +get_fare() int
+    }
+
+    class IPaymentMethod {
+        <<interface>>
+        +pay(amount: int) str
+    }
+
+    class CardPayment {
+        +pay(amount: int) str
+    }
+
+    class BluetoothPayment {
+        +pay(amount: int) str
+    }
+
+    class TerminalValidator {
+        -IFareService fare_service
+        -IPaymentMethod payment_method
+        +__init__(fare_service, payment_method)
+        +process_passenger() str
+    }
+
+    IFareService <|.. StandardFareService : implements
+    IFareService <|.. StudentFareService : implements
+    IPaymentMethod <|.. CardPayment : implements
+    IPaymentMethod <|.. BluetoothPayment : implements
+    TerminalValidator o-- IFareService : DI
+    TerminalValidator o-- IPaymentMethod : DI
+    Passenger *-- SmartCard : composition
+```
+
+---
+
+## 4. Схема базы данных (Entity-Relationship Diagram)
 
 Схема хранения данных мини-LMS в SQLite (`data/web_oop.db`):
 
@@ -59,24 +131,24 @@ erDiagram
 
     STUDENT {
         int id PK "Автоинкрементный идентификатор"
-        string username UK "Уникальный логин студента"
-        string full_name "Полное имя (ФИО)"
+        string username UK "Уникальный логин студента (zhasulan, roman, arseniy, saubakirov)"
+        string full_name "Полное имя (ФИО студента)"
         datetime created_at "Дата и время регистрации"
     }
 
     TOPIC_PROGRESS {
         int id PK "Идентификатор записи прогресса"
         int student_id FK "Ссылка на студента"
-        string topic_id "Идентификатор учебной темы (напр. week1_encapsulation)"
+        string topic_id "Идентификатор топика (week_1, week_1_quiz, week_1_theory, week_1_task_1)"
         boolean is_completed "Флаг завершения темы"
-        float score "Набранный балл"
+        float score "Набранный балл (0.0 .. 20.0)"
         datetime updated_at "Дата последнего обновления"
     }
 
     SUBMISSION {
         int id PK "Идентификатор попытки"
         int student_id FK "Ссылка на студента"
-        string task_id "Идентификатор задания (напр. w1_task1_passenger)"
+        string task_id "Идентификатор задания (напр. week_1_task_1)"
         text code "Исходный код решения студента"
         string status "Статус (PASSED, FAILED, TIMEOUT, SECURITY_VIOLATION)"
         text test_output "Лог вывода pytest или AST-ошибки"
@@ -85,5 +157,5 @@ erDiagram
 ```
 
 ### Отношения и ограничения:
-- `STUDENT -> TOPIC_PROGRESS`: отношение «один-ко-многим». Удаление студента каскадно удаляет связанные записи прогресса (`cascade="all, delete-orphan"`).
-- `STUDENT -> SUBMISSION`: отношение «один-ко-многим». Фиксирует полную историю попыток сдачи лабораторных работ и тестов.
+- `STUDENT -> TOPIC_PROGRESS`: отношение «один-ко-многим». Обеспечивает полную изоляцию баллов между 4 участниками группы.
+- `STUDENT -> SUBMISSION`: отношение «один-ко-многим». Фиксирует историю запусков кода в тренажере.

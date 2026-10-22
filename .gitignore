@@ -17,6 +17,9 @@ tfw/
 *.sqlite
 *.sqlite3
 
+# Local run scripts and tunnels
+run_public.bat
+
 # IDE and OS
 .vscode/
 .idea/
