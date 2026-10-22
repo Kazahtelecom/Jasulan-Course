@@ -1,0 +1,118 @@
+<!-- ================================================================= -->
+<!-- TAB 2: ТЕОРИЯ (BEGINNER-FRIENDLY, VISUAL, NO TINY MERMAID)        -->
+<!-- ================================================================= -->
+<section id="panel-theory" class="subtab-panel hidden space-y-8">
+    <div class="cyber-card rounded-2xl p-6 sm:p-8 border-l-4 border-l-sky-400">
+        {% if active_week|default(1) == 2 %}
+        <h2 class="text-2xl font-extrabold text-white">Теория: 5 Принципов SOLID и Dependency Injection (с нуля)</h2>
+        <p class="text-sm text-slate-300 mt-2 leading-relaxed">
+            По материалам Лекций 4–5 и Лабораторных 4–5: разберем за 4 простых шага на примере терминала <code class="text-sky-400 font-mono">TerminalValidator</code>, студенческого тарифа <code class="text-sky-400 font-mono">StudentFareService (50 ₸)</code> и <code class="text-sky-400 font-mono">BluetoothPayment</code>, как писать модульный код без «Классов-Монстров».
+        </p>
+        {% else %}
+        <h2 class="text-2xl font-extrabold text-white">Теория: Основы ООП и Инкапсуляция (с нуля)</h2>
+        <p class="text-sm text-slate-300 mt-2 leading-relaxed">
+            Прочитайте эти 4 коротких шага. Всё, что здесь разобрано на примере карты <code class="text-sky-400 font-mono">SmartCard</code>, вы сможете потрогать в тренажере «Практика» и легко сдать в «Тестировании».
+        </p>
+        {% endif %}
+    </div>
+
+    {% for sec in theory_sections %}
+    <article class="cyber-card rounded-2xl p-6 sm:p-8 space-y-6">
+        <div class="flex items-center gap-3">
+            <span class="px-3 py-1 rounded-lg text-xs font-mono font-bold bg-sky-500/20 text-sky-300 border border-sky-500/40">
+                {{ sec.step_badge }}
+            </span>
+            <h3 class="text-xl font-bold text-white">{{ sec.title }}</h3>
+        </div>
+
+        <p class="text-sm sm:text-base text-sky-100/90 font-medium leading-relaxed">
+            {{ sec.lead }}
+        </p>
+
+        <p class="text-sm text-slate-300 whitespace-pre-line leading-relaxed">
+            {{ sec.explanation }}
+        </p>
+
+        {% if sec.image %}
+        <div class="rounded-xl overflow-hidden border border-sky-500/30 bg-slate-950">
+            <img src="{{ sec.image }}" alt="{{ sec.title }}" class="w-full max-h-[380px] object-cover">
+            <div class="p-3 text-center text-xs text-slate-400 bg-slate-950/90 border-t border-slate-800">
+                {{ sec.image_caption }}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if sec.anatomy_cards %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {% for card in sec.anatomy_cards %}
+            <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1.5">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-bold text-sky-400">{{ card.term }}</span>
+                    <span class="text-xs text-slate-400">{{ card.analogy }}</span>
+                </div>
+                <code class="block text-xs font-mono text-emerald-300 bg-slate-900 px-2.5 py-1.5 rounded border border-slate-800">
+                    {{ card.in_python }}
+                </code>
+                <p class="text-xs text-slate-300 pt-1">{{ card.meaning }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if sec.bad_code %}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="rounded-xl bg-rose-950/20 border border-rose-500/30 p-4 space-y-2">
+                <div class="text-xs font-bold text-rose-300">{{ sec.bad_code_title }}</div>
+                <pre class="text-xs font-mono text-rose-100 overflow-x-auto leading-relaxed">{{ sec.bad_code }}</pre>
+            </div>
+            <div class="rounded-xl bg-emerald-950/20 border border-emerald-500/30 p-4 space-y-2">
+                <div class="text-xs font-bold text-emerald-300">{{ sec.good_code_title }}</div>
+                <pre class="text-xs font-mono text-emerald-100 overflow-x-auto leading-relaxed">{{ sec.good_code }}</pre>
+            </div>
+        </div>
+        {% elif sec.good_code %}
+        <div class="rounded-xl bg-slate-950 border border-sky-500/30 p-4 space-y-2">
+            <div class="text-xs font-bold text-sky-300">{{ sec.good_code_title }}</div>
+            <pre class="text-xs sm:text-sm font-mono text-slate-100 overflow-x-auto leading-relaxed">{{ sec.good_code }}</pre>
+        </div>
+        {% endif %}
+
+        <div class="p-4 rounded-xl bg-sky-500/10 border border-sky-500/30 text-xs sm:text-sm text-sky-200">
+            <strong>💡 Главный вывод:</strong> {{ sec.takeaway }}
+        </div>
+    </article>
+    {% endfor %}
+
+    <!-- Theory Completion Checkpoint (Teacher Requirement / Amendment A1) -->
+    <div class="cyber-card rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-emerald-500/30">
+        <div>
+            <h4 class="text-base font-bold text-white">Отметка о прочтении теории</h4>
+            <p class="text-xs text-slate-400">Подтвердите изучение лекционного материала недели для преподавателя.</p>
+        </div>
+        <div>
+            <button
+                id="btn-complete-theory"
+                type="button"
+                onclick="completeTheory({{ active_week|default(1) }})"
+                class="px-5 py-2.5 rounded-xl text-xs font-bold transition {% if progress.theory_completed %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/40{% else %}bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]{% endif %}"
+            >
+                {% if progress.theory_completed %}✅ Теория прочитана{% else %}Отметить теорию как прочитанную{% endif %}
+            </button>
+        </div>
+    </div>
+
+    <div class="cyber-card rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+            <h4 class="text-base font-bold text-white">Изучили теорию?</h4>
+            <p class="text-xs text-slate-400">Можете потренироваться в песочнице «Практика» (с готовыми ответами) или сразу перейти к «Тестированию».</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <button type="button" onclick="switchSubTab('practice')" class="px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-sm shadow-[0_0_20px_rgba(56,189,248,0.35)] transition">
+                Потренироваться в Практике →
+            </button>
+            <button type="button" onclick="switchSubTab('quiz')" class="px-4 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-indigo-300 border border-indigo-500/30 font-semibold text-xs sm:text-sm transition">
+                Сразу к Тестированию
+            </button>
+        </div>
+    </div>
+</section>

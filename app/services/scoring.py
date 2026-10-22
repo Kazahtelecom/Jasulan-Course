@@ -1,4 +1,4 @@
-"""Scoring and progress persistence service for Week 1 and Week 2 (Quiz-only grading)."""
+"""Scoring and progress persistence service for Web-OOP platform."""
 
 from __future__ import annotations
 
@@ -17,14 +17,15 @@ class ScoringService:
     Practice tasks are ungraded interactive training steps. Each week is tracked independently.
     """
 
+    STUDENTS: list[dict[str, str]] = [
+        {"username": "zhasulan", "full_name": "Жасулан Куандыков"},
+        {"username": "roman", "full_name": "Иванов Роман"},
+        {"username": "arseniy", "full_name": "Мухитов Арсений"},
+        {"username": "saubakirov", "full_name": "Санжар Аубакиров"},
+    ]
+
     DEFAULT_USERNAME = "zhasulan"
     DEFAULT_FULL_NAME = "Жасулан Куандыков"
-
-    TOPIC_OVERALL = "week_1"
-    TOPIC_TASK_1 = "week_1_task_1"
-    TOPIC_TASK_2 = "week_1_task_2"
-    TOPIC_TASK_3 = "week_1_task_3"
-    TOPIC_QUIZ = "week_1_quiz"
 
     WEEK_TASK_IDS: dict[int, tuple[str, str, str]] = {
         1: ("task_1", "task_2", "task_3"),
@@ -36,13 +37,26 @@ class ScoringService:
     PASS_THRESHOLD = 12.0
 
     @classmethod
-    def get_or_create_student(cls, db: Session) -> Student:
-        """Retrieve or create the default student profile."""
-        student = db.query(Student).filter(Student.username == cls.DEFAULT_USERNAME).first()
+    def get_known_students(cls) -> list[dict[str, str]]:
+        """Return the fixed list of 4 students in the group."""
+        return list(cls.STUDENTS)
+
+    @classmethod
+    def get_or_create_student(cls, db: Session, username: str = DEFAULT_USERNAME) -> Student:
+        """Retrieve or create a student profile from the known list."""
+        clean_user = username.lower().strip() if username else cls.DEFAULT_USERNAME
+        matched_info = next(
+            (s for s in cls.STUDENTS if s["username"] == clean_user),
+            None,
+        )
+        if not matched_info:
+            matched_info = cls.STUDENTS[0]
+
+        student = db.query(Student).filter(Student.username == matched_info["username"]).first()
         if not student:
             student = Student(
-                username=cls.DEFAULT_USERNAME,
-                full_name=cls.DEFAULT_FULL_NAME,
+                username=matched_info["username"],
+                full_name=matched_info["full_name"],
             )
             db.add(student)
             db.commit()
@@ -82,7 +96,7 @@ class ScoringService:
         status: str,
         week_number: int = 1,
     ) -> dict[str, Any]:
-        """Record an ungraded training task run (does not require or affect week points)."""
+        """Record an ungraded training task run."""
         topic_key = f"week_{week_number}_{task_id}"
 
         sub = Submission(
@@ -104,6 +118,21 @@ class ScoringService:
         return cls.get_progress_summary(db, student_id, week_number=week_number)
 
     @classmethod
+    def record_theory_completed(
+        cls,
+        db: Session,
+        student_id: int,
+        week_number: int = 1,
+    ) -> dict[str, Any]:
+        """Record reading the lecture theory for a given week."""
+        topic_key = f"week_{week_number}_theory"
+        rec = cls._get_or_create_topic(db, student_id, topic_key)
+        rec.is_completed = True
+        rec.score = 0.0
+        db.commit()
+        return cls.get_progress_summary(db, student_id, week_number=week_number)
+
+    @classmethod
     def record_quiz_submission(
         cls,
         db: Session,
@@ -111,7 +140,7 @@ class ScoringService:
         quiz_score: float,
         week_number: int = 1,
     ) -> dict[str, Any]:
-        """Update quiz score (sole graded component) with high-water mark protection."""
+        """Update quiz score with high-water mark protection."""
         bounded_score = min(cls.QUIZ_MAX_SCORE, max(0.0, round(quiz_score, 1)))
         quiz_topic = f"week_{week_number}_quiz"
         quiz_rec = cls._get_or_create_topic(db, student_id, quiz_topic)
@@ -134,7 +163,6 @@ class ScoringService:
         qz = cls._get_or_create_topic(db, student_id, f"week_{week_number}_quiz")
         overall = cls._get_or_create_topic(db, student_id, f"week_{week_number}")
 
-        # Total score equals quiz score exclusively (0..20.0)
         overall.score = round(min(cls.TOTAL_MAX_SCORE, qz.score), 1)
         overall.is_completed = overall.score >= cls.PASS_THRESHOLD
         db.flush()
@@ -147,30 +175,50 @@ class ScoringService:
         student_id: int,
         week_number: int = 1,
     ) -> dict[str, Any]:
-        """Return week progress breakdown (Quiz = 100% of grade, Practice = trainer)."""
+        """Return week progress breakdown strictly READ-ONLY (no db.commit)."""
         task_ids = cls.WEEK_TASK_IDS.get(week_number, cls.WEEK_TASK_IDS[1])
-        task_records = {
-            tid: cls._get_or_create_topic(db, student_id, f"week_{week_number}_{tid}")
-            for tid in task_ids
-        }
-        qz = cls._get_or_create_topic(db, student_id, f"week_{week_number}_quiz")
-        overall = cls._recalculate_overall(db, student_id, week_number=week_number)
-        db.commit()
 
-        tasks_completed = sum(1 for rec in task_records.values() if rec.is_completed)
-        percent = min(100, int(round((overall.score / cls.TOTAL_MAX_SCORE) * 100)))
+        # Query existing topic progress records without mutating the DB
+        records = (
+            db.query(TopicProgress)
+            .filter(TopicProgress.student_id == student_id)
+            .all()
+        )
+        rec_map = {r.topic_id: r for r in records}
+
+        qz_rec = rec_map.get(f"week_{week_number}_quiz")
+        qz_score = round(qz_rec.score, 1) if qz_rec else 0.0
+        qz_completed = bool(qz_rec.is_completed) if qz_rec else False
+
+        theory_rec = rec_map.get(f"week_{week_number}_theory")
+        theory_completed = bool(theory_rec.is_completed) if theory_rec else False
+
+        total_score = round(min(cls.TOTAL_MAX_SCORE, qz_score), 1)
+        is_completed = total_score >= cls.PASS_THRESHOLD
+
+        tasks_map = {}
+        tasks_completed = 0
+        for tid in task_ids:
+            trec = rec_map.get(f"week_{week_number}_{tid}")
+            done = bool(trec.is_completed) if trec else False
+            if done:
+                tasks_completed += 1
+            tasks_map[tid] = {"is_completed": done}
+
+        percent = min(100, int(round((total_score / cls.TOTAL_MAX_SCORE) * 100)))
 
         return {
             "week_number": week_number,
-            "total_score": round(overall.score, 1),
+            "total_score": total_score,
             "max_score": cls.TOTAL_MAX_SCORE,
             "pass_threshold": cls.PASS_THRESHOLD,
-            "is_completed": overall.is_completed,
+            "is_completed": is_completed,
             "progress_percent": percent,
             "tasks_completed": tasks_completed,
             "tasks_total": len(task_ids),
-            "quiz_score": round(qz.score, 1),
+            "quiz_score": qz_score,
             "quiz_max": cls.QUIZ_MAX_SCORE,
-            "quiz_completed": qz.is_completed,
-            "tasks": {tid: {"is_completed": rec.is_completed} for tid, rec in task_records.items()},
+            "quiz_completed": qz_completed,
+            "theory_completed": theory_completed,
+            "tasks": tasks_map,
         }

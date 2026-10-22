@@ -1,0 +1,190 @@
+<!-- ================================================================= -->
+<!-- TAB 3: ПРАКТИКА (UNGRADED TRAINER WITH 1-CLICK SOLUTION)          -->
+<!-- ================================================================= -->
+<section id="panel-practice" class="subtab-panel hidden space-y-8">
+
+    <!-- Part A: Walkthrough Example -->
+    <div class="cyber-card rounded-2xl p-6 sm:p-8 space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-4">
+            <div>
+                <span class="text-xs font-mono font-bold text-sky-400 uppercase">Часть 1 · Наглядный разбор готового кода</span>
+                <h2 class="text-xl font-extrabold text-white mt-1">{{ walkthrough.title }}</h2>
+                <p class="text-xs sm:text-sm text-slate-400">{{ walkthrough.subtitle }}</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div class="lg:col-span-7 rounded-xl bg-slate-950 border border-slate-800 p-4 overflow-x-auto">
+                <div class="text-xs font-mono text-slate-400 mb-2 border-b border-slate-800 pb-2">
+                    {% if active_week|default(1) == 2 %}
+                    example_solid_di.py — Готовый образец модульного терминала TerminalValidator (SOLID & DI)
+                    {% else %}
+                    example_avtobys.py — Готовый образец классов Passenger и Validator
+                    {% endif %}
+                </div>
+                <pre class="text-xs font-mono text-sky-100 leading-relaxed">{{ walkthrough.code }}</pre>
+            </div>
+
+            <div class="lg:col-span-5 space-y-3">
+                <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Пояснение по шагам:</div>
+                {% for st in walkthrough.steps %}
+                <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1">
+                    <div class="text-[11px] font-mono text-sky-400">{{ st.line_ref }}</div>
+                    <div class="text-sm font-bold text-white">{{ st.title }}</div>
+                    <p class="text-xs text-slate-300 leading-relaxed">{{ st.text }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Part B: 3 Step-by-Step Training Tasks (No points required!) -->
+    <div class="space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <span class="text-xs font-mono font-bold text-emerald-400 uppercase">Часть 2 · Свободный тренажер (БЕЗ ОЦЕНКИ — не влияет на баллы)</span>
+                <h3 class="text-xl font-extrabold text-white mt-1">
+                    {% if active_week|default(1) == 2 %}
+                    Попробуйте собрать модули SOLID и DI (StudentFareService 50 ₸, BluetoothPayment, TerminalValidator) или разберите готовое решение
+                    {% else %}
+                    Попробуйте собрать класс SmartCard или разберите готовое решение
+                    {% endif %}
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-400">
+                    Новичкам не обязательно писать код с нуля! Вы можете попробовать сами или нажать кнопку <strong class="text-sky-300">«✨ Вставить готовое решение»</strong> и посмотреть, как оно проходит проверку.
+                </p>
+            </div>
+        </div>
+
+        <!-- Step Switcher Pills -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {% for task in practice_tasks %}
+            {% set t_prog = progress.tasks[task.id] %}
+            <button
+                type="button"
+                data-task="{{ task.id }}"
+                onclick="switchPracticeTask('{{ task.id }}')"
+                class="practice-step-btn {% if loop.first %}week-pill-active{% else %}bg-slate-900/70 text-slate-400 border-slate-800{% endif %} p-4 rounded-xl border text-left transition flex items-center justify-between"
+            >
+                <div class="flex items-center gap-3">
+                    <span id="step-dot-{{ task.id }}" class="w-2.5 h-2.5 rounded-full {% if t_prog.is_completed %}bg-emerald-400 shadow-[0_0_8px_#34d399]{% else %}bg-slate-600{% endif %}"></span>
+                    <div>
+                        <div class="text-xs font-bold">Шаг {{ task.step_number }} из 3</div>
+                        <div class="text-xs opacity-80 truncate max-w-[180px]">{{ task.difficulty }}</div>
+                    </div>
+                </div>
+                <span id="step-status-{{ task.id }}" class="font-mono text-xs font-bold px-2 py-1 rounded bg-slate-950/60">
+                    {% if t_prog.is_completed %}✅ Разобрано{% else %}Тренажер{% endif %}
+                </span>
+            </button>
+            {% endfor %}
+        </div>
+
+        <!-- Task Cards -->
+        {% for task in practice_tasks %}
+        <div id="practice-card-{{ task.id }}" class="practice-task-card {% if not loop.first %}hidden{% endif %} cyber-card rounded-2xl p-6 sm:p-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                <!-- Left Column: Task Description & Instructions -->
+                <div class="lg:col-span-5 space-y-5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                                {{ task.difficulty }}
+                            </span>
+                            <span class="text-xs font-mono text-emerald-400">Без снятия баллов</span>
+                        </div>
+                        <h4 class="text-lg font-extrabold text-white">{{ task.title }}</h4>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">{{ task.story }}</p>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-slate-950/90 border border-slate-800 space-y-2.5">
+                        <div class="text-xs font-bold uppercase tracking-wider text-sky-400">Как устроен этот шаг:</div>
+                        <ol class="list-decimal list-inside space-y-2 text-xs sm:text-sm text-slate-200 leading-relaxed">
+                            {% for inst in task.instructions %}
+                            <li>{{ inst }}</li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+
+                    <!-- Hint Toggle -->
+                    <div class="space-y-2">
+                        <button type="button" onclick="toggleTaskHint('{{ task.id }}')" class="text-xs font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1.5 transition">
+                            <span>💡 Показать текстовую подсказку</span>
+                        </button>
+                        <pre id="hint-box-{{ task.id }}" class="hidden p-4 rounded-xl bg-amber-950/30 border border-amber-500/40 text-xs font-mono text-amber-200 whitespace-pre-wrap leading-relaxed">{{ task.hint }}</pre>
+                    </div>
+
+                    {% if not loop.last %}
+                    <div class="pt-2 border-t border-slate-800/80 flex justify-end">
+                        <button type="button" onclick="switchPracticeTask('{{ practice_tasks[loop.index0 + 1].id }}')" class="text-xs font-bold text-sky-400 hover:text-sky-300">
+                            Следующий шаг ({{ task.step_number + 1 }} из 3) →
+                        </button>
+                    </div>
+                    {% else %}
+                    <div class="pt-2 border-t border-slate-800/80 flex justify-end">
+                        <button type="button" onclick="switchSubTab('quiz')" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition">
+                            Перейти к итоговому Тестированию (зачет недели) →
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Right Column: Code Editor & Sandbox Output -->
+                <div class="lg:col-span-7 space-y-4">
+                    <div class="rounded-xl overflow-hidden border border-sky-500/30 bg-slate-950 shadow-inner">
+                        <div class="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+                                <span class="text-xs font-mono text-slate-400 ml-2">solution.py ({{ task.id }})</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <button type="button" onclick="fillSolutionCode('{{ task.id }}')" class="px-2.5 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/40 text-xs font-semibold text-sky-300 transition">
+                                    ✨ Вставить готовое решение
+                                </button>
+                                <button type="button" onclick="resetTaskCode('{{ task.id }}')" class="text-xs text-slate-400 hover:text-white transition">
+                                    ↺ Сбросить
+                                </button>
+                            </div>
+                        </div>
+
+                        <textarea
+                            id="editor-{{ task.id }}"
+                            data-task="{{ task.id }}"
+                            data-starter="{{ task.starter_code }}"
+                            data-solution="{{ task.reference_solution }}"
+                            rows="14"
+                            spellcheck="false"
+                            class="code-editor-textarea w-full p-4 bg-slate-950 text-sky-100 text-xs sm:text-sm focus:outline-none resize-y"
+                        >{{ task.starter_code }}</textarea>
+
+                        <div class="px-4 py-3 bg-slate-900/90 border-t border-slate-800 flex items-center justify-between">
+                            <span class="text-[11px] text-slate-400">Тренажер запускает настоящий Python 3.12 + Pytest</span>
+                            <button
+                                id="run-btn-{{ task.id }}"
+                                type="button"
+                                onclick="runPracticeTask('{{ task.id }}')"
+                                class="px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold text-xs sm:text-sm shadow-[0_0_15px_rgba(16,185,129,0.3)] transition"
+                            >
+                                ▶ Запустить код
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Execution Result Box -->
+                    <div id="result-box-{{ task.id }}" class="hidden rounded-xl bg-slate-950 border border-slate-800 p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span id="verdict-badge-{{ task.id }}" class="px-3 py-1 rounded-full text-xs font-bold"></span>
+                            <span class="text-xs text-slate-400 font-mono">Время: <strong id="time-label-{{ task.id }}">0 мс</strong></span>
+                        </div>
+                        <pre id="output-pre-{{ task.id }}" class="p-3 rounded-lg bg-slate-900 text-slate-200 text-xs font-mono overflow-x-auto whitespace-pre-wrap max-h-60"></pre>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>

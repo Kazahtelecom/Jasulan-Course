@@ -1,10 +1,28 @@
 /**
- * Web-OOP Learning Platform Frontend Controller (Week 1 & Week 2: Quiz-only grading, Practice as ungraded trainer)
+ * Web-OOP Learning Platform Frontend Controller
+ * Modular architecture: UI Navigation, Student State, Practice Runner, Quiz Evaluation, Progress Sync.
  */
 
+/* ========================================================================= */
+/* MODULE 1: STATE & CONFIGURATION                                           */
+/* ========================================================================= */
+
 const ACTIVE_WEEK = (document.body && document.body.dataset.activeWeek) ? document.body.dataset.activeWeek : "1";
+
+function getActiveStudent() {
+    const selector = document.getElementById("student-selector");
+    if (selector && selector.value) {
+        return selector.value;
+    }
+    return localStorage.getItem("weboop_current_student") || "zhasulan";
+}
+
 const STORAGE_PREFIX = `weboop_w${ACTIVE_WEEK}_draft_`;
 const quizSelections = {};
+
+/* ========================================================================= */
+/* MODULE 2: UI NAVIGATION                                                   */
+/* ========================================================================= */
 
 /**
  * Switch active sub-tab: 'home' | 'theory' | 'practice' | 'quiz' | 'results'
@@ -70,6 +88,38 @@ function toggleTaskHint(taskId) {
 }
 
 /**
+ * Show notice when clicking locked future weeks
+ */
+function showLockedWeekToast(weekTitle) {
+    const toast = document.getElementById("locked-week-toast");
+    const label = document.getElementById("locked-week-toast-text");
+    if (!toast || !label) return;
+    label.textContent = `${weekTitle} откроется в следующем учебном модуле.`;
+    toast.classList.remove("hidden");
+    setTimeout(() => {
+        toast.classList.add("hidden");
+    }, 3500);
+}
+
+/* ========================================================================= */
+/* MODULE 3: STUDENT PROFILE SWITCHER                                        */
+/* ========================================================================= */
+
+/**
+ * Handle student profile selection switch
+ */
+function onStudentChange(newStudentUsername) {
+    localStorage.setItem("weboop_current_student", newStudentUsername);
+    const url = new URL(window.location.href);
+    url.searchParams.set("student", newStudentUsername);
+    window.location.href = url.toString();
+}
+
+/* ========================================================================= */
+/* MODULE 4: CODE TRAINER & RUNNER TRANSPORT                                 */
+/* ========================================================================= */
+
+/**
  * Insert ready reference solution into editor for beginners
  */
 function fillSolutionCode(taskId) {
@@ -113,10 +163,15 @@ async function runPracticeTask(taskId) {
     runBtn.disabled = true;
     runBtn.innerHTML = `<span>⏳ Запуск в песочнице...</span>`;
 
+    const activeStudent = getActiveStudent();
+
     try {
         const res = await fetch(`/api/week${ACTIVE_WEEK}/practice/${taskId}/run`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                "X-Student-Id": activeStudent,
+            },
             body: JSON.stringify({ code }),
         });
 
@@ -160,6 +215,10 @@ async function runPracticeTask(taskId) {
     }
 }
 
+/* ========================================================================= */
+/* MODULE 5: QUIZ STATE & EVALUATION                                         */
+/* ========================================================================= */
+
 /**
  * Select an option in the final quiz
  */
@@ -188,10 +247,15 @@ async function submitWeek1Quiz() {
     submitBtn.disabled = true;
     submitBtn.innerHTML = "<span>Проверка ответов...</span>";
 
+    const activeStudent = getActiveStudent();
+
     try {
         const res = await fetch(`/api/week${ACTIVE_WEEK}/quiz/check`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                "X-Student-Id": activeStudent,
+            },
             body: JSON.stringify({ answers: quizSelections }),
         });
         const data = await res.json();
@@ -254,6 +318,51 @@ async function submitWeek1Quiz() {
     }
 }
 
+/* ========================================================================= */
+/* MODULE 6: THEORY COMPLETION TRANSPORT                                     */
+/* ========================================================================= */
+
+/**
+ * Mark lecture theory as completed for the active week
+ */
+async function completeTheory(weekNum) {
+    const btn = document.getElementById("btn-complete-theory");
+    if (!btn) return;
+
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = "<span>⏳ Сохранение...</span>";
+
+    const activeStudent = getActiveStudent();
+
+    try {
+        const res = await fetch(`/api/week${weekNum}/theory/complete`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Student-Id": activeStudent,
+            },
+        });
+        const data = await res.json();
+        if (data.status === "COMPLETED") {
+            btn.className =
+                "px-5 py-2.5 rounded-xl text-xs font-bold transition bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
+            btn.innerHTML = "✅ Теория прочитана";
+        }
+        if (data.progress) {
+            updateProgressUI(data.progress);
+        }
+    } catch (err) {
+        console.error("Error completing theory:", err);
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+}
+
+/* ========================================================================= */
+/* MODULE 7: LIVE UI PROGRESS SYNC                                           */
+/* ========================================================================= */
+
 /**
  * Update all score counters and status indicators across tabs
  */
@@ -306,21 +415,19 @@ function updateProgressUI(progress) {
     }
 }
 
-/**
- * Show notice when clicking locked future weeks
- */
-function showLockedWeekToast(weekTitle) {
-    const toast = document.getElementById("locked-week-toast");
-    const label = document.getElementById("locked-week-toast-text");
-    if (!toast || !label) return;
-    label.textContent = `${weekTitle} откроется в следующем учебном модуле.`;
-    toast.classList.remove("hidden");
-    setTimeout(() => {
-        toast.classList.add("hidden");
-    }, 3500);
-}
+/* ========================================================================= */
+/* MODULE 8: INITIALIZATION                                                  */
+/* ========================================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Sync student selector with current URL or localStorage
+    const currentStudent = getActiveStudent();
+    const selector = document.getElementById("student-selector");
+    if (selector && currentStudent) {
+        selector.value = currentStudent;
+    }
+
+    // Initialize code editor textareas
     document.querySelectorAll(".code-editor-textarea").forEach((textarea) => {
         const taskId = textarea.dataset.task;
         const saved = localStorage.getItem(`${STORAGE_PREFIX}${taskId}`);

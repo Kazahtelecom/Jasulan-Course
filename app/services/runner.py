@@ -1,5 +1,6 @@
 """RunnerService for isolated execution of tests in a sandbox."""
 
+import os
 import subprocess
 import sys
 import tempfile
@@ -52,13 +53,31 @@ class RunnerService:
             solution_file.write_text(code, encoding="utf-8")
             test_file.write_text(test_code, encoding="utf-8")
 
-            cmd = [sys.executable, "-m", "pytest", "test_solution.py", "-v"]
+            # Minimal sanitized environment
+            safe_env = {
+                "SYSTEMROOT": os.environ.get("SYSTEMROOT", "C:\\Windows"),
+                "PATH": os.environ.get("PATH", ""),
+                "TEMP": str(tmp_path),
+                "TMP": str(tmp_path),
+            }
+
+            cmd = [
+                sys.executable,
+                "-I",
+                "-m",
+                "pytest",
+                "-o",
+                "pythonpath=.",
+                "test_solution.py",
+                "-v",
+            ]
 
             proc = subprocess.run(
                 cmd,
                 cwd=str(tmp_path),
                 capture_output=True,
                 text=True,
+                env=safe_env,
                 timeout=timeout,
             )
 

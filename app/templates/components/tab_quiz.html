@@ -1,0 +1,59 @@
+<!-- ================================================================= -->
+<!-- TAB 4: ТЕСТИРОВАНИЕ (FINAL QUIZ — 100% OF WEEK GRADE)             -->
+<!-- ================================================================= -->
+<section id="panel-quiz" class="subtab-panel hidden space-y-6">
+    <div class="cyber-card rounded-2xl p-6 sm:p-8 border-l-4 border-l-indigo-400 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <span class="text-xs font-mono font-bold text-indigo-400 uppercase">Зачет недели • 20 баллов (порог зачета: 12 баллов)</span>
+            <h2 class="text-2xl font-extrabold text-white mt-1">Итоговое Тестирование по Неделе {{ active_week|default(1) }} ({{ overview.badge }})</h2>
+            <p class="text-sm text-slate-300 mt-1">
+                Все баллы за неделю начисляются именно за этот тест! Выберите правильные варианты ответа во всех 10 вопросах и нажмите «Проверить ответы».
+            </p>
+        </div>
+    </div>
+
+    <div id="quiz-result-banner" class="hidden"></div>
+
+    <div class="space-y-5">
+        {% for q in quiz_questions %}
+        <div class="cyber-card rounded-2xl p-6 space-y-4">
+            <div class="flex items-start gap-3">
+                <span class="px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-mono font-bold shrink-0">
+                    Вопрос {{ q.number }} / {{ quiz_questions|length }}
+                </span>
+                <h3 class="text-base font-bold text-white leading-snug">{{ q.question }}</h3>
+            </div>
+
+            <div class="space-y-2.5">
+                {% for opt in q.options %}
+                <button
+                    type="button"
+                    data-index="{{ loop.index0 }}"
+                    onclick="selectQuizOption('{{ q.id }}', {{ loop.index0 }})"
+                    class="quiz-opt-{{ q.id }} w-full text-left p-3.5 rounded-xl border transition flex items-center gap-3 bg-slate-900/70 border-slate-800 text-slate-300 hover:border-slate-700"
+                >
+                    <span class="w-6 h-6 rounded-lg bg-slate-950 border border-slate-700 flex items-center justify-center text-xs font-mono font-bold text-sky-400 shrink-0">
+                        {{ ["A", "B", "C", "D"][loop.index0] }}
+                    </span>
+                    <span class="text-xs sm:text-sm">{{ opt }}</span>
+                </button>
+                {% endfor %}
+            </div>
+
+            <div id="quiz-exp-{{ q.id }}" class="hidden"></div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="cyber-card rounded-2xl p-6 flex items-center justify-between">
+        <span class="text-xs text-slate-400">За каждый правильный ответ начисляется 2.0 балла (для зачета нужно набрать от 12.0 из 20.0 баллов)</span>
+        <button
+            id="btn-submit-quiz"
+            type="button"
+            onclick="submitWeek1Quiz()"
+            class="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-sky-500 hover:from-indigo-500 hover:to-sky-400 text-white font-bold text-sm shadow-[0_0_20px_rgba(99,102,241,0.4)] transition"
+        >
+            Проверить ответы теста
+        </button>
+    </div>
+</section>

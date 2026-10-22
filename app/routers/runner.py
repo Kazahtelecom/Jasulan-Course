@@ -1,6 +1,8 @@
 """Runner router for smoke testing and execution."""
 
-from fastapi import APIRouter
+import os
+
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from app.services.runner import RunnerService
@@ -31,7 +33,13 @@ class RunnerSmokeResponse(BaseModel):
 
 @router.post("/smoke", response_model=RunnerSmokeResponse)
 def run_smoke_test() -> RunnerSmokeResponse:
-    """Execute reference smoke test in sandbox to verify runner health."""
+    """Execute reference smoke test in sandbox to verify runner health.
+
+    Disabled when PUBLIC_MODE is active.
+    """
+    if os.environ.get("PUBLIC_MODE", "0").lower() in ("1", "true"):
+        raise HTTPException(status_code=403, detail="Smoke endpoint disabled in public mode")
+
     result = RunnerService.run_code(code=SMOKE_SOLUTION, test_code=SMOKE_TEST)
     return RunnerSmokeResponse(
         status=result.status,

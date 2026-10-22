@@ -1,0 +1,83 @@
+<!-- Top Brand & Navigation Header with 4-Student Profile Switcher -->
+<header class="border-b border-sky-500/20 bg-slate-950/90 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 pt-5 pb-4 space-y-5">
+
+        <!-- Brand Row & Student Profile Selector -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 via-sky-500 to-cyan-400 flex items-center justify-center font-extrabold text-lg tracking-wider text-white shadow-[0_0_25px_rgba(56,189,248,0.45)] border border-sky-300/40 select-none">
+                    ООП
+                </div>
+                <div>
+                    <h1 class="text-2xl font-extrabold tracking-tight text-white">
+                        Учебная платформа
+                    </h1>
+                    <p class="text-sm text-slate-400 font-medium">
+                        Учимся вместе • <span class="text-sky-400">{{ app_name }}</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Student Profile Switcher & Live Score Pill -->
+            <div class="flex items-center gap-3 flex-wrap">
+                <!-- 4 Fixed Profiles Selector -->
+                <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 text-xs text-slate-300">
+                    <span class="text-slate-400">Профиль:</span>
+                    <select
+                        id="student-selector"
+                        onchange="onStudentChange(this.value)"
+                        class="bg-slate-950 border border-slate-700 text-xs font-bold text-sky-300 rounded-lg px-2.5 py-1 focus:outline-none focus:border-sky-400 cursor-pointer"
+                    >
+                        <option value="zhasulan" {% if student.username == 'zhasulan' %}selected{% endif %}>Жасулан Куандыков</option>
+                        <option value="roman" {% if student.username == 'roman' %}selected{% endif %}>Иванов Роман</option>
+                        <option value="arseniy" {% if student.username == 'arseniy' %}selected{% endif %}>Мухитов Арсений</option>
+                        <option value="saubakirov" {% if student.username == 'saubakirov' %}selected{% endif %}>Санжар Аубакиров</option>
+                    </select>
+                </div>
+
+                <div class="px-4 py-2 rounded-xl bg-slate-900/90 border border-sky-500/30 flex items-center gap-2 shadow-[0_0_15px_rgba(56,189,248,0.12)]">
+                    <span class="text-xs text-slate-400">Баллы (Тест):</span>
+                    <span id="header-total-score" class="font-mono font-bold text-sm text-sky-400">
+                        {{ progress.total_score }} / {{ progress.max_score }} б.
+                    </span>
+                </div>
+                <span id="header-status-badge" class="px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider {% if progress.is_completed %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/40{% else %}bg-sky-500/20 text-sky-300 border border-sky-500/40{% endif %}">
+                    {% if progress.is_completed %}ЗАЧЕТ ПОЛУЧЕН{% else %}В ПРОЦЕССЕ{% endif %}
+                </span>
+            </div>
+        </div>
+
+        <!-- Row 1: Week Selector Pills -->
+        <div class="flex items-center gap-3 overflow-x-auto pb-1">
+            <a href="/week1" class="{% if active_week|default(1) == 1 %}week-pill-active font-bold{% else %}text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-transparent hover:border-slate-800 font-medium{% endif %} px-5 py-2.5 rounded-xl text-sm transition shrink-0">
+                Неделя 1 · Инкапсуляция
+            </a>
+            <a href="/week2" class="{% if active_week|default(1) == 2 %}week-pill-active font-bold{% else %}text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-transparent hover:border-slate-800 font-medium{% endif %} px-5 py-2.5 rounded-xl text-sm transition shrink-0">
+                Неделя 2 · SOLID и DI
+            </a>
+            <button type="button" onclick="showLockedWeekToast('Неделя 3 · Паттерны GoF')" class="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-transparent hover:border-slate-800 transition shrink-0 flex items-center gap-2">
+                <span>Неделя 3 · Паттерны GoF</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Скоро</span>
+            </button>
+        </div>
+
+        <!-- Row 2: Section Sub-Tabs -->
+        <nav class="flex items-center gap-2 sm:gap-3 overflow-x-auto pt-1 border-t border-slate-800/80">
+            <button type="button" data-tab="home" onclick="switchSubTab('home')" class="subtab-btn subtab-active text-sky-400 font-bold px-4 py-2 rounded-xl text-sm transition shrink-0">
+                Главная
+            </button>
+            <button type="button" data-tab="theory" onclick="switchSubTab('theory')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
+                Теория
+            </button>
+            <button type="button" data-tab="practice" onclick="switchSubTab('practice')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
+                Практика
+            </button>
+            <button type="button" data-tab="quiz" onclick="switchSubTab('quiz')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
+                Тестирование
+            </button>
+            <button type="button" data-tab="results" onclick="switchSubTab('results')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
+                Результаты
+            </button>
+        </nav>
+    </div>
+</header>
