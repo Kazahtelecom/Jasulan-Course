@@ -101,6 +101,34 @@ function showLockedWeekToast(weekTitle) {
     }, 3500);
 }
 
+/**
+ * Apply header collapse state and persist to localStorage
+ */
+function applyHeaderCollapseState(isCollapsed) {
+    const header = document.getElementById("main-site-header");
+    const label = document.getElementById("header-collapse-label");
+    if (!header) return;
+
+    if (isCollapsed) {
+        header.classList.add("header-collapsed");
+        if (label) label.textContent = "▼ Развернуть меню";
+    } else {
+        header.classList.remove("header-collapsed");
+        if (label) label.textContent = "▲ Свернуть меню";
+    }
+}
+
+/**
+ * Toggle collapsible top navigation header
+ */
+function toggleHeaderCollapse() {
+    const header = document.getElementById("main-site-header");
+    if (!header) return;
+    const willCollapse = !header.classList.contains("header-collapsed");
+    applyHeaderCollapseState(willCollapse);
+    localStorage.setItem("weboop_header_collapsed", willCollapse ? "1" : "0");
+}
+
 /* ========================================================================= */
 /* MODULE 3: STUDENT PROFILE SWITCHER                                        */
 /* ========================================================================= */
@@ -116,8 +144,173 @@ function onStudentChange(newStudentUsername) {
 }
 
 /* ========================================================================= */
-/* MODULE 4: CODE TRAINER & RUNNER TRANSPORT                                 */
+/* MODULE 4: CODE TRAINER, IDE CONTROLS & RUNNER TRANSPORT                   */
 /* ========================================================================= */
+
+let currentEditorFontSize = parseInt(localStorage.getItem("weboop_editor_font_size") || "14", 10);
+if (Number.isNaN(currentEditorFontSize) || currentEditorFontSize < 12 || currentEditorFontSize > 20) {
+    currentEditorFontSize = 14;
+}
+
+/**
+ * Recalculate and render line numbers (1..N) and live line counter for a task editor
+ */
+function updateLineNumbers(taskId) {
+    const editor = document.getElementById(`editor-${taskId}`);
+    const gutter = document.getElementById(`line-numbers-${taskId}`);
+    const countLabel = document.getElementById(`line-count-label-${taskId}`);
+    if (!editor) return;
+
+    const linesCount = Math.max(1, editor.value.split("\n").length);
+    if (gutter) {
+        const numbers = [];
+        for (let i = 1; i <= linesCount; i += 1) {
+            numbers.push(i);
+        }
+        gutter.textContent = numbers.join("\n");
+        gutter.scrollTop = editor.scrollTop;
+    }
+    if (countLabel) {
+        countLabel.textContent = `Строк: ${linesCount}`;
+    }
+}
+
+/**
+ * Apply font size (12px..20px) to all code editors and line number gutters
+ */
+function applyEditorFontSize(sizePx) {
+    const clamped = Math.min(20, Math.max(12, sizePx));
+    currentEditorFontSize = clamped;
+    localStorage.setItem("weboop_editor_font_size", String(clamped));
+
+    document.querySelectorAll(".code-editor-textarea, .line-numbers-gutter").forEach((el) => {
+        el.style.fontSize = `${clamped}px`;
+    });
+
+    document.querySelectorAll(".editor-fontsize-label").forEach((lbl) => {
+        lbl.textContent = `${clamped}px`;
+    });
+}
+
+/**
+ * Increase or decrease code editor font size by delta (-1 or +1)
+ */
+function changeEditorFontSize(delta) {
+    applyEditorFontSize(currentEditorFontSize + delta);
+}
+
+/**
+ * Set split width ratio (25%..65%) between task description pane and code editor pane
+ */
+function setPracticeSplitRatio(taskId, ratioPercent) {
+    const clamped = Math.min(65, Math.max(25, Math.round(ratioPercent)));
+    localStorage.setItem("weboop_split_width", String(clamped));
+
+    document.querySelectorAll(".practice-task-pane").forEach((pane) => {
+        if (window.innerWidth >= 1024) {
+            pane.style.width = `${clamped}%`;
+        } else {
+            pane.style.width = "";
+        }
+    });
+}
+
+/**
+ * Toggle fullscreen Zen mode (100vw x 100vh) for a practice task card
+ */
+function togglePracticeFullscreen(taskId) {
+    const card = document.getElementById(`practice-card-${taskId}`);
+    const btnLabel = document.getElementById(`fullscreen-btn-label-${taskId}`);
+    if (!card) return;
+
+    const isEntering = !card.classList.contains("practice-fullscreen-active");
+
+    document.querySelectorAll(".practice-task-card").forEach((otherCard) => {
+        otherCard.classList.remove("practice-fullscreen-active");
+    });
+    document.querySelectorAll("[id^='fullscreen-btn-label-']").forEach((lbl) => {
+        lbl.textContent = "⛶ На весь экран";
+    });
+
+    if (isEntering) {
+        card.classList.add("practice-fullscreen-active");
+        if (btnLabel) btnLabel.textContent = "✕ Обычный вид";
+        document.body.classList.add("overflow-hidden");
+    } else {
+        card.classList.remove("practice-fullscreen-active");
+        if (btnLabel) btnLabel.textContent = "⛶ На весь экран";
+        document.body.classList.remove("overflow-hidden");
+    }
+}
+
+/**
+ * Exit fullscreen mode for any active practice card
+ */
+function exitAllPracticeFullscreen() {
+    let hadActive = false;
+    document.querySelectorAll(".practice-task-card.practice-fullscreen-active").forEach((card) => {
+        card.classList.remove("practice-fullscreen-active");
+        hadActive = true;
+    });
+    if (hadActive) {
+        document.querySelectorAll("[id^='fullscreen-btn-label-']").forEach((lbl) => {
+            lbl.textContent = "⛶ На весь экран";
+        });
+        document.body.classList.remove("overflow-hidden");
+    }
+}
+
+/**
+ * Initialize interactive drag-splitter between task description and code editor
+ */
+function initPracticeSplitResizers() {
+    let activeResizer = null;
+    let activeLayout = null;
+    let activeTaskId = null;
+
+    document.querySelectorAll(".practice-split-resizer").forEach((resizer) => {
+        resizer.addEventListener("mousedown", (e) => {
+            if (window.innerWidth < 1024) return;
+            e.preventDefault();
+            activeResizer = resizer;
+            activeTaskId = resizer.dataset.task;
+            activeLayout = document.getElementById(`split-layout-${activeTaskId}`);
+            resizer.classList.add("resizer-dragging");
+            document.body.style.userSelect = "none";
+            document.body.style.cursor = "col-resize";
+        });
+    });
+
+    window.addEventListener("mousemove", (e) => {
+        if (!activeResizer || !activeLayout || !activeTaskId) return;
+        const rect = activeLayout.getBoundingClientRect();
+        if (rect.width <= 0) return;
+        const relativeX = e.clientX - rect.left;
+        const ratio = (relativeX / rect.width) * 100;
+        setPracticeSplitRatio(activeTaskId, ratio);
+    });
+
+    window.addEventListener("mouseup", () => {
+        if (!activeResizer) return;
+        activeResizer.classList.remove("resizer-dragging");
+        activeResizer = null;
+        activeLayout = null;
+        activeTaskId = null;
+        document.body.style.userSelect = "";
+        document.body.style.cursor = "";
+    });
+
+    window.addEventListener("resize", () => {
+        const savedSplit = parseInt(localStorage.getItem("weboop_split_width") || "42", 10);
+        document.querySelectorAll(".practice-task-pane").forEach((pane) => {
+            if (window.innerWidth >= 1024) {
+                pane.style.width = `${Math.min(65, Math.max(25, savedSplit))}%`;
+            } else {
+                pane.style.width = "";
+            }
+        });
+    });
+}
 
 /**
  * Insert ready reference solution into editor for beginners
@@ -129,6 +322,7 @@ function fillSolutionCode(taskId) {
     if (solution) {
         editor.value = solution;
         localStorage.setItem(`${STORAGE_PREFIX}${taskId}`, solution);
+        updateLineNumbers(taskId);
     }
 }
 
@@ -141,6 +335,7 @@ function resetTaskCode(taskId) {
     const starter = editor.dataset.starter || "";
     editor.value = starter;
     localStorage.removeItem(`${STORAGE_PREFIX}${taskId}`);
+    updateLineNumbers(taskId);
 }
 
 /**
@@ -427,7 +622,21 @@ document.addEventListener("DOMContentLoaded", () => {
         selector.value = currentStudent;
     }
 
-    // Initialize code editor textareas
+    // Restore saved collapsible header state
+    const savedHeaderCollapsed = localStorage.getItem("weboop_header_collapsed") === "1";
+    applyHeaderCollapseState(savedHeaderCollapsed);
+
+    // Restore saved editor font size
+    applyEditorFontSize(currentEditorFontSize);
+
+    // Restore saved split width ratio and initialize resizers
+    const savedSplitRatio = parseInt(localStorage.getItem("weboop_split_width") || "42", 10);
+    if (!Number.isNaN(savedSplitRatio)) {
+        setPracticeSplitRatio("", savedSplitRatio);
+    }
+    initPracticeSplitResizers();
+
+    // Initialize code editor textareas & line number gutters
     document.querySelectorAll(".code-editor-textarea").forEach((textarea) => {
         const taskId = textarea.dataset.task;
         const saved = localStorage.getItem(`${STORAGE_PREFIX}${taskId}`);
@@ -435,8 +644,18 @@ document.addEventListener("DOMContentLoaded", () => {
             textarea.value = saved;
         }
 
+        updateLineNumbers(taskId);
+
         textarea.addEventListener("input", () => {
             localStorage.setItem(`${STORAGE_PREFIX}${taskId}`, textarea.value);
+            updateLineNumbers(taskId);
+        });
+
+        textarea.addEventListener("scroll", () => {
+            const gutter = document.getElementById(`line-numbers-${taskId}`);
+            if (gutter) {
+                gutter.scrollTop = textarea.scrollTop;
+            }
         });
 
         textarea.addEventListener("keydown", (e) => {
@@ -448,8 +667,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     textarea.value.substring(0, start) + "    " + textarea.value.substring(end);
                 textarea.selectionStart = textarea.selectionEnd = start + 4;
                 localStorage.setItem(`${STORAGE_PREFIX}${taskId}`, textarea.value);
+                updateLineNumbers(taskId);
             }
         });
+    });
+
+    // Global Escape listener to exit practice fullscreen mode
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            exitAllPracticeFullscreen();
+        }
     });
 
     // Initialize UML Viewer & Magnifier Lens listeners
@@ -461,7 +688,7 @@ document.addEventListener("DOMContentLoaded", () => {
 /* ========================================================================= */
 
 let umlLensActive = false;
-let currentUmlTab = "week";
+let currentUmlTab = ACTIVE_WEEK === "2" ? "week2" : "week1";
 let modalZoomScale = 1.0;
 let modalPanX = 0;
 let modalPanY = 0;
@@ -503,7 +730,13 @@ function switchUmlDiagramTab(tabKey) {
     document.querySelectorAll(".uml-diagram-pane").forEach((pane) => pane.classList.add("hidden"));
 
     // Show selected pane
-    if (tabKey === "week") {
+    if (tabKey === "week1") {
+        const pane = document.getElementById("uml-diagram-week1");
+        if (pane) pane.classList.remove("hidden");
+    } else if (tabKey === "week2") {
+        const pane = document.getElementById("uml-diagram-week2");
+        if (pane) pane.classList.remove("hidden");
+    } else if (tabKey === "week") {
         const activeWeekId = ACTIVE_WEEK === "2" ? "uml-diagram-week2" : "uml-diagram-week1";
         const pane = document.getElementById(activeWeekId);
         if (pane) pane.classList.remove("hidden");
@@ -667,8 +900,10 @@ function openUmlFullscreen() {
     if (!modal || !modalContent) return;
 
     // Determine title
-    let title = "UML-диаграмма классов предметной области (Avtobys)";
-    if (currentUmlTab === "arch") {
+    let title = "UML-диаграмма классов: Неделя 1 (Инкапсуляция SmartCard)";
+    if (currentUmlTab === "week2" || (currentUmlTab === "week" && ACTIVE_WEEK === "2")) {
+        title = "UML-диаграмма классов: Неделя 2 (SOLID & Dependency Injection)";
+    } else if (currentUmlTab === "arch") {
         title = "Архитектура платформы Web-OOP (WeekModule & Services)";
     } else if (currentUmlTab === "db") {
         title = "ER-диаграмма базы данных (SQLite: Student, Progress, Submissions)";

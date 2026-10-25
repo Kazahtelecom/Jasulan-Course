@@ -3,7 +3,7 @@ id: OOP_20261025-235206_UIEXP
 title: "Улучшение эргономики тренажёра (сдвиг меню, полноэкранный редактор, сплиттер, строки) и балансировка квизов"
 goal: "Устранить проблемы удобства написания кода в тренажёре (сворачивание верхнего меню, полноэкранный режим с заданием, изменяемый размер колонок, номера строк и размер шрифта) и сбалансировать тесты Недели 1 и 2 вопросами с ловушками равной длины"
 value: "Студенты пишут код в удобной полноэкранной среде с номерами строк и настраиваемым размером условия/кода, а итоговые тесты объективно проверяют знание ООП без угадывания по самому длинному ответу"
-lifecycle: TS_DRAFT
+lifecycle: ONB
 owner: zhasulan
 authority: TS__OOP_20261025-235206_UIEXP.md
 coordinator_route: "antigravity:thread:local:43c55687-5d64-4647-9012-0331bd386a85"
@@ -14,7 +14,7 @@ coordination_authority: "HL-OOP_20261025-235206_UIEXP.md @ b5be743df7bae8c5d538f
 reporting: native-gates
 selection_ref: baseline
 created: 20261025-235206
-updated: 20261025-235613
+updated: 20261026-000306
 ---
 
 **Task state.** This file is the only authority for this task's live state. Any downstream projection is disposable and never outranks it.

@@ -46,10 +46,69 @@ body {
     box-shadow: 0 0 14px rgba(59, 130, 246, 0.20);
 }
 
+.code-editor-workspace {
+    display: flex;
+    align-items: stretch;
+    position: relative;
+}
+
+.line-numbers-gutter {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    line-height: 1.65;
+    min-width: 3.2rem;
+    user-select: none;
+    white-space: pre;
+}
+
 .code-editor-textarea {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     line-height: 1.65;
     tab-size: 4;
+}
+
+/* Collapsible Top Header */
+#main-site-header.header-collapsed #header-collapsible-body {
+    display: none !important;
+}
+
+#main-site-header.header-collapsed #header-inner-container {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+#main-site-header.header-collapsed nav {
+    border-top: none;
+    padding-top: 0;
+}
+
+/* Fullscreen Practice Task Mode (Zen Coding) */
+.practice-fullscreen-active {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 90 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: none !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    background-color: #020617 !important;
+    padding: 1.25rem 1.5rem !important;
+    overflow-y: auto !important;
+}
+
+.practice-fullscreen-active .code-editor-textarea {
+    min-height: 62vh;
+}
+
+/* Split Resizer Handle */
+.practice-split-resizer {
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.practice-split-resizer:hover,
+.practice-split-resizer.resizer-dragging {
+    background-color: rgba(56, 189, 248, 0.75) !important;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
 }
 
 .status-active {
