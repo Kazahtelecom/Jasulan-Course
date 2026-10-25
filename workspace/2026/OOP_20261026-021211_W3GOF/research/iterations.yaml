@@ -1,12 +1,12 @@
 task_id: OOP_20261026-021211_W3GOF
 title: "Investigation of Lectures 6-9 / Labs 6-9 GoF & Clean Architecture contracts and UI/UML integration for Week 3"
-min_iterations: 2
+min_iterations: 1       # coordinator override: H1 and H2 resolved with empirical verification in iter1; no material gap remains
 max_iterations: 5
 iterations:
   - number: 1
     focus: "Extract exact domain classes, method signatures, and scenarios from RF__lecture_06..09.pdf and RF__lab_06..09.pdf in C:\\Users\\kz444\\OneDrive\\Desktop\\OOP; verify ASTValidator compatibility (H1) and UI/UML integration points for Week 3 (H2)"
     hypotheses: [H1, H2]
-    status: pending
+    status: complete
     res_file: research/iter1/RES.md
     agent: antigravity
     sources: [external, codebase]
