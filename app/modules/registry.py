@@ -20,6 +20,14 @@ from app.content.week_2 import (
     WEEK2_OVERVIEW,
     evaluate_quiz as w2_evaluate_quiz,
 )
+from app.content.week_3 import (
+    PRACTICE_TASKS as W3_PRACTICE,
+    QUIZ_QUESTIONS as W3_QUIZ,
+    THEORY_SECTIONS as W3_THEORY,
+    WALKTHROUGH_EXAMPLE as W3_WALKTHROUGH,
+    WEEK3_OVERVIEW,
+    evaluate_quiz as w3_evaluate_quiz,
+)
 from app.modules.base import WeekModule
 
 
@@ -75,3 +83,18 @@ week_registry.register(
         evaluate_quiz_fn=w2_evaluate_quiz,
     )
 )
+
+# Register Week 3: GoF Patterns & Clean Architecture
+week_registry.register(
+    WeekModule(
+        week_number=3,
+        title="Паттерны GoF и Чистая Архитектура",
+        overview=WEEK3_OVERVIEW,
+        theory_sections=W3_THEORY,
+        walkthrough=W3_WALKTHROUGH,
+        practice_tasks=W3_PRACTICE,
+        quiz_questions=W3_QUIZ,
+        evaluate_quiz_fn=w3_evaluate_quiz,
+    )
+)
+

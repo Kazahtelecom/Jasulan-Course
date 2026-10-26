@@ -12,17 +12,22 @@ client = TestClient(app)
 
 
 def test_week_registry_registered_modules() -> None:
-    """Verify WeekRegistry has week 1 and week 2 properly registered."""
+    """Verify WeekRegistry has week 1, week 2, and week 3 properly registered."""
     w1 = week_registry.get(1)
     w2 = week_registry.get(2)
+    w3 = week_registry.get(3)
     assert w1 is not None
     assert w2 is not None
+    assert w3 is not None
     assert w1.week_number == 1
     assert w2.week_number == 2
+    assert w3.week_number == 3
     assert len(w1.practice_tasks) == 3
     assert len(w2.practice_tasks) == 3
+    assert len(w3.practice_tasks) == 3
     assert len(w1.quiz_questions) == 10
     assert len(w2.quiz_questions) == 10
+    assert len(w3.quiz_questions) == 10
 
 
 def test_student_profiles_isolation() -> None:

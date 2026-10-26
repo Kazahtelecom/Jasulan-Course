@@ -1,581 +1,1568 @@
 <!-- ================================================================= -->
+
 <!-- COMPONENT: INTERACTIVE UML DIAGRAM VIEWER WITH MAGNIFIER (ЛУПА)    -->
+
 <!-- ================================================================= -->
+
 <div id="uml-diagram-section" class="cyber-card rounded-2xl p-6 sm:p-8 space-y-6 border border-sky-500/30 shadow-[0_0_30px_rgba(56,189,248,0.12)]">
 
+
+
     <!-- Section Header with Title & Action Controls -->
+
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+
         <div>
+
             <div class="flex items-center gap-2.5">
+
                 <span class="px-3 py-1 rounded-lg text-xs font-mono font-bold bg-sky-500/20 text-sky-300 border border-sky-500/40">
+
                     📐 UML CLASS DIAGRAMS
+
                 </span>
+
                 <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
+
                     🔍 Интерактивная Лупа
+
                 </span>
+
             </div>
+
             <h3 class="text-xl sm:text-2xl font-extrabold text-white mt-2">
+
                 UML-модель классов и архитектура системы
+
             </h3>
+
             <p class="text-xs sm:text-sm text-slate-300 mt-1">
+
                 Наведите курсор с активной лупой или откройте диаграмму во весь экран для чтения сигнатур методов и связей.
+
             </p>
+
         </div>
+
+
 
         <!-- Toolbar Buttons: Lens Toggle & Fullscreen -->
+
         <div class="flex items-center gap-2.5 flex-wrap">
-            <button
-                id="btn-toggle-lens"
-                type="button"
-                onclick="toggleUmlLens()"
-                class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-sky-300 border border-sky-500/40 shadow-[0_0_15px_rgba(56,189,248,0.15)]"
-                title="Включить / выключить лупу при наведении"
-            >
-                <span class="text-sm">🔍</span>
-                <span id="btn-toggle-lens-text">Включить лупу</span>
-            </button>
 
             <button
+
+                id="btn-toggle-lens"
+
                 type="button"
-                onclick="openUmlFullscreen()"
-                class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white shadow-[0_0_20px_rgba(56,189,248,0.3)]"
-                title="Развернуть диаграмму во весь экран с зумом и перемещением"
+
+                onclick="toggleUmlLens()"
+
+                class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-sky-300 border border-sky-500/40 shadow-[0_0_15px_rgba(56,189,248,0.15)]"
+
+                title="Включить / выключить лупу при наведении"
+
             >
-                <span class="text-sm">⛶</span>
-                <span>Во весь экран</span>
+
+                <span class="text-sm">🔍</span>
+
+                <span id="btn-toggle-lens-text">Включить лупу</span>
+
             </button>
+
+
+
+            <button
+
+                type="button"
+
+                onclick="openUmlFullscreen()"
+
+                class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white shadow-[0_0_20px_rgba(56,189,248,0.3)]"
+
+                title="Развернуть диаграмму во весь экран с зумом и перемещением"
+
+            >
+
+                <span class="text-sm">⛶</span>
+
+                <span>Во весь экран</span>
+
+            </button>
+
         </div>
+
     </div>
+
+
 
     <!-- Diagram Category Selector Pills -->
+
     <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+
         <button
+
             type="button"
+
             data-diagram-tab="week"
+
             onclick="switchUmlDiagramTab('week')"
+
             class="uml-tab-btn px-4 py-2 rounded-xl font-bold transition shrink-0 bg-sky-500/20 text-sky-300 border border-sky-500/50 shadow-[0_0_12px_rgba(56,189,248,0.2)]"
+
         >
-            ⭐ Диаграмма классов: Неделя {{ active_week|default(1) }} ({% if active_week|default(1) == 2 %}SOLID & DI{% else %}Инкапсуляция{% endif %})
+
+            ⭐ Диаграмма классов: Неделя {{ active_week|default(1) }} ({% if active_week|default(1) == 3 %}GoF & Clean Arch{% elif active_week|default(1) == 2 %}SOLID & DI{% else %}Инкапсуляция{% endif %})
+
         </button>
+
         <button
+
             type="button"
+
+            data-diagram-tab="week3"
+
+            onclick="switchUmlDiagramTab('week3')"
+
+            class="uml-tab-btn px-4 py-2 rounded-xl font-medium transition shrink-0 bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200"
+
+        >
+
+            🚀 Неделя 3: GoF &amp; Clean Arch
+
+        </button>
+
+        <button
+
+            type="button"
+
             data-diagram-tab="arch"
+
             onclick="switchUmlDiagramTab('arch')"
+
             class="uml-tab-btn px-4 py-2 rounded-xl font-medium transition shrink-0 bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200"
+
         >
+
             🏛️ Архитектура платформы (WeekModule & Services)
+
         </button>
+
         <button
+
             type="button"
+
             data-diagram-tab="db"
+
             onclick="switchUmlDiagramTab('db')"
+
             class="uml-tab-btn px-4 py-2 rounded-xl font-medium transition shrink-0 bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200"
+
         >
+
             🗄️ База данных ERD (SQLite: Student & Progress)
+
         </button>
+
     </div>
+
+
 
     <!-- Viewport Instructions Bar -->
+
     <div class="flex items-center justify-between text-xs text-slate-400 px-3 py-1.5 rounded-lg bg-slate-950/60 border border-slate-800/80">
+
         <div class="flex items-center gap-2">
+
             <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+
             <span id="uml-mode-hint">Нажмите «Включить лупу» или дважды кликните по диаграмме для зума.</span>
+
         </div>
+
         <div class="hidden sm:flex items-center gap-4 text-[11px] font-mono text-slate-400">
+
             <span>Векторная графика SVG (100% чёткость)</span>
+
             <span>Масштаб: <strong id="uml-scale-indicator" class="text-sky-300">100%</strong></span>
+
         </div>
+
     </div>
+
+
 
     <!-- Interactive Diagram Viewport Container -->
+
     <div
+
         id="uml-viewport"
+
         class="relative w-full overflow-hidden rounded-xl bg-slate-950 border border-slate-800 select-none cursor-crosshair min-h-[380px] sm:min-h-[460px] flex items-center justify-center p-2 sm:p-4"
+
         ondblclick="openUmlFullscreen()"
+
     >
+
         <!-- Background Grid Effect -->
+
         <div class="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:20px_20px] opacity-40 pointer-events-none"></div>
 
+
+
         <!-- 1. DIAGRAM: WEEK 1 (SmartCard, Passenger, Validator) -->
+
         <div id="uml-diagram-week1" class="uml-diagram-pane w-full {% if active_week|default(1) != 1 %}hidden{% endif %}">
+
             <svg id="svg-week1" viewBox="0 0 1020 480" class="w-full h-auto max-h-[500px]" xmlns="http://www.w3.org/2000/svg">
+
                 <defs>
+
                     <linearGradient id="g-header-card" x1="0%" y1="0%" x2="100%" y2="100%">
+
                         <stop offset="0%" stop-color="#0284c7" />
+
                         <stop offset="100%" stop-color="#0369a1" />
+
                     </linearGradient>
+
                     <linearGradient id="g-header-pass" x1="0%" y1="0%" x2="100%" y2="100%">
+
                         <stop offset="0%" stop-color="#1e293b" />
+
                         <stop offset="100%" stop-color="#0f172a" />
+
                     </linearGradient>
+
                     <filter id="shadow-box" x="-10%" y="-10%" width="125%" height="125%">
+
                         <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.6"/>
+
                     </filter>
+
                     <marker id="arrow-composition" markerWidth="14" markerHeight="14" refX="1" refY="7" orient="auto">
+
                         <polygon points="1 7, 7 2, 13 7, 7 12" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5" />
+
                     </marker>
+
                     <marker id="arrow-dependency" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+
                         <path d="M 1 1 L 10 6 L 1 11" fill="none" stroke="#38bdf8" stroke-width="2" />
+
                     </marker>
+
                 </defs>
+
+
 
                 <!-- Class 1: Passenger -->
+
                 <g id="node-passenger" filter="url(#shadow-box)">
+
                     <rect x="50" y="100" width="260" height="230" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+
                     <rect x="50" y="100" width="260" height="42" rx="12" fill="url(#g-header-pass)" />
+
                     <text x="180" y="127" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="15" font-weight="bold">Passenger</text>
+
                     <line x1="50" y1="142" x2="310" y2="142" stroke="#334155" stroke-width="1.5" />
+
                     <!-- Attributes -->
+
                     <text x="65" y="165" fill="#e2e8f0" font-family="monospace" font-size="12">+ id: int</text>
+
                     <text x="65" y="185" fill="#e2e8f0" font-family="monospace" font-size="12">+ full_name: str</text>
+
                     <text x="65" y="205" fill="#38bdf8" font-family="monospace" font-size="12">+ card: SmartCard</text>
+
                     <line x1="50" y1="217" x2="310" y2="217" stroke="#334155" stroke-width="1.5" />
+
                     <!-- Methods -->
+
                     <text x="65" y="240" fill="#34d399" font-family="monospace" font-size="11">+ __init__(id, name, card)</text>
+
                     <text x="65" y="262" fill="#34d399" font-family="monospace" font-size="11">+ top_up_card(amount: int)</text>
+
                     <text x="65" y="284" fill="#34d399" font-family="monospace" font-size="11">+ get_card_info(): str</text>
+
                     <text x="65" y="306" fill="#94a3b8" font-family="monospace" font-size="11">+ pay_trip(fare: int): bool</text>
+
                 </g>
+
+
 
                 <!-- Composition line from Passenger to SmartCard -->
+
                 <g id="edge-composition">
+
                     <line x1="310" y1="215" x2="390" y2="215" stroke="#38bdf8" stroke-width="2" marker-start="url(#arrow-composition)" />
+
                     <text x="325" y="205" fill="#38bdf8" font-family="monospace" font-size="11" font-weight="bold">1</text>
+
                     <text x="375" y="205" fill="#38bdf8" font-family="monospace" font-size="11" font-weight="bold">1</text>
+
                     <text x="350" y="235" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="10">композиция</text>
+
                 </g>
+
+
 
                 <!-- Class 2: SmartCard (Core Target of Encapsulation) -->
+
                 <g id="node-smartcard" filter="url(#shadow-box)">
+
                     <rect x="400" y="70" width="280" height="290" rx="12" fill="#090d16" stroke="#0284c7" stroke-width="2" />
+
                     <rect x="400" y="70" width="280" height="44" rx="12" fill="url(#g-header-card)" />
+
                     <text x="540" y="98" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="16" font-weight="extrabold">SmartCard</text>
+
                     <line x1="400" y1="114" x2="680" y2="114" stroke="#0284c7" stroke-width="1.5" />
+
                     <!-- Attributes -->
+
                     <text x="415" y="137" fill="#e2e8f0" font-family="monospace" font-size="12">+ owner: str</text>
+
                     <!-- Highlighted Encapsulated Balance -->
+
                     <rect x="410" y="146" width="260" height="22" rx="4" fill="#fbbf24" fill-opacity="0.12" stroke="#f59e0b" stroke-width="1" />
+
                     <text x="415" y="161" fill="#fcd34d" font-family="monospace" font-size="12" font-weight="bold">- _balance: int  🔒 [private]</text>
+
                     <line x1="400" y1="178" x2="680" y2="178" stroke="#0284c7" stroke-width="1.5" />
+
                     <!-- Methods -->
+
                     <text x="415" y="200" fill="#38bdf8" font-family="monospace" font-size="11">+ __init__(owner, balance=0)</text>
+
                     <rect x="410" y="210" width="260" height="20" rx="4" fill="#38bdf8" fill-opacity="0.12" stroke="#0284c7" stroke-width="1" />
+
                     <text x="415" y="224" fill="#38bdf8" font-family="monospace" font-size="11" font-weight="bold">+ balance: int  👁️ &lt;&lt;property&gt;&gt;</text>
+
                     <text x="415" y="247" fill="#34d399" font-family="monospace" font-size="11">+ top_up(amount: int): None</text>
+
                     <text x="415" y="269" fill="#34d399" font-family="monospace" font-size="11">+ pay(amount: int): bool</text>
+
                     <text x="415" y="291" fill="#34d399" font-family="monospace" font-size="11">+ info(): str</text>
+
                     <text x="415" y="313" fill="#94a3b8" font-family="monospace" font-size="11">+ __repr__(): str</text>
+
                     <text x="415" y="335" fill="#f43f5e" font-family="monospace" font-size="10"># _balance защищен от прямого доступа</text>
+
                 </g>
+
+
 
                 <!-- Dependency line from TerminalValidator to SmartCard -->
+
                 <g id="edge-dependency">
+
                     <line x1="770" y1="215" x2="692" y2="215" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#arrow-dependency)" />
+
                     <text x="730" y="205" text-anchor="middle" fill="#38bdf8" font-family="monospace" font-size="10">&lt;&lt;uses&gt;&gt;</text>
+
                     <text x="730" y="235" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="10">зависимость</text>
+
                 </g>
+
+
 
                 <!-- Class 3: TerminalValidator -->
+
                 <g id="node-validator" filter="url(#shadow-box)">
+
                     <rect x="770" y="110" width="200" height="210" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+
                     <rect x="770" y="110" width="200" height="42" rx="12" fill="url(#g-header-pass)" />
+
                     <text x="870" y="137" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="14" font-weight="bold">TerminalValidator</text>
+
                     <line x1="770" y1="152" x2="970" y2="152" stroke="#334155" stroke-width="1.5" />
+
                     <!-- Attributes -->
+
                     <text x="785" y="175" fill="#e2e8f0" font-family="monospace" font-size="12">+ station_id: str</text>
+
                     <text x="785" y="195" fill="#e2e8f0" font-family="monospace" font-size="12">+ fare: int = 100</text>
+
                     <line x1="770" y1="207" x2="970" y2="207" stroke="#334155" stroke-width="1.5" />
+
                     <!-- Methods -->
+
                     <text x="785" y="230" fill="#34d399" font-family="monospace" font-size="11">+ __init__(station, fare)</text>
+
                     <text x="785" y="255" fill="#38bdf8" font-family="monospace" font-size="11">+ validate_trip(card)</text>
+
                     <text x="785" y="280" fill="#94a3b8" font-family="monospace" font-size="10"># списывает fare с card</text>
+
                 </g>
+
+
 
                 <!-- Educational Annotations -->
+
                 <rect x="375" y="380" width="330" height="70" rx="8" fill="#1e293b" fill-opacity="0.9" stroke="#0284c7" stroke-width="1" />
+
                 <text x="390" y="405" fill="#38bdf8" font-family="sans-serif" font-size="12" font-weight="bold">💡 Инкапсуляция в деталях:</text>
+
                 <text x="390" y="425" fill="#cbd5e1" font-family="sans-serif" font-size="11">Поле `_balance` приватное; снаружи доступен только геттер `balance`.</text>
+
                 <text x="390" y="442" fill="#94a3b8" font-family="sans-serif" font-size="10">Изменение возможно исключительно через охранники `top_up()` и `pay()`.</text>
+
             </svg>
+
         </div>
+
+
 
         <!-- 2. DIAGRAM: WEEK 2 (SOLID & Dependency Injection) -->
+
         <div id="uml-diagram-week2" class="uml-diagram-pane w-full {% if active_week|default(1) != 2 %}hidden{% endif %}">
+
             <svg id="svg-week2" viewBox="0 0 1080 540" class="w-full h-auto max-h-[520px]" xmlns="http://www.w3.org/2000/svg">
+
                 <defs>
+
+                    <filter id="shadow-box" x="-10%" y="-10%" width="125%" height="125%">
+
+                        <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.6"/>
+
+                    </filter>
+
                     <linearGradient id="g-iface" x1="0%" y1="0%" x2="100%" y2="100%">
+
                         <stop offset="0%" stop-color="#4f46e5" />
+
                         <stop offset="100%" stop-color="#4338ca" />
+
                     </linearGradient>
+
                     <linearGradient id="g-validator-w2" x1="0%" y1="0%" x2="100%" y2="100%">
+
                         <stop offset="0%" stop-color="#0284c7" />
+
                         <stop offset="100%" stop-color="#0e7490" />
+
                     </linearGradient>
+
                     <marker id="arrow-realize" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto">
+
                         <polygon points="1 2, 13 7, 1 12" fill="#090d16" stroke="#818cf8" stroke-width="1.5" />
+
                     </marker>
+
                     <marker id="arrow-di" markerWidth="14" markerHeight="14" refX="1" refY="7" orient="auto">
+
                         <polygon points="1 7, 7 2, 13 7, 7 12" fill="#090d16" stroke="#38bdf8" stroke-width="1.5" />
+
                     </marker>
+
                 </defs>
 
+
+
                 <!-- Interface 1: IFareService -->
+
                 <g id="iface-fare" filter="url(#shadow-box)">
+
                     <rect x="50" y="30" width="240" height="110" rx="10" fill="#090d16" stroke="#6366f1" stroke-width="1.5" />
+
                     <rect x="50" y="30" width="240" height="38" rx="10" fill="url(#g-iface)" />
+
                     <text x="170" y="47" text-anchor="middle" fill="#c7d2fe" font-family="sans-serif" font-size="10" font-style="italic">&lt;&lt;interface&gt;&gt;</text>
+
                     <text x="170" y="61" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="14" font-weight="bold">IFareService</text>
+
                     <line x1="50" y1="68" x2="290" y2="68" stroke="#6366f1" stroke-width="1" />
+
                     <text x="65" y="95" fill="#a5b4fc" font-family="monospace" font-size="12" font-style="italic">+ get_fare(): int</text>
+
                     <text x="65" y="120" fill="#64748b" font-family="sans-serif" font-size="10">Абстракция тарифа проезда</text>
+
                 </g>
+
+
 
                 <!-- Implementation 1A: StandardFareService -->
+
                 <g id="class-standard-fare">
+
                     <rect x="30" y="190" width="140" height="85" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1" />
+
                     <rect x="30" y="190" width="140" height="26" rx="8" fill="#1e293b" />
+
                     <text x="100" y="208" text-anchor="middle" fill="#f8fafc" font-family="monospace" font-size="11" font-weight="bold">StandardFareService</text>
+
                     <line x1="30" y1="216" x2="170" y2="216" stroke="#334155" stroke-width="1" />
+
                     <text x="38" y="238" fill="#34d399" font-family="monospace" font-size="10">+ get_fare(): int</text>
+
                     <text x="38" y="258" fill="#94a3b8" font-family="monospace" font-size="10">// 100 ₸</text>
+
                 </g>
+
                 <line x1="100" y1="190" x2="120" y2="148" stroke="#818cf8" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrow-realize)" />
 
+
+
                 <!-- Implementation 1B: StudentFareService -->
+
                 <g id="class-student-fare">
+
                     <rect x="190" y="190" width="140" height="85" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1" />
+
                     <rect x="190" y="190" width="140" height="26" rx="8" fill="#1e293b" />
+
                     <text x="260" y="208" text-anchor="middle" fill="#f8fafc" font-family="monospace" font-size="11" font-weight="bold">StudentFareService</text>
+
                     <line x1="190" y1="216" x2="330" y2="216" stroke="#334155" stroke-width="1" />
+
                     <text x="198" y="238" fill="#34d399" font-family="monospace" font-size="10">+ get_fare(): int</text>
+
                     <text x="198" y="258" fill="#38bdf8" font-family="monospace" font-size="10">// 50 ₸ (льгота)</text>
+
                 </g>
+
                 <line x1="260" y1="190" x2="220" y2="148" stroke="#818cf8" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrow-realize)" />
 
+
+
                 <!-- Interface 2: IPaymentMethod -->
+
                 <g id="iface-payment" filter="url(#shadow-box)">
+
                     <rect x="790" y="30" width="240" height="110" rx="10" fill="#090d16" stroke="#6366f1" stroke-width="1.5" />
+
                     <rect x="790" y="30" width="240" height="38" rx="10" fill="url(#g-iface)" />
+
                     <text x="910" y="47" text-anchor="middle" fill="#c7d2fe" font-family="sans-serif" font-size="10" font-style="italic">&lt;&lt;interface&gt;&gt;</text>
+
                     <text x="910" y="61" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="14" font-weight="bold">IPaymentMethod</text>
+
                     <line x1="790" y1="68" x2="1030" y2="68" stroke="#6366f1" stroke-width="1" />
+
                     <text x="805" y="95" fill="#a5b4fc" font-family="monospace" font-size="12" font-style="italic">+ pay(amount: int): str</text>
+
                     <text x="805" y="120" fill="#64748b" font-family="sans-serif" font-size="10">Абстракция способа списания</text>
+
                 </g>
+
+
 
                 <!-- Implementation 2A: CardPayment -->
+
                 <g id="class-card-payment">
+
                     <rect x="760" y="190" width="145" height="95" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1" />
+
                     <rect x="760" y="190" width="145" height="26" rx="8" fill="#1e293b" />
+
                     <text x="832" y="208" text-anchor="middle" fill="#f8fafc" font-family="monospace" font-size="11" font-weight="bold">CardPayment</text>
+
                     <line x1="760" y1="216" x2="905" y2="216" stroke="#334155" stroke-width="1" />
+
                     <text x="768" y="235" fill="#94a3b8" font-family="monospace" font-size="10">- card: SmartCard</text>
+
                     <text x="768" y="255" fill="#34d399" font-family="monospace" font-size="10">+ pay(amount): str</text>
+
                     <text x="768" y="272" fill="#38bdf8" font-family="monospace" font-size="9">// списание с чипа</text>
+
                 </g>
+
                 <line x1="832" y1="190" x2="855" y2="148" stroke="#818cf8" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrow-realize)" />
 
+
+
                 <!-- Implementation 2B: BluetoothPayment -->
+
                 <g id="class-bt-payment">
+
                     <rect x="925" y="190" width="145" height="95" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1" />
+
                     <rect x="925" y="190" width="145" height="26" rx="8" fill="#1e293b" />
+
                     <text x="997" y="208" text-anchor="middle" fill="#f8fafc" font-family="monospace" font-size="11" font-weight="bold">BluetoothPayment</text>
+
                     <line x1="925" y1="216" x2="1070" y2="216" stroke="#334155" stroke-width="1" />
+
                     <text x="933" y="235" fill="#94a3b8" font-family="monospace" font-size="10">- device_id: str</text>
+
                     <text x="933" y="255" fill="#34d399" font-family="monospace" font-size="10">+ pay(amount): str</text>
+
                     <text x="933" y="272" fill="#38bdf8" font-family="monospace" font-size="9">// оплата через BLE</text>
+
                 </g>
+
                 <line x1="997" y1="190" x2="965" y2="148" stroke="#818cf8" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrow-realize)" />
 
+
+
                 <!-- Central Class: TerminalValidator (Receives Injected Dependencies) -->
+
                 <g id="class-terminal-validator" filter="url(#shadow-box)">
+
                     <rect x="360" y="320" width="360" height="190" rx="12" fill="#090d16" stroke="#0284c7" stroke-width="2" />
+
                     <rect x="360" y="320" width="360" height="42" rx="12" fill="url(#g-validator-w2)" />
+
                     <text x="540" y="347" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="15" font-weight="bold">TerminalValidator</text>
+
                     <line x1="360" y1="362" x2="720" y2="362" stroke="#0284c7" stroke-width="1.5" />
+
                     <!-- Injected Attributes -->
+
                     <text x="375" y="385" fill="#93c5fd" font-family="monospace" font-size="12">- fare_service: IFareService</text>
+
                     <text x="375" y="405" fill="#93c5fd" font-family="monospace" font-size="12">- payment_method: IPaymentMethod</text>
+
                     <line x1="360" y1="417" x2="720" y2="417" stroke="#0284c7" stroke-width="1.5" />
+
                     <!-- Methods -->
+
                     <rect x="370" y="425" width="340" height="22" rx="4" fill="#38bdf8" fill-opacity="0.12" stroke="#0284c7" stroke-width="1" />
+
                     <text x="375" y="440" fill="#38bdf8" font-family="monospace" font-size="11" font-weight="bold">+ __init__(fare_service, payment_method)</text>
+
                     <text x="375" y="465" fill="#34d399" font-family="monospace" font-size="11">+ process_passenger(): str</text>
-                    <text x="375" y="490" fill="#f59e0b" font-family="monospace" font-size="10">⚡ DIP: Класс зависит от абстракций, а не реализаций</text>
+
+                    <text x="375" y="490" fill="#f59e0b" font-family="monospace" font-size="10">⚡ DIP: Класс зависит от абстракций, а не реализаций (Dependency Injection)</text>
+
                 </g>
+
+
 
                 <!-- Aggregation / DI Dependency Lines -->
+
                 <g id="edge-di-fare">
+
                     <path d="M 440 320 L 440 100 L 298 100" fill="none" stroke="#38bdf8" stroke-width="1.8" marker-start="url(#arrow-di)" />
-                    <text x="445" y="210" fill="#38bdf8" font-family="sans-serif" font-size="10" font-weight="bold">Внедрение зависимости (DI)</text>
+
+                    <text x="445" y="210" fill="#38bdf8" font-family="sans-serif" font-size="10" font-weight="bold">DI: IFareService</text>
+
                 </g>
+
                 <g id="edge-di-payment">
+
                     <path d="M 640 320 L 640 100 L 782 100" fill="none" stroke="#38bdf8" stroke-width="1.8" marker-start="url(#arrow-di)" />
-                    <text x="510" y="210" fill="#38bdf8" font-family="sans-serif" font-size="10" font-weight="bold">Внедрение зависимости (DI)</text>
+
+                    <text x="510" y="210" fill="#38bdf8" font-family="sans-serif" font-size="10" font-weight="bold">DI: IPaymentMethod</text>
+
                 </g>
+
             </svg>
+
         </div>
+
+
+
+        <!-- 2B. DIAGRAM: WEEK 3 (GoF Patterns & Clean Architecture) -->
+
+        <div id="uml-diagram-week3" class="uml-diagram-pane w-full {% if active_week|default(1) != 3 %}hidden{% endif %}">
+
+            <svg id="svg-week3" viewBox="0 0 1120 560" class="w-full h-auto max-h-[560px]" xmlns="http://www.w3.org/2000/svg">
+
+                <defs>
+
+                    <filter id="shadow-box-w3" x="-15%" y="-15%" width="130%" height="130%">
+
+                        <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.6"/>
+
+                    </filter>
+
+                    <linearGradient id="g-header-core-w3" x1="0%" y1="0%" x2="100%" y2="100%">
+
+                        <stop offset="0%" stop-color="#0284c7" />
+
+                        <stop offset="100%" stop-color="#0369a1" />
+
+                    </linearGradient>
+
+                    <linearGradient id="g-header-app-w3" x1="0%" y1="0%" x2="100%" y2="100%">
+
+                        <stop offset="0%" stop-color="#7c3aed" />
+
+                        <stop offset="100%" stop-color="#5b21b6" />
+
+                    </linearGradient>
+
+                    <linearGradient id="g-header-port-w3" x1="0%" y1="0%" x2="100%" y2="100%">
+
+                        <stop offset="0%" stop-color="#059669" />
+
+                        <stop offset="100%" stop-color="#047857" />
+
+                    </linearGradient>
+
+                    <linearGradient id="g-header-ext-w3" x1="0%" y1="0%" x2="100%" y2="100%">
+
+                        <stop offset="0%" stop-color="#b45309" />
+
+                        <stop offset="100%" stop-color="#92400e" />
+
+                    </linearGradient>
+
+                    <marker id="arrow-dep-w3" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+
+                        <path d="M 1 1 L 10 6 L 1 11" fill="none" stroke="#38bdf8" stroke-width="2" />
+
+                    </marker>
+
+                    <marker id="arrow-impl-w3" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
+
+                        <polygon points="1 7, 12 2, 12 12" fill="#0f172a" stroke="#10b981" stroke-width="1.8" />
+
+                    </marker>
+
+                </defs>
+
+
+
+                <!-- Col 1: Entities & Creational (x=30) -->
+
+                <g id="w3-node-money" filter="url(#shadow-box-w3)">
+
+                    <rect x="30" y="40" width="220" height="110" rx="10" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+
+                    <rect x="30" y="40" width="220" height="34" rx="10" fill="url(#g-header-core-w3)" />
+
+                    <text x="140" y="58" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="13" font-weight="bold">Money</text>
+
+                    <text x="140" y="70" text-anchor="middle" fill="#bae6fd" font-family="sans-serif" font-size="9">«Value Object»</text>
+
+                    <line x1="30" y1="74" x2="250" y2="74" stroke="#334155" stroke-width="1.5" />
+
+                    <text x="45" y="94" fill="#e2e8f0" font-family="monospace" font-size="11">+ amount: Decimal</text>
+
+                    <text x="45" y="112" fill="#e2e8f0" font-family="monospace" font-size="11">+ currency: str = "KZT"</text>
+
+                </g>
+
+
+
+                <g id="w3-node-transitcard" filter="url(#shadow-box-w3)">
+
+                    <rect x="30" y="170" width="220" height="130" rx="10" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+
+                    <rect x="30" y="170" width="220" height="34" rx="10" fill="url(#g-header-core-w3)" />
+
+                    <text x="140" y="188" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="13" font-weight="bold">TransitCard</text>
+
+                    <text x="140" y="200" text-anchor="middle" fill="#bae6fd" font-family="sans-serif" font-size="9">«core entity»</text>
+
+                    <line x1="30" y1="204" x2="250" y2="204" stroke="#334155" stroke-width="1.5" />
+
+                    <text x="45" y="224" fill="#e2e8f0" font-family="monospace" font-size="11">+ card_id: str</text>
+
+                    <text x="45" y="242" fill="#e2e8f0" font-family="monospace" font-size="11">+ balance: Decimal</text>
+
+                    <line x1="30" y1="252" x2="250" y2="252" stroke="#334155" stroke-width="1" />
+
+                    <text x="45" y="272" fill="#38bdf8" font-family="monospace" font-size="10">+ charge_fare(fare: Money)</text>
+
+                </g>
+
+
+
+                <g id="w3-node-builder" filter="url(#shadow-box-w3)">
+
+                    <rect x="30" y="320" width="220" height="200" rx="10" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+
+                    <rect x="30" y="320" width="220" height="34" rx="10" fill="url(#g-header-core-w3)" />
+
+                    <text x="140" y="338" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="13" font-weight="bold">ShiftReportBuilder</text>
+
+                    <text x="140" y="350" text-anchor="middle" fill="#bae6fd" font-family="sans-serif" font-size="9">«GoF Builder»</text>
+
+                    <line x1="30" y1="354" x2="250" y2="354" stroke="#334155" stroke-width="1.5" />
+
+                    <text x="45" y="374" fill="#94a3b8" font-family="monospace" font-size="10">- _route_id, _driver_id</text>
+
+                    <text x="45" y="392" fill="#94a3b8" font-family="monospace" font-size="10">- _total_revenue: Decimal</text>
+
+                    <line x1="30" y1="402" x2="250" y2="402" stroke="#334155" stroke-width="1" />
+
+                    <text x="45" y="422" fill="#38bdf8" font-family="monospace" font-size="10">+ set_shift_info(r, d): self</text>
+
+                    <text x="45" y="440" fill="#38bdf8" font-family="monospace" font-size="10">+ add_qr_revenue(amt): self</text>
+
+                    <text x="45" y="458" fill="#38bdf8" font-family="monospace" font-size="10">+ record_incident(desc): self</text>
+
+                    <text x="45" y="476" fill="#38bdf8" font-family="monospace" font-size="10">+ build(): DailyShiftReport</text>
+
+                    <text x="45" y="498" fill="#f87171" font-family="sans-serif" font-size="9">! IncompleteReportError</text>
+
+                </g>
+
+
+
+                <!-- Col 2: Use Cases & Facade (x=290) -->
+
+                <g id="w3-node-usecase" filter="url(#shadow-box-w3)">
+
+                    <rect x="290" y="40" width="250" height="230" rx="10" fill="#0f172a" stroke="#7c3aed" stroke-width="1.5" />
+
+                    <rect x="290" y="40" width="250" height="34" rx="10" fill="url(#g-header-app-w3)" />
+
+                    <text x="415" y="58" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="13" font-weight="bold">ValidateRideUseCase</text>
+
+                    <text x="415" y="70" text-anchor="middle" fill="#ddd6fe" font-family="sans-serif" font-size="9">«Clean Arch: Use Case Interactor»</text>
+
+                    <line x1="290" y1="74" x2="540" y2="74" stroke="#7c3aed" stroke-width="1.5" />
+
+                    <text x="305" y="96" fill="#c4b5fd" font-family="monospace" font-size="10">- _card_repo: CardRepositoryPort</text>
+
+                    <text x="305" y="114" fill="#c4b5fd" font-family="monospace" font-size="10">- _payment_gw: PaymentGatewayPort</text>
+
+                    <line x1="290" y1="126" x2="540" y2="126" stroke="#4c1d95" stroke-width="1" />
+
+                    <text x="305" y="146" fill="#e2e8f0" font-family="monospace" font-size="10">+ execute(req: Req) -> Resp:</text>
+
+                    <text x="315" y="166" fill="#a78bfa" font-family="sans-serif" font-size="9">1. card = repo.get_by_id(id)</text>
+
+                    <text x="315" y="182" fill="#a78bfa" font-family="sans-serif" font-size="9">2. card.charge_fare(fare)</text>
+
+                    <text x="315" y="198" fill="#a78bfa" font-family="sans-serif" font-size="9">3. tx = gw.charge(id, fare)</text>
+
+                    <text x="315" y="214" fill="#a78bfa" font-family="sans-serif" font-size="9">4. repo.save(card)</text>
+
+                    <text x="315" y="230" fill="#a78bfa" font-family="sans-serif" font-size="9">5. return Resp(True, bal, tx)</text>
+
+                </g>
+
+
+
+                <g id="w3-node-facade" filter="url(#shadow-box-w3)">
+
+                    <rect x="290" y="320" width="250" height="150" rx="10" fill="#0f172a" stroke="#7c3aed" stroke-width="1.5" />
+
+                    <rect x="290" y="320" width="250" height="34" rx="10" fill="url(#g-header-app-w3)" />
+
+                    <text x="415" y="338" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="13" font-weight="bold">TransitTerminalFacade</text>
+
+                    <text x="415" y="350" text-anchor="middle" fill="#ddd6fe" font-family="sans-serif" font-size="9">«GoF Facade: Subsystem Wrapper»</text>
+
+                    <line x1="290" y1="354" x2="540" y2="354" stroke="#7c3aed" stroke-width="1.5" />
+
+                    <text x="305" y="376" fill="#c4b5fd" font-family="monospace" font-size="10">- _use_case: ValidateRideUseCase</text>
+
+                    <text x="305" y="394" fill="#c4b5fd" font-family="monospace" font-size="10">- _telemetry: TelemetrySubject</text>
+
+                    <line x1="290" y1="406" x2="540" y2="406" stroke="#4c1d95" stroke-width="1" />
+
+                    <text x="305" y="428" fill="#38bdf8" font-family="monospace" font-size="11">+ tap(card_id, fare): str</text>
+
+                    <text x="305" y="448" fill="#94a3b8" font-family="sans-serif" font-size="9">Скрывает детали оплаты за 1 методом</text>
+
+                </g>
+
+
+
+                <!-- Col 3: Ports & Behavioral (x=580) -->
+
+                <g id="w3-node-cardrepo" filter="url(#shadow-box-w3)">
+
+                    <rect x="580" y="40" width="230" height="100" rx="10" fill="#0f172a" stroke="#059669" stroke-width="1.5" />
+
+                    <rect x="580" y="40" width="230" height="32" rx="10" fill="url(#g-header-port-w3)" />
+
+                    <text x="695" y="56" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="12" font-weight="bold">«interface: Port»</text>
+
+                    <text x="695" y="68" text-anchor="middle" fill="#a7f3d0" font-family="monospace" font-size="11">CardRepositoryPort</text>
+
+                    <line x1="580" y1="72" x2="810" y2="72" stroke="#059669" stroke-width="1.5" />
+
+                    <text x="595" y="92" fill="#6ee7b7" font-family="monospace" font-size="10">+ get_by_id(id): TransitCard</text>
+
+                    <text x="595" y="110" fill="#6ee7b7" font-family="monospace" font-size="10">+ save(card: TransitCard): None</text>
+
+                </g>
+
+
+
+                <g id="w3-node-paymentgw" filter="url(#shadow-box-w3)">
+
+                    <rect x="580" y="160" width="230" height="90" rx="10" fill="#0f172a" stroke="#059669" stroke-width="1.5" />
+
+                    <rect x="580" y="160" width="230" height="32" rx="10" fill="url(#g-header-port-w3)" />
+
+                    <text x="695" y="176" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="12" font-weight="bold">«interface: Port»</text>
+
+                    <text x="695" y="188" text-anchor="middle" fill="#a7f3d0" font-family="monospace" font-size="11">PaymentGatewayPort</text>
+
+                    <line x1="580" y1="192" x2="810" y2="192" stroke="#059669" stroke-width="1.5" />
+
+                    <text x="595" y="214" fill="#6ee7b7" font-family="monospace" font-size="10">+ charge(id, amount): str</text>
+
+                </g>
+
+
+
+                <g id="w3-node-handler" filter="url(#shadow-box-w3)">
+
+                    <rect x="580" y="270" width="230" height="120" rx="10" fill="#0f172a" stroke="#059669" stroke-width="1.5" />
+
+                    <rect x="580" y="270" width="230" height="32" rx="10" fill="url(#g-header-port-w3)" />
+
+                    <text x="695" y="286" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="12" font-weight="bold">ValidationHandler (ABC)</text>
+
+                    <text x="695" y="298" text-anchor="middle" fill="#a7f3d0" font-family="sans-serif" font-size="9">«Chain of Responsibility»</text>
+
+                    <line x1="580" y1="302" x2="810" y2="302" stroke="#059669" stroke-width="1.5" />
+
+                    <text x="595" y="322" fill="#6ee7b7" font-family="monospace" font-size="10">+ set_next(h): Handler</text>
+
+                    <text x="595" y="340" fill="#6ee7b7" font-family="monospace" font-size="10">+ handle(req): ValidationResult</text>
+
+                    <text x="595" y="360" fill="#94a3b8" font-family="sans-serif" font-size="9">BlacklistCheck -> BalanceCheck</text>
+
+                </g>
+
+
+
+                <g id="w3-node-observer" filter="url(#shadow-box-w3)">
+
+                    <rect x="580" y="410" width="230" height="110" rx="10" fill="#0f172a" stroke="#059669" stroke-width="1.5" />
+
+                    <rect x="580" y="410" width="230" height="32" rx="10" fill="url(#g-header-port-w3)" />
+
+                    <text x="695" y="426" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="12" font-weight="bold">TransitTelemetrySubject</text>
+
+                    <text x="695" y="438" text-anchor="middle" fill="#a7f3d0" font-family="sans-serif" font-size="9">«GoF Observer (Publisher)»</text>
+
+                    <line x1="580" y1="442" x2="810" y2="442" stroke="#059669" stroke-width="1.5" />
+
+                    <text x="595" y="462" fill="#6ee7b7" font-family="monospace" font-size="10">+ attach(observer): None</text>
+
+                    <text x="595" y="480" fill="#6ee7b7" font-family="monospace" font-size="10">+ detach(observer): None</text>
+
+                    <text x="595" y="498" fill="#6ee7b7" font-family="monospace" font-size="10">+ notify(event: str): None</text>
+
+                </g>
+
+
+
+                <!-- Col 4: Adapters & External (x=850) -->
+
+                <g id="w3-node-adapter" filter="url(#shadow-box-w3)">
+
+                    <rect x="850" y="160" width="240" height="130" rx="10" fill="#0f172a" stroke="#d97706" stroke-width="1.5" />
+
+                    <rect x="850" y="160" width="240" height="34" rx="10" fill="url(#g-header-ext-w3)" />
+
+                    <text x="970" y="178" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="13" font-weight="bold">BankApiAdapter</text>
+
+                    <text x="970" y="190" text-anchor="middle" fill="#fde68a" font-family="sans-serif" font-size="9">«GoF Adapter -> implements Port»</text>
+
+                    <line x1="850" y1="194" x2="1090" y2="194" stroke="#d97706" stroke-width="1.5" />
+
+                    <text x="865" y="216" fill="#fde68a" font-family="monospace" font-size="10">- _client: LegacyBankClient</text>
+
+                    <text x="865" y="234" fill="#fde68a" font-family="monospace" font-size="10">- _transit_account: str</text>
+
+                    <line x1="850" y1="244" x2="1090" y2="244" stroke="#78350f" stroke-width="1" />
+
+                    <text x="865" y="264" fill="#38bdf8" font-family="monospace" font-size="10">+ charge(card_id, amt): str</text>
+
+                </g>
+
+
+
+                <g id="w3-node-legacy" filter="url(#shadow-box-w3)">
+
+                    <rect x="850" y="320" width="240" height="100" rx="10" fill="#0f172a" stroke="#64748b" stroke-width="1.5" />
+
+                    <rect x="850" y="320" width="240" height="32" rx="10" fill="#334155" />
+
+                    <text x="970" y="338" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="12" font-weight="bold">LegacyBankClient</text>
+
+                    <text x="970" y="348" text-anchor="middle" fill="#94a3b8" font-family="sans-serif" font-size="9">«Внешний банк (тиыны)»</text>
+
+                    <line x1="850" y1="352" x2="1090" y2="352" stroke="#64748b" stroke-width="1.5" />
+
+                    <text x="865" y="374" fill="#cbd5e1" font-family="monospace" font-size="9">+ execute_payment_kzt(...):</text>
+
+                    <text x="875" y="392" fill="#94a3b8" font-family="monospace" font-size="9">amount_tiyn: int -> dict</text>
+
+                </g>
+
+
+
+                <!-- Connecting Relationships (Arrows) -->
+
+                <path d="M 540 90 L 580 90" fill="none" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-dep-w3)" />
+
+                <path d="M 540 180 L 580 180" fill="none" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-dep-w3)" />
+
+                <path d="M 850 205 L 810 205" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrow-impl-w3)" />
+
+                <path d="M 970 290 L 970 320" fill="none" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-dep-w3)" />
+
+                <path d="M 290 120 L 250 190" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrow-dep-w3)" />
+
+                <path d="M 415 320 L 415 270" fill="none" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow-dep-w3)" />
+
+            </svg>
+
+        </div>
+
+
 
         <!-- 3. DIAGRAM: PLATFORM ARCHITECTURE (WeekModule & Services) -->
+
         <div id="uml-diagram-arch" class="uml-diagram-pane w-full hidden">
+
             <svg id="svg-arch" viewBox="0 0 1060 490" class="w-full h-auto max-h-[500px]" xmlns="http://www.w3.org/2000/svg">
+
+                <defs>
+
+                    <filter id="shadow-box" x="-10%" y="-10%" width="125%" height="125%">
+
+                        <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.6"/>
+
+                    </filter>
+
+                    <marker id="arrow-di" markerWidth="14" markerHeight="14" refX="1" refY="7" orient="auto">
+
+                        <polygon points="1 7, 7 2, 13 7, 7 12" fill="#090d16" stroke="#38bdf8" stroke-width="1.5" />
+
+                    </marker>
+
+                    <marker id="arrow-dependency" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+
+                        <path d="M 1 1 L 10 6 L 1 11" fill="none" stroke="#38bdf8" stroke-width="2" />
+
+                    </marker>
+
+                </defs>
+
                 <!-- WeekRegistry -->
+
                 <g id="arch-registry" filter="url(#shadow-box)">
+
                     <rect x="50" y="60" width="260" height="170" rx="10" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5" />
+
                     <rect x="50" y="60" width="260" height="38" rx="10" fill="#0369a1" />
+
                     <text x="180" y="85" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="14" font-weight="bold">WeekRegistry</text>
+
                     <line x1="50" y1="98" x2="310" y2="98" stroke="#38bdf8" stroke-width="1" />
+
                     <text x="65" y="122" fill="#94a3b8" font-family="monospace" font-size="11">- _modules: dict[int, WeekModule]</text>
+
                     <line x1="50" y1="134" x2="310" y2="134" stroke="#334155" stroke-width="1" />
+
                     <text x="65" y="156" fill="#34d399" font-family="monospace" font-size="11">+ register(module: WeekModule)</text>
+
                     <text x="65" y="178" fill="#34d399" font-family="monospace" font-size="11">+ get(week_num: int): WeekModule</text>
+
                     <text x="65" y="200" fill="#38bdf8" font-family="monospace" font-size="11">+ get_all(): list[WeekModule]</text>
+
                 </g>
+
+
 
                 <!-- Aggregation Arrow from Registry to Module -->
+
                 <line x1="310" y1="140" x2="390" y2="140" stroke="#38bdf8" stroke-width="1.8" marker-start="url(#arrow-di)" />
+
                 <text x="350" y="130" text-anchor="middle" fill="#38bdf8" font-family="monospace" font-size="10">1..*</text>
 
+
+
                 <!-- WeekModule Interface / Base -->
+
                 <g id="arch-module" filter="url(#shadow-box)">
+
                     <rect x="400" y="40" width="280" height="240" rx="10" fill="#090d16" stroke="#0284c7" stroke-width="2" />
+
                     <rect x="400" y="40" width="280" height="40" rx="10" fill="#0284c7" />
+
                     <text x="540" y="65" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="15" font-weight="bold">WeekModule (Базовый)</text>
+
                     <line x1="400" y1="80" x2="680" y2="80" stroke="#0284c7" stroke-width="1" />
+
                     <text x="415" y="103" fill="#e2e8f0" font-family="monospace" font-size="11">+ week_number: int</text>
+
                     <text x="415" y="123" fill="#e2e8f0" font-family="monospace" font-size="11">+ title: str</text>
+
                     <text x="415" y="143" fill="#e2e8f0" font-family="monospace" font-size="11">+ theory_sections: list[dict]</text>
+
                     <text x="415" y="163" fill="#e2e8f0" font-family="monospace" font-size="11">+ practice_tasks: list[dict]</text>
+
                     <text x="415" y="183" fill="#e2e8f0" font-family="monospace" font-size="11">+ quiz_questions: list[dict]</text>
+
                     <line x1="400" y1="195" x2="680" y2="195" stroke="#0284c7" stroke-width="1" />
+
                     <text x="415" y="217" fill="#34d399" font-family="monospace" font-size="11">+ get_practice_task(task_id)</text>
+
                     <text x="415" y="239" fill="#34d399" font-family="monospace" font-size="11">+ evaluate_quiz(answers)</text>
+
                     <text x="415" y="261" fill="#38bdf8" font-family="monospace" font-size="11">+ build_context(student, progress)</text>
+
                 </g>
+
+
 
                 <!-- ScoringService -->
+
                 <g id="arch-scoring" filter="url(#shadow-box)">
+
                     <rect x="740" y="50" width="270" height="210" rx="10" fill="#0f172a" stroke="#10b981" stroke-width="1.5" />
+
                     <rect x="740" y="50" width="270" height="38" rx="10" fill="#059669" />
+
                     <text x="875" y="75" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="14" font-weight="bold">ScoringService</text>
+
                     <line x1="740" y1="88" x2="1010" y2="88" stroke="#10b981" stroke-width="1" />
+
                     <text x="755" y="112" fill="#e2e8f0" font-family="monospace" font-size="11">+ STUDENTS: list[dict] (4 профиля)</text>
+
                     <line x1="740" y1="124" x2="1010" y2="124" stroke="#334155" stroke-width="1" />
+
                     <text x="755" y="146" fill="#34d399" font-family="monospace" font-size="11">+ get_or_create_student(db, name)</text>
+
                     <text x="755" y="168" fill="#34d399" font-family="monospace" font-size="11">+ record_theory_completed(db, ...)</text>
+
                     <text x="755" y="190" fill="#34d399" font-family="monospace" font-size="11">+ record_quiz_submission(db, ...)</text>
+
                     <text x="755" y="212" fill="#38bdf8" font-family="monospace" font-size="11">+ get_progress_summary(db, ...)</text>
+
                     <text x="755" y="234" fill="#a7f3d0" font-family="monospace" font-size="10"># Read-only чтение без commit()</text>
+
                 </g>
+
                 <line x1="680" y1="140" x2="738" y2="140" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrow-dependency)" />
 
+
+
                 <!-- RunnerService & ASTValidator (Bottom Row) -->
+
                 <g id="arch-runner">
+
                     <rect x="180" y="320" width="290" height="135" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5" />
+
                     <rect x="180" y="320" width="290" height="34" rx="10" fill="#d97706" />
+
                     <text x="325" y="343" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="13" font-weight="bold">RunnerService (Песочница)</text>
+
                     <line x1="180" y1="354" x2="470" y2="354" stroke="#f59e0b" stroke-width="1" />
+
                     <text x="195" y="377" fill="#fde68a" font-family="monospace" font-size="11">+ run_code(code, test, timeout=5s)</text>
+
                     <text x="195" y="399" fill="#94a3b8" font-family="monospace" font-size="10">• Запуск в python -I (Isolated mode)</text>
+
                     <text x="195" y="419" fill="#94a3b8" font-family="monospace" font-size="10">• Очищенный safe_env &amp; tempfile</text>
+
                     <text x="195" y="439" fill="#94a3b8" font-family="monospace" font-size="10">• Ограничение таймаута: 5.0 секунд</text>
+
                 </g>
+
+
 
                 <g id="arch-validator">
+
                     <rect x="560" y="320" width="310" height="135" rx="10" fill="#0f172a" stroke="#f43f5e" stroke-width="1.5" />
+
                     <rect x="560" y="320" width="310" height="34" rx="10" fill="#e11d48" />
+
                     <text x="715" y="343" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="13" font-weight="bold">ASTValidator (Белый список AST)</text>
+
                     <line x1="560" y1="354" x2="870" y2="354" stroke="#f43f5e" stroke-width="1" />
+
                     <text x="575" y="377" fill="#fecdd3" font-family="monospace" font-size="11">+ validate(code): tuple[bool, str]</text>
+
                     <text x="575" y="399" fill="#94a3b8" font-family="monospace" font-size="10">• Жесткий лимит размера кода 15 КБ</text>
+
                     <text x="575" y="419" fill="#94a3b8" font-family="monospace" font-size="10">• Блок __subclasses__, __class__, open</text>
+
                     <text x="575" y="439" fill="#94a3b8" font-family="monospace" font-size="10">• Белый список разрешенных AST-узлов</text>
+
                 </g>
+
                 <line x1="470" y1="387" x2="558" y2="387" stroke="#f43f5e" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrow-dependency)" />
+
                 <text x="515" y="377" text-anchor="middle" fill="#f43f5e" font-family="monospace" font-size="10">&lt;&lt;uses&gt;&gt;</text>
+
             </svg>
+
         </div>
+
+
 
         <!-- 4. DIAGRAM: DATABASE ERD (SQLite Schema) -->
+
         <div id="uml-diagram-db" class="uml-diagram-pane w-full hidden">
+
             <svg id="svg-db" viewBox="0 0 1020 440" class="w-full h-auto max-h-[460px]" xmlns="http://www.w3.org/2000/svg">
+
+                <defs>
+
+                    <filter id="shadow-box" x="-10%" y="-10%" width="125%" height="125%">
+
+                        <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.6"/>
+
+                    </filter>
+
+                </defs>
+
                 <!-- Entity 1: STUDENT -->
+
                 <g id="table-student" filter="url(#shadow-box)">
+
                     <rect x="50" y="110" width="270" height="200" rx="10" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5" />
+
                     <rect x="50" y="110" width="270" height="38" rx="10" fill="#0284c7" />
+
                     <text x="185" y="135" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="14" font-weight="bold">STUDENTS</text>
+
                     <line x1="50" y1="148" x2="320" y2="148" stroke="#38bdf8" stroke-width="1" />
+
                     <text x="65" y="173" fill="#fcd34d" font-family="monospace" font-size="12">🔑 id: Integer [PK, Auto]</text>
+
                     <text x="65" y="198" fill="#38bdf8" font-family="monospace" font-size="12">⚡ username: String(64) [UK]</text>
+
                     <text x="65" y="223" fill="#e2e8f0" font-family="monospace" font-size="12">📝 full_name: String(128)</text>
+
                     <text x="65" y="248" fill="#94a3b8" font-family="monospace" font-size="12">🕒 created_at: DateTime</text>
+
                     <line x1="50" y1="262" x2="320" y2="262" stroke="#334155" stroke-width="1" />
+
                     <text x="65" y="285" fill="#34d399" font-family="monospace" font-size="10">4 фиксированных студента группы</text>
+
                 </g>
+
+
 
                 <!-- 1:N Relation Lines -->
+
                 <path d="M 320 180 L 440 180" fill="none" stroke="#38bdf8" stroke-width="2" />
+
                 <path d="M 320 250 L 380 250 L 380 320 L 440 320" fill="none" stroke="#38bdf8" stroke-width="2" />
+
                 <text x="350" y="170" fill="#38bdf8" font-family="monospace" font-size="11" font-weight="bold">1 : N</text>
+
                 <text x="395" y="310" fill="#38bdf8" font-family="monospace" font-size="11" font-weight="bold">1 : N</text>
 
+
+
                 <!-- Entity 2: TOPIC_PROGRESS -->
+
                 <g id="table-progress" filter="url(#shadow-box)">
+
                     <rect x="440" y="50" width="310" height="200" rx="10" fill="#0f172a" stroke="#10b981" stroke-width="1.5" />
+
                     <rect x="440" y="50" width="310" height="38" rx="10" fill="#059669" />
+
                     <text x="595" y="75" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="14" font-weight="bold">TOPIC_PROGRESS</text>
+
                     <line x1="440" y1="88" x2="750" y2="88" stroke="#10b981" stroke-width="1" />
+
                     <text x="455" y="113" fill="#fcd34d" font-family="monospace" font-size="12">🔑 id: Integer [PK, Auto]</text>
+
                     <text x="455" y="138" fill="#6ee7b7" font-family="monospace" font-size="12">🔗 student_id: Integer [FK -> students.id]</text>
+
                     <text x="455" y="163" fill="#e2e8f0" font-family="monospace" font-size="12">🏷️ topic_id: String (week_1_quiz, theory)</text>
+
                     <text x="455" y="188" fill="#e2e8f0" font-family="monospace" font-size="12">✅ is_completed: Boolean</text>
+
                     <text x="455" y="213" fill="#38bdf8" font-family="monospace" font-size="12">⭐ score: Float (0.0 .. 20.0)</text>
+
                     <text x="455" y="235" fill="#94a3b8" font-family="monospace" font-size="11">🕒 updated_at: DateTime</text>
+
                 </g>
+
+
 
                 <!-- Entity 3: SUBMISSION -->
+
                 <g id="table-submission" filter="url(#shadow-box)">
+
                     <rect x="440" y="270" width="310" height="150" rx="10" fill="#0f172a" stroke="#6366f1" stroke-width="1.5" />
+
                     <rect x="440" y="270" width="310" height="36" rx="10" fill="#4338ca" />
+
                     <text x="595" y="294" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="14" font-weight="bold">SUBMISSIONS</text>
+
                     <line x1="440" y1="306" x2="750" y2="306" stroke="#6366f1" stroke-width="1" />
+
                     <text x="455" y="328" fill="#fcd34d" font-family="monospace" font-size="12">🔑 id: Integer [PK, Auto]</text>
+
                     <text x="455" y="348" fill="#a5b4fc" font-family="monospace" font-size="12">🔗 student_id: Integer [FK]</text>
+
                     <text x="455" y="368" fill="#e2e8f0" font-family="monospace" font-size="12">📝 task_id: String, code: Text</text>
+
                     <text x="455" y="388" fill="#34d399" font-family="monospace" font-size="12">📊 status: PASSED | FAILED | TIMEOUT</text>
+
                     <text x="455" y="408" fill="#94a3b8" font-family="monospace" font-size="11">🕒 created_at: DateTime</text>
+
                 </g>
 
+
+
                 <!-- WAL Mode Note -->
+
                 <rect x="780" y="140" width="210" height="150" rx="10" fill="#1e293b" fill-opacity="0.8" stroke="#38bdf8" stroke-width="1" />
+
                 <text x="795" y="168" fill="#38bdf8" font-family="sans-serif" font-size="13" font-weight="bold">⚡ Режим WAL:</text>
+
                 <text x="795" y="193" fill="#e2e8f0" font-family="sans-serif" font-size="11">• Write-Ahead Logging</text>
+
                 <text x="795" y="213" fill="#e2e8f0" font-family="sans-serif" font-size="11">• busy_timeout = 5000 мс</text>
+
                 <text x="795" y="233" fill="#e2e8f0" font-family="sans-serif" font-size="11">• Защита от блокировок</text>
+
                 <text x="795" y="253" fill="#94a3b8" font-family="sans-serif" font-size="10">Изоляция 4 профилей студентов</text>
+
             </svg>
+
         </div>
+
+
 
         <!-- 5. INTERACTIVE MAGNIFIER LENS ELEMENT (Лупа) -->
+
         <div
+
             id="uml-lens"
+
             class="hidden pointer-events-none absolute w-48 h-48 rounded-full border-2 border-cyan-400 overflow-hidden shadow-[0_0_35px_rgba(0,240,255,0.65)] z-30 bg-slate-950 ring-4 ring-sky-500/30"
+
         >
+
             <!-- Crosshairs in Center of Lens -->
+
             <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 opacity-60">
+
                 <div class="w-full h-[1px] bg-cyan-400"></div>
+
                 <div class="h-full w-[1px] bg-cyan-400 absolute"></div>
+
                 <div class="w-3 h-3 rounded-full border border-cyan-300 absolute bg-cyan-400/20"></div>
+
             </div>
+
             <!-- Lens Scale Badge -->
+
             <div class="absolute bottom-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-slate-900/90 border border-cyan-400/50 text-[10px] font-mono font-bold text-cyan-300 z-20">
+
                 2.5× ЛУПА
+
             </div>
+
             <!-- Cloned SVG Viewport for 2.5x Zoom -->
+
             <div id="uml-lens-content" class="w-full h-full origin-top-left pointer-events-none"></div>
+
         </div>
+
     </div>
+
+
 
     <!-- UML Notation Cheat Sheet for Students (Шпаргалка) -->
+
     <div class="p-4 rounded-xl bg-slate-950/70 border border-slate-800 text-xs text-slate-300 space-y-3">
+
         <div class="flex items-center justify-between flex-wrap gap-2">
+
             <span class="font-bold text-sky-400">📖 Шпаргалка по чтению UML-диаграммы:</span>
+
             <span class="text-[11px] text-slate-400">Кликните по диаграмме или нажмите «Во весь экран» для масштабирования</span>
+
         </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-[11px]">
+
             <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 space-y-1">
+
                 <span class="font-bold text-emerald-300">+ Public (Открытый)</span>
+
                 <p class="text-slate-400">Доступен снаружи объекта (методы, свойства, интерфейсы).</p>
+
             </div>
+
             <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 space-y-1">
+
                 <span class="font-bold text-amber-300">- Private (Приватный)</span>
+
                 <p class="text-slate-400">Скрыт внутри капсулы объекта (<code class="text-amber-200">_balance</code> в Инкапсуляции).</p>
+
             </div>
+
             <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 space-y-1">
+
                 <span class="font-bold text-indigo-300">..|&gt; Реализация (Implements)</span>
+
                 <p class="text-slate-400">Класс реализует контракт интерфейса (<code class="text-indigo-200">&lt;&lt;interface&gt;&gt;</code>).</p>
+
             </div>
+
             <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 space-y-1">
+
                 <span class="font-bold text-cyan-300">*-- / o-- Связи владения</span>
+
                 <p class="text-slate-400">Закрашенный ромб — Композиция; полый ромб — Агрегация / DI.</p>
+
             </div>
+
         </div>
+
     </div>
+
 </div>
 
+
+
 <!-- ================================================================= -->
+
 <!-- FULLSCREEN ZOOM & PAN MODAL FOR UML DIAGRAM                        -->
+
 <!-- ================================================================= -->
+
 <div
+
     id="uml-fullscreen-modal"
+
     class="hidden fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-xl flex flex-col p-4 sm:p-6 select-none"
+
 >
+
     <!-- Modal Header Toolbar -->
+
     <div class="flex items-center justify-between gap-4 pb-4 border-b border-slate-800">
+
         <div class="flex items-center gap-3">
+
             <span class="text-xl">📐</span>
+
             <div>
+
                 <h4 id="uml-modal-title" class="text-base sm:text-lg font-bold text-white">
+
                     UML-диаграмма классов
+
                 </h4>
+
                 <p class="text-xs text-slate-400">
+
                     Колёсико мыши для зума • Зажмите левую кнопку мыши для перемещения (Pan)
+
                 </p>
+
             </div>
+
         </div>
+
+
 
         <!-- Zoom Controls Toolbar -->
+
         <div class="flex items-center gap-2 sm:gap-3">
+
             <button
+
                 type="button"
+
                 onclick="zoomUmlModal(-0.25)"
+
                 class="w-9 h-9 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-base border border-slate-700 flex items-center justify-center transition"
+
                 title="Уменьшить масштаб (-)"
+
             >
+
                 −
+
             </button>
+
             <span id="uml-modal-zoom-label" class="font-mono font-bold text-xs sm:text-sm text-sky-400 min-w-[50px] text-center">
+
                 100%
+
             </span>
+
             <button
+
                 type="button"
+
                 onclick="zoomUmlModal(0.25)"
+
                 class="w-9 h-9 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-base border border-slate-700 flex items-center justify-center transition"
+
                 title="Увеличить масштаб (+)"
+
             >
+
                 +
+
             </button>
+
             <button
+
                 type="button"
+
                 onclick="resetUmlModalZoom()"
+
                 class="px-3 h-9 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold text-xs border border-slate-700 transition hidden sm:block"
+
                 title="Сбросить масштаб к 100%"
+
             >
+
                 100%
+
             </button>
+
+
 
             <!-- Close Modal Button -->
+
             <button
+
                 type="button"
+
                 onclick="closeUmlFullscreen()"
+
                 class="w-9 h-9 rounded-xl bg-rose-950/60 hover:bg-rose-900 text-rose-300 font-bold text-lg border border-rose-500/40 flex items-center justify-center transition ml-2"
+
                 title="Закрыть (Esc)"
+
             >
+
                 ✕
+
             </button>
+
         </div>
+
     </div>
 
+
+
     <!-- Draggable Zoom Canvas Container -->
+
     <div
+
         id="uml-modal-canvas-wrapper"
+
         class="flex-1 w-full overflow-hidden relative mt-4 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center cursor-grab"
+
         onmousedown="startUmlPan(event)"
+
         onwheel="onUmlWheel(event)"
+
     >
+
         <!-- Modal Scalable & Movable Diagram Layer -->
+
         <div id="uml-modal-content" class="w-full h-full flex items-center justify-center transition-transform duration-75 origin-center">
+
             <!-- Dynamically populated with active SVG in JS -->
+
         </div>
+
     </div>
+
 </div>
+

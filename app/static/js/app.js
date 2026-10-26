@@ -688,7 +688,7 @@ document.addEventListener("DOMContentLoaded", () => {
 /* ========================================================================= */
 
 let umlLensActive = false;
-let currentUmlTab = ACTIVE_WEEK === "2" ? "week2" : "week1";
+let currentUmlTab = ACTIVE_WEEK === "3" ? "week3" : (ACTIVE_WEEK === "2" ? "week2" : "week1");
 let modalZoomScale = 1.0;
 let modalPanX = 0;
 let modalPanY = 0;
@@ -736,8 +736,11 @@ function switchUmlDiagramTab(tabKey) {
     } else if (tabKey === "week2") {
         const pane = document.getElementById("uml-diagram-week2");
         if (pane) pane.classList.remove("hidden");
+    } else if (tabKey === "week3") {
+        const pane = document.getElementById("uml-diagram-week3");
+        if (pane) pane.classList.remove("hidden");
     } else if (tabKey === "week") {
-        const activeWeekId = ACTIVE_WEEK === "2" ? "uml-diagram-week2" : "uml-diagram-week1";
+        const activeWeekId = ACTIVE_WEEK === "3" ? "uml-diagram-week3" : (ACTIVE_WEEK === "2" ? "uml-diagram-week2" : "uml-diagram-week1");
         const pane = document.getElementById(activeWeekId);
         if (pane) pane.classList.remove("hidden");
     } else if (tabKey === "arch") {
@@ -901,7 +904,9 @@ function openUmlFullscreen() {
 
     // Determine title
     let title = "UML-диаграмма классов: Неделя 1 (Инкапсуляция SmartCard)";
-    if (currentUmlTab === "week2" || (currentUmlTab === "week" && ACTIVE_WEEK === "2")) {
+    if (currentUmlTab === "week3" || (currentUmlTab === "week" && ACTIVE_WEEK === "3")) {
+        title = "UML-диаграмма классов: Неделя 3 (Паттерны GoF и Clean Architecture)";
+    } else if (currentUmlTab === "week2" || (currentUmlTab === "week" && ACTIVE_WEEK === "2")) {
         title = "UML-диаграмма классов: Неделя 2 (SOLID & Dependency Injection)";
     } else if (currentUmlTab === "arch") {
         title = "Архитектура платформы Web-OOP (WeekModule & Services)";

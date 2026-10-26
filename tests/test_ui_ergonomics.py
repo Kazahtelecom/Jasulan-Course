@@ -9,6 +9,8 @@ from app.content.week_1 import PRACTICE_TASKS as WEEK1_TASKS
 from app.content.week_1 import QUIZ_QUESTIONS as WEEK1_QUIZ
 from app.content.week_2 import PRACTICE_TASKS as WEEK2_TASKS
 from app.content.week_2 import QUIZ_QUESTIONS as WEEK2_QUIZ
+from app.content.week_3 import PRACTICE_TASKS as WEEK3_TASKS
+from app.content.week_3 import QUIZ_QUESTIONS as WEEK3_QUIZ
 
 
 def _read_static_asset(rel_path: str) -> str:
@@ -18,7 +20,7 @@ def _read_static_asset(rel_path: str) -> str:
 
 def test_collapsible_header(client: TestClient) -> None:
     """AC-1: Verify collapsible top header controls in HTML, JS, and CSS for /week1 and /week2."""
-    for path in ("/week1", "/week2"):
+    for path in ("/week1", "/week2", "/week3"):
         res = client.get(path)
         assert res.status_code == 200
         html = res.text
@@ -43,6 +45,7 @@ def test_practice_fullscreen_and_splitter(client: TestClient) -> None:
     week_configs = [
         ("/week1", [t["id"] for t in WEEK1_TASKS]),
         ("/week2", [t["id"] for t in WEEK2_TASKS]),
+        ("/week3", [t["id"] for t in WEEK3_TASKS]),
     ]
 
     for path, task_ids in week_configs:
@@ -80,6 +83,7 @@ def test_editor_line_numbers_and_fontsize(client: TestClient) -> None:
     week_configs = [
         ("/week1", [t["id"] for t in WEEK1_TASKS]),
         ("/week2", [t["id"] for t in WEEK2_TASKS]),
+        ("/week3", [t["id"] for t in WEEK3_TASKS]),
     ]
 
     for path, task_ids in week_configs:
@@ -114,6 +118,7 @@ def test_quiz_balance_and_traps(client: TestClient) -> None:
     for week_label, questions, api_path in (
         ("Week 1", WEEK1_QUIZ, "/api/week1/quiz/check"),
         ("Week 2", WEEK2_QUIZ, "/api/week2/quiz/check"),
+        ("Week 3", WEEK3_QUIZ, "/api/week3/quiz/check"),
     ):
         assert len(questions) == 10, f"{week_label} must have 10 questions"
 

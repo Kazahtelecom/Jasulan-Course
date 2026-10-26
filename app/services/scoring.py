@@ -30,6 +30,7 @@ class ScoringService:
     WEEK_TASK_IDS: dict[int, tuple[str, str, str]] = {
         1: ("task_1", "task_2", "task_3"),
         2: ("w2_task_1", "w2_task_2", "w2_task_3"),
+        3: ("w3_task_1", "w3_task_2", "w3_task_3"),
     }
 
     QUIZ_MAX_SCORE = 20.0

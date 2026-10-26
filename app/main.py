@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session
 
 from app.config import settings
 from app.database.session import engine, get_db, init_db
-from app.routers import health_router, runner_router, scoring, week1, week2, weeks
+from app.routers import health_router, runner_router, scoring, week1, week2, week3, weeks
 
 templates = Jinja2Templates(directory=str(settings.templates_dir))
 
@@ -58,6 +58,7 @@ app.include_router(scoring.router)
 app.include_router(weeks.router)
 app.include_router(week1.router)
 app.include_router(week2.router)
+app.include_router(week3.router)
 
 
 @app.get("/", response_class=HTMLResponse)

@@ -57,10 +57,9 @@
                 <a href="/week2" class="{% if active_week|default(1) == 2 %}week-pill-active font-bold{% else %}text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-transparent hover:border-slate-800 font-medium{% endif %} px-5 py-2.5 rounded-xl text-sm transition shrink-0">
                     Неделя 2 · SOLID и DI
                 </a>
-                <button type="button" onclick="showLockedWeekToast('Неделя 3 · Паттерны GoF')" class="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-transparent hover:border-slate-800 transition shrink-0 flex items-center gap-2">
-                    <span>Неделя 3 · Паттерны GoF</span>
-                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Скоро</span>
-                </button>
+                <a href="/week3" class="{% if active_week|default(1) == 3 %}week-pill-active font-bold{% else %}text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-transparent hover:border-slate-800 font-medium{% endif %} px-5 py-2.5 rounded-xl text-sm transition shrink-0">
+                    Неделя 3 · Паттерны GoF
+                </a>
             </div>
         </div>
 

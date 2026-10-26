@@ -3,7 +3,12 @@
 <!-- ================================================================= -->
 <section id="panel-theory" class="subtab-panel hidden space-y-8">
     <div class="cyber-card rounded-2xl p-6 sm:p-8 border-l-4 border-l-sky-400">
-        {% if active_week|default(1) == 2 %}
+        {% if active_week|default(1) == 3 %}
+        <h2 class="text-2xl font-extrabold text-white">Теория: Паттерны GoF и Чистая Архитектура (с нуля)</h2>
+        <p class="text-sm text-slate-300 mt-2 leading-relaxed">
+            По материалам Лекций 6–9 и Лабораторных 6–9: разберем за 4 понятных шага на сквозном домене транспортной системы <code class="text-sky-400 font-mono">Avtobys</code> порождающие (<code class="text-sky-400 font-mono">Factory Method</code>, <code class="text-sky-400 font-mono">Builder</code>), структурные (<code class="text-sky-400 font-mono">Adapter</code>, <code class="text-sky-400 font-mono">Facade</code>), поведенческие (<code class="text-sky-400 font-mono">Chain of Responsibility</code>, <code class="text-sky-400 font-mono">Observer</code>) паттерны и 4 слоя Чистой Архитектуры.
+        </p>
+        {% elif active_week|default(1) == 2 %}
         <h2 class="text-2xl font-extrabold text-white">Теория: 5 Принципов SOLID и Dependency Injection (с нуля)</h2>
         <p class="text-sm text-slate-300 mt-2 leading-relaxed">
             По материалам Лекций 4–5 и Лабораторных 4–5: разберем за 4 простых шага на примере терминала <code class="text-sky-400 font-mono">TerminalValidator</code>, студенческого тарифа <code class="text-sky-400 font-mono">StudentFareService (50 ₸)</code> и <code class="text-sky-400 font-mono">BluetoothPayment</code>, как писать модульный код без «Классов-Монстров».
