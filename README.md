@@ -17,7 +17,7 @@
 - **Методология разработки:** [Trace-First Workflow (TFW Full)](.tfw/README.md)
 - **База знаний проекта:** [KNOWLEDGE.md](KNOWLEDGE.md)
 - **Участники проекта:** [team/](team/)
-- **Текущая задача (Selected Trace):** [OOP_20261026-021211_W3GOF](workspace/2026/OOP_20261026-021211_W3GOF/status.md) (KNW)
+- **Текущая задача (Selected Trace):** [OOP_20261026-021211_W3GOF](workspace/2026/OOP_20261026-021211_W3GOF/status.md) (DONE)
 
 ## Быстрый запуск
 
