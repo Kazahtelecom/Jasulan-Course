@@ -51,6 +51,38 @@
       "output": 10,
       "source": "https://platform.claude.com/docs/en/about-claude/pricing"
     },
+    "claude-sonnet-5-5-medium": {
+      "fresh": 2,
+      "cached": 0.2,
+      "cache_write_5m": 2.5,
+      "cache_write_1h": 4,
+      "output": 10,
+      "source": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    "claude-sonnet-5-5-high": {
+      "fresh": 2,
+      "cached": 0.2,
+      "cache_write_5m": 2.5,
+      "cache_write_1h": 4,
+      "output": 10,
+      "source": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    "gemini-4-argon": {
+      "fresh": 2,
+      "cached": 0.1,
+      "cache_write_5m": 0,
+      "cache_write_1h": 0,
+      "output": 10,
+      "source": "https://ai.google.dev/gemini-api/docs/pricing"
+    },
+    "gemini-4-argon-trial": {
+      "fresh": 2,
+      "cached": 0.1,
+      "cache_write_5m": 0,
+      "cache_write_1h": 0,
+      "output": 10,
+      "source": "https://ai.google.dev/gemini-api/docs/pricing"
+    },
     "gemini-3.8-flash": {
       "fresh": 0.75,
       "cached": 0.075,

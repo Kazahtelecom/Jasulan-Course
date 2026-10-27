@@ -28,6 +28,12 @@ const quizSelections = {};
  * Switch active sub-tab: 'home' | 'theory' | 'practice' | 'quiz' | 'results'
  */
 function switchSubTab(tabId) {
+    // Cleanly exit any active fullscreens before switching main tab
+    exitAllPracticeFullscreen();
+    if (typeof closeUmlFullscreen === "function") {
+        closeUmlFullscreen();
+    }
+
     const validTabs = ["home", "theory", "practice", "quiz", "results"];
     const target = validTabs.includes(tabId) ? tabId : "home";
 
@@ -57,6 +63,9 @@ function switchSubTab(tabId) {
  * Switch active practice task step
  */
 function switchPracticeTask(taskId) {
+    // Check if any practice card is currently in fullscreen Zen mode
+    const isFullscreenActive = document.querySelector(".practice-task-card.practice-fullscreen-active") !== null;
+
     document.querySelectorAll(".practice-step-btn").forEach((btn) => {
         const isCurrent = btn.dataset.task === taskId;
         if (isCurrent) {
@@ -69,12 +78,37 @@ function switchPracticeTask(taskId) {
     });
 
     document.querySelectorAll(".practice-task-card").forEach((card) => {
-        if (card.id === `practice-card-${taskId}`) {
+        const isTarget = card.id === `practice-card-${taskId}`;
+        if (isTarget) {
             card.classList.remove("hidden");
+            if (isFullscreenActive) {
+                card.classList.add("practice-fullscreen-active");
+                card.scrollTop = 0;
+                const btnLabel = document.getElementById(`fullscreen-btn-label-${taskId}`);
+                if (btnLabel) btnLabel.textContent = "✕ Обычный вид";
+            } else {
+                card.classList.remove("practice-fullscreen-active");
+            }
         } else {
             card.classList.add("hidden");
+            card.classList.remove("practice-fullscreen-active");
+            const otherId = card.id.replace("practice-card-", "");
+            const btnLabel = document.getElementById(`fullscreen-btn-label-${otherId}`);
+            if (btnLabel) btnLabel.textContent = "⛶ На весь экран";
         }
     });
+
+    // Body overflow must be hidden ONLY if fullscreen is actively engaged
+    if (isFullscreenActive) {
+        document.body.classList.add("overflow-hidden");
+    } else {
+        document.body.classList.remove("overflow-hidden");
+    }
+
+    // Refresh line numbers gutter
+    if (typeof updateLineNumbers === "function") {
+        updateLineNumbers(taskId);
+    }
 }
 
 /**
@@ -247,16 +281,25 @@ function togglePracticeFullscreen(taskId) {
  * Exit fullscreen mode for any active practice card
  */
 function exitAllPracticeFullscreen() {
-    let hadActive = false;
-    document.querySelectorAll(".practice-task-card.practice-fullscreen-active").forEach((card) => {
+    document.querySelectorAll(".practice-task-card").forEach((card) => {
         card.classList.remove("practice-fullscreen-active");
-        hadActive = true;
     });
-    if (hadActive) {
-        document.querySelectorAll("[id^='fullscreen-btn-label-']").forEach((lbl) => {
-            lbl.textContent = "⛶ На весь экран";
-        });
-        document.body.classList.remove("overflow-hidden");
+    document.querySelectorAll("[id^='fullscreen-btn-label-']").forEach((lbl) => {
+        lbl.textContent = "⛶ На весь экран";
+    });
+    document.body.classList.remove("overflow-hidden");
+}
+
+/**
+ * Toggle terminal execution output box height (compact 150px vs spacious 360px)
+ */
+function toggleTerminalSize(taskId) {
+    const pre = document.getElementById(`output-pre-${taskId}`);
+    if (!pre) return;
+    if (pre.style.height === "360px") {
+        pre.style.height = "150px";
+    } else {
+        pre.style.height = "360px";
     }
 }
 

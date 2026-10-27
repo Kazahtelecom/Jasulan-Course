@@ -73,9 +73,13 @@ def test_practice_fullscreen_and_splitter(client: TestClient) -> None:
     assert "weboop_split_width" in js
     assert "practice-fullscreen-active" in js
 
+    assert "isFullscreenActive" in js
+    assert "exitAllPracticeFullscreen();" in js
+
     css = _read_static_asset("css/style.css")
     assert ".practice-fullscreen-active" in css
     assert ".practice-split-resizer" in css
+    assert ".hidden" in css
 
 
 def test_editor_line_numbers_and_fontsize(client: TestClient) -> None:

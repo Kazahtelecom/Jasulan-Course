@@ -237,10 +237,20 @@
                     <!-- Execution Result Box -->
                     <div id="result-box-{{ task.id }}" class="hidden rounded-xl bg-slate-950 border border-slate-800 p-4 space-y-3">
                         <div class="flex items-center justify-between">
-                            <span id="verdict-badge-{{ task.id }}" class="px-3 py-1 rounded-full text-xs font-bold"></span>
+                            <div class="flex items-center gap-2">
+                                <span id="verdict-badge-{{ task.id }}" class="px-3 py-1 rounded-full text-xs font-bold"></span>
+                                <button
+                                    type="button"
+                                    onclick="toggleTerminalSize('{{ task.id }}')"
+                                    class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-400 hover:text-sky-300 transition"
+                                    title="Переключить высоту терминала вывода (компактно / просторно)"
+                                >
+                                    ↕ Высота
+                                </button>
+                            </div>
                             <span class="text-xs text-slate-400 font-mono">Время: <strong id="time-label-{{ task.id }}">0 мс</strong></span>
                         </div>
-                        <pre id="output-pre-{{ task.id }}" class="p-3 rounded-lg bg-slate-900 text-slate-200 text-xs font-mono overflow-x-auto whitespace-pre-wrap max-h-60"></pre>
+                        <pre id="output-pre-{{ task.id }}" class="p-3 rounded-lg bg-slate-900 text-slate-200 text-xs font-mono overflow-auto whitespace-pre-wrap min-h-[140px] max-h-[520px] resize-y"></pre>
                     </div>
                 </div>
 

@@ -71,6 +71,21 @@ def test_uml_svgs_have_self_contained_defs() -> None:
                 f"In {svg_id}, marker='url(#{ref})' references undeclared ID: '{ref}'!"
             )
 
+    # 5. Verify all defined IDs across all SVGs are mutually unique to avoid hidden-tab collisions
+    from collections import Counter
+    all_defs_ids = []
+    for svg_id in svg_ids:
+        m = re.search(rf'<svg\s+id="{svg_id}".*?</svg>', html, re.DOTALL)
+        assert m is not None
+        dm = re.search(r"<defs>(.*?)</defs>", m.group(0), re.DOTALL)
+        if dm:
+            all_defs_ids.extend(re.findall(r'id="([^"]+)"', dm.group(1)))
+    dup_defs = {k: v for k, v in Counter(all_defs_ids).items() if v > 1}
+    assert not dup_defs, (
+        f"Duplicate IDs in <defs> found across SVGs: {dup_defs}. "
+        f"In HTML/SVG, duplicate IDs cause elements to resolve to hidden tab definitions and disappear!"
+    )
+
 
 def test_week1_diagram_classes_and_encapsulation() -> None:
     """Verify Week 1 diagram contains Passenger, SmartCard, and TerminalValidator."""
