@@ -32,7 +32,7 @@
                     onclick="selectQuizOption('{{ q.id }}', {{ loop.index0 }})"
                     class="quiz-opt-{{ q.id }} w-full text-left p-3.5 rounded-xl border transition flex items-center gap-3 bg-slate-900/70 border-slate-800 text-slate-300 hover:border-slate-700"
                 >
-                    <span class="w-6 h-6 rounded-lg bg-slate-950 border border-slate-700 flex items-center justify-center text-xs font-mono font-bold text-sky-400 shrink-0">
+                    <span class="w-6 h-6 rounded-lg bg-slate-950 border border-slate-700 flex items-center justify-center text-xs font-mono font-bold theme-accent-text shrink-0">
                         {{ ["A", "B", "C", "D"][loop.index0] }}
                     </span>
                     <span class="text-xs sm:text-sm">{{ opt }}</span>
@@ -51,7 +51,7 @@
             id="btn-submit-quiz"
             type="button"
             onclick="submitWeek1Quiz()"
-            class="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-sky-500 hover:from-indigo-500 hover:to-sky-400 text-white font-bold text-sm shadow-[0_0_20px_rgba(99,102,241,0.4)] transition"
+            class="px-6 py-3 rounded-xl theme-btn-primary text-sm transition"
         >
             Проверить ответы теста
         </button>

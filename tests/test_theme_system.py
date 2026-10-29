@@ -146,3 +146,64 @@ def test_http_endpoints_render_theme_elements():
         # Verify zero-FOUC script
         assert 'weboop_theme' in html, f"Zero-FOUC script missing on {endpoint}"
         assert 'weboop_glow' in html, f"Zero-FOUC script missing on {endpoint}"
+
+
+def test_home_and_theory_theme_tokens():
+    """Phase B AC-1: tab_home.html and tab_theory.html use semantic theme tokens."""
+    for filename in ["tab_home.html", "tab_theory.html"]:
+        path = PROJECT_ROOT / "app" / "templates" / "components" / filename
+        content = path.read_text(encoding="utf-8")
+        assert "theme-badge" in content, f"{filename} missing theme-badge"
+        assert "theme-btn-primary" in content, f"{filename} missing theme-btn-primary"
+        assert "theme-accent-text" in content or "theme-badge" in content
+
+
+def test_practice_quiz_theme_tokens():
+    """Phase B AC-2: practice, quiz, and results templates use theme tokens and preserve PASS/FAIL colors."""
+    for filename in ["tab_practice.html", "tab_quiz.html", "tab_results.html"]:
+        path = PROJECT_ROOT / "app" / "templates" / "components" / filename
+        content = path.read_text(encoding="utf-8")
+        assert "theme-accent-text" in content or "theme-btn-primary" in content
+
+    # Functional test colors invariant preserved
+    practice_content = (PROJECT_ROOT / "app" / "templates" / "components" / "tab_practice.html").read_text(encoding="utf-8")
+    assert "emerald" in practice_content, "Functional PASS color (emerald) must be preserved"
+
+
+def test_exam_page_theme_tokens():
+    """Phase B AC-3: exam.html uses theme tokens for borders, split presets, and semester overview."""
+    exam_path = PROJECT_ROOT / "app" / "templates" / "exam.html"
+    content = exam_path.read_text(encoding="utf-8")
+    assert "theme-accent-text" in content
+    assert "theme-border" in content
+    assert "amber" in content, "Exam-specific amber rating badge preserved"
+
+
+def test_header_navigation_theme_tokens():
+    """Phase B AC-4: header.html navigation tabs and score badge use theme classes."""
+    header_path = PROJECT_ROOT / "app" / "templates" / "components" / "header.html"
+    content = header_path.read_text(encoding="utf-8")
+    assert "theme-accent-text" in content
+    assert "theme-border" in content
+    assert "theme-badge" in content
+
+
+def test_uml_viewer_shell_theme_tokens():
+    """Phase B AC-5: uml_viewer.html shell uses theme tokens without altering inner diagram node colors."""
+    uml_path = PROJECT_ROOT / "app" / "templates" / "components" / "uml_viewer.html"
+    content = uml_path.read_text(encoding="utf-8")
+    assert "theme-border" in content
+    assert "theme-btn-primary" in content
+    assert "theme-btn-secondary" in content
+    assert "var(--theme-accent)" in content
+    assert "var(--theme-glow)" in content
+
+
+def test_app_js_dynamic_theme_tokens():
+    """Phase B AC-6: app.js dynamic HTML generators use semantic theme tokens."""
+    js_path = PROJECT_ROOT / "app" / "static" / "js" / "app.js"
+    content = js_path.read_text(encoding="utf-8")
+    assert "theme-accent-text" in content
+    assert "theme-glow-card" in content
+    assert "theme-btn-primary" in content
+

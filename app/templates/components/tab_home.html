@@ -6,7 +6,7 @@
     <div class="cyber-card rounded-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12">
         <div class="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between space-y-6">
             <div class="space-y-3">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-sky-500/15 text-sky-400 border border-sky-500/30">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold theme-badge">
                     <span>⚡ {{ overview.badge }}</span>
                     <span>•</span>
                     <span>{{ overview.estimated_time }}</span>
@@ -20,11 +20,11 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-4 pt-2">
-                <button type="button" onclick="switchSubTab('theory')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-sm shadow-[0_0_20px_rgba(56,189,248,0.35)] transition flex items-center gap-2">
+                <button type="button" onclick="switchSubTab('theory')" class="px-6 py-3 rounded-xl theme-btn-primary text-sm flex items-center gap-2">
                     <span>Начать с Теории</span>
                     <span>→</span>
                 </button>
-                <button type="button" onclick="switchSubTab('quiz')" class="px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-sky-300 border border-sky-500/30 font-semibold text-sm transition">
+                <button type="button" onclick="switchSubTab('quiz')" class="px-5 py-3 rounded-xl theme-btn-secondary text-sm font-semibold">
                     Перейти к Тестированию
                 </button>
             </div>
@@ -48,7 +48,7 @@
             <div onclick="switchSubTab('{{ item.tab }}')" class="cyber-card cyber-card-glow rounded-2xl p-6 cursor-pointer transition flex flex-col justify-between space-y-4">
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-sky-500/15 text-sky-400 border border-sky-500/30">
+                        <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-lg theme-badge">
                             ШАГ {{ item.step }}
                         </span>
                         <span class="text-xs text-slate-400 font-mono">{{ item.badge }}</span>
@@ -56,7 +56,7 @@
                     <h4 class="text-lg font-bold text-white">{{ item.title }}</h4>
                     <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">{{ item.desc }}</p>
                 </div>
-                <div class="text-xs font-bold text-sky-400 flex items-center gap-1 pt-2">
+                <div class="text-xs font-bold theme-accent-text flex items-center gap-1 pt-2">
                     <span>Открыть раздел</span>
                     <span>→</span>
                 </div>
@@ -66,22 +66,22 @@
     </div>
 
     <!-- UML Architecture Banner with Magnifier Feature -->
-    <div onclick="openUmlDiagramSection()" class="cyber-card cyber-card-glow rounded-2xl p-6 cursor-pointer transition border border-sky-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-gradient-to-r from-sky-950/40 via-slate-900/60 to-indigo-950/40">
+    <div onclick="openUmlDiagramSection()" class="cyber-card cyber-card-glow rounded-2xl p-6 cursor-pointer transition border theme-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-900/60">
         <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-2xl shrink-0 text-sky-300">
+            <div class="w-12 h-12 rounded-xl theme-badge flex items-center justify-center text-2xl shrink-0">
                 📐
             </div>
             <div>
                 <div class="flex items-center gap-2">
                     <h4 class="text-base font-bold text-white">UML-Диаграммы классов и архитектура</h4>
-                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">🔍 Лупа 2.5×</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold theme-badge">🔍 Лупа 2.5×</span>
                 </div>
                 <p class="text-xs text-slate-300 mt-1">
                     Изучите чертежи классов (SmartCard, Passenger, Validator, SOLID, DI) с помощью встроенной лупы и полноэкранного зума.
                 </p>
             </div>
         </div>
-        <button type="button" class="px-4 py-2 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border border-sky-500/40 text-xs font-bold transition shrink-0 flex items-center gap-1.5">
+        <button type="button" class="px-4 py-2 rounded-xl theme-btn-secondary text-xs font-bold flex items-center gap-1.5 shrink-0">
             <span>Открыть диаграммы</span>
             <span>→</span>
         </button>
@@ -91,7 +91,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="cyber-card rounded-xl p-5">
             <div class="text-xs text-slate-400 uppercase font-semibold">Баллы за неделю (только Квиз)</div>
-            <div id="home-total-score" class="text-2xl font-extrabold font-mono text-sky-400 mt-1">
+            <div id="home-total-score" class="text-2xl font-extrabold font-mono theme-accent-text mt-1">
                 {{ progress.total_score }} / {{ progress.max_score }} б.
             </div>
             <div class="text-xs text-slate-500 mt-1">Порог зачета: ≥ {{ progress.pass_threshold }} из {{ progress.max_score }} баллов</div>
@@ -105,7 +105,7 @@
         </div>
         <div class="cyber-card rounded-xl p-5">
             <div class="text-xs text-slate-400 uppercase font-semibold">Итоговое тестирование</div>
-            <div id="home-quiz-score" class="text-2xl font-extrabold font-mono text-indigo-400 mt-1">
+            <div id="home-quiz-score" class="text-2xl font-extrabold font-mono text-slate-200 mt-1">
                 {{ progress.quiz_score }} / {{ progress.quiz_max }} б.
             </div>
             <div class="text-xs text-slate-500 mt-1">10 вопросов по 2.0 балла за ответ</div>

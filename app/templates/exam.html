@@ -62,7 +62,7 @@
                 <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-slate-800/80 pt-6">
                     <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800">
                         <div class="text-xs text-slate-400">Текущий контроль (Недели 1–3)</div>
-                        <div class="text-xl font-mono font-bold text-sky-400 mt-1">
+                        <div class="text-xl font-mono font-bold theme-accent-text mt-1">
                             <span id="overview-semester-score">{{ progress.semester_score }}</span> / 60.0 б.
                         </div>
                         <div class="text-[11px] text-slate-500 mt-0.5">3 недели x 20.0 б.</div>
@@ -274,7 +274,7 @@
                             </div>
 
                             <div class="p-4 rounded-xl bg-slate-950/90 border border-slate-800 space-y-2.5">
-                                <div class="text-xs font-bold uppercase tracking-wider text-sky-400">Требования к решению:</div>
+                                <div class="text-xs font-bold uppercase tracking-wider theme-accent-text">Требования к решению:</div>
                                 <ol class="list-decimal list-inside space-y-2 text-xs sm:text-sm text-slate-200 leading-relaxed">
                                     {% for inst in task.instructions %}
                                     <li>{{ inst }}</li>
@@ -294,9 +294,9 @@
                             <div class="pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2">
                                 <div class="hidden lg:flex items-center gap-1.5 text-[11px] text-slate-400">
                                     <span>Ширина:</span>
-                                    <button type="button" onclick="setPracticeSplitRatio('{{ task.id }}', 25)" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-sky-300 font-mono transition">25/75</button>
-                                    <button type="button" onclick="setPracticeSplitRatio('{{ task.id }}', 35)" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-sky-300 font-mono transition">35/65</button>
-                                    <button type="button" onclick="setPracticeSplitRatio('{{ task.id }}', 50)" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-sky-300 font-mono transition">50/50</button>
+                                    <button type="button" onclick="setPracticeSplitRatio('{{ task.id }}', 25)" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-[var(--theme-accent)] font-mono transition">25/75</button>
+                                    <button type="button" onclick="setPracticeSplitRatio('{{ task.id }}', 35)" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-[var(--theme-accent)] font-mono transition">35/65</button>
+                                    <button type="button" onclick="setPracticeSplitRatio('{{ task.id }}', 50)" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-[var(--theme-accent)] font-mono transition">50/50</button>
                                 </div>
 
                                 {% if not loop.last %}
@@ -469,7 +469,7 @@
                                 <td class="py-3.5 px-4 font-sans font-bold text-white">Неделя 1 · Инкапсуляция и инварианты</td>
                                 <td class="py-3.5 px-4 text-slate-400 font-sans">Тестирование (10 вопр.)</td>
                                 <td class="py-3.5 px-4 text-slate-400">20.0 б.</td>
-                                <td class="py-3.5 px-4 font-bold text-sky-400"><span id="table-w1-score">{{ progress.week1_score }}</span> б.</td>
+                                <td class="py-3.5 px-4 font-bold theme-accent-text"><span id="table-w1-score">{{ progress.week1_score }}</span> б.</td>
                                 <td class="py-3.5 px-4 text-right font-sans">
                                     <span class="px-2.5 py-1 rounded-full text-xs font-bold {% if progress.week1_score >= 12.0 %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/30{% else %}bg-slate-800 text-slate-400{% endif %}">
                                         {% if progress.week1_score >= 12.0 %}Зачет{% else %}В процессе{% endif %}
@@ -480,7 +480,7 @@
                                 <td class="py-3.5 px-4 font-sans font-bold text-white">Неделя 2 · SOLID и Dependency Injection</td>
                                 <td class="py-3.5 px-4 text-slate-400 font-sans">Тестирование (10 вопр.)</td>
                                 <td class="py-3.5 px-4 text-slate-400">20.0 б.</td>
-                                <td class="py-3.5 px-4 font-bold text-sky-400"><span id="table-w2-score">{{ progress.week2_score }}</span> б.</td>
+                                <td class="py-3.5 px-4 font-bold theme-accent-text"><span id="table-w2-score">{{ progress.week2_score }}</span> б.</td>
                                 <td class="py-3.5 px-4 text-right font-sans">
                                     <span class="px-2.5 py-1 rounded-full text-xs font-bold {% if progress.week2_score >= 12.0 %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/30{% else %}bg-slate-800 text-slate-400{% endif %}">
                                         {% if progress.week2_score >= 12.0 %}Зачет{% else %}В процессе{% endif %}
@@ -491,19 +491,19 @@
                                 <td class="py-3.5 px-4 font-sans font-bold text-white">Неделя 3 · Паттерны GoF и Clean Architecture</td>
                                 <td class="py-3.5 px-4 text-slate-400 font-sans">Тестирование (10 вопр.)</td>
                                 <td class="py-3.5 px-4 text-slate-400">20.0 б.</td>
-                                <td class="py-3.5 px-4 font-bold text-sky-400"><span id="table-w3-score">{{ progress.week3_score }}</span> б.</td>
+                                <td class="py-3.5 px-4 font-bold theme-accent-text"><span id="table-w3-score">{{ progress.week3_score }}</span> б.</td>
                                 <td class="py-3.5 px-4 text-right font-sans">
                                     <span class="px-2.5 py-1 rounded-full text-xs font-bold {% if progress.week3_score >= 12.0 %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/30{% else %}bg-slate-800 text-slate-400{% endif %}">
                                         {% if progress.week3_score >= 12.0 %}Зачет{% else %}В процессе{% endif %}
                                     </span>
                                 </td>
                             </tr>
-                            <tr class="bg-sky-950/20 font-bold border-t border-sky-500/30">
-                                <td class="py-3 px-4 font-sans text-sky-200">ИТОГО ТЕКУЩИЙ КОНТРОЛЬ (СЕМЕСТР)</td>
+                            <tr class="bg-slate-900/80 font-bold border-t theme-border">
+                                <td class="py-3 px-4 font-sans theme-accent-text">ИТОГО ТЕКУЩИЙ КОНТРОЛЬ (СЕМЕСТР)</td>
                                 <td class="py-3 px-4 font-sans text-slate-400">Сумма Недель 1–3</td>
-                                <td class="py-3 px-4 text-sky-300">60.0 б.</td>
-                                <td class="py-3 px-4 text-sky-300"><span id="table-semester-score">{{ progress.semester_score }}</span> б.</td>
-                                <td class="py-3 px-4 text-right font-sans text-xs text-sky-300">Рейтинг допуска</td>
+                                <td class="py-3 px-4 theme-accent-text">60.0 б.</td>
+                                <td class="py-3 px-4 theme-accent-text"><span id="table-semester-score">{{ progress.semester_score }}</span> б.</td>
+                                <td class="py-3 px-4 text-right font-sans text-xs theme-accent-text">Рейтинг допуска</td>
                             </tr>
                             <tr class="hover:bg-slate-900/50">
                                 <td class="py-3.5 px-4 font-sans font-bold text-white">Экзамен · Часть 1 (Теория)</td>

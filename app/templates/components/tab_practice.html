@@ -7,7 +7,7 @@
     <div class="cyber-card rounded-2xl p-6 sm:p-8 space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-4">
             <div>
-                <span class="text-xs font-mono font-bold text-sky-400 uppercase">Часть 1 · Наглядный разбор готового кода</span>
+                <span class="text-xs font-mono font-bold theme-accent-text uppercase">Часть 1 · Наглядный разбор готового кода</span>
                 <h2 class="text-xl font-extrabold text-white mt-1">{{ walkthrough.title }}</h2>
                 <p class="text-xs sm:text-sm text-slate-400">{{ walkthrough.subtitle }}</p>
             </div>
@@ -24,14 +24,14 @@
                     example_avtobys.py — Готовый образец классов Passenger и Validator
                     {% endif %}
                 </div>
-                <pre class="text-xs font-mono text-sky-100 leading-relaxed">{{ walkthrough.code }}</pre>
+                <pre class="text-xs font-mono text-slate-100 leading-relaxed">{{ walkthrough.code }}</pre>
             </div>
 
             <div class="lg:col-span-5 space-y-3">
                 <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Пояснение по шагам:</div>
                 {% for st in walkthrough.steps %}
                 <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1">
-                    <div class="text-[11px] font-mono text-sky-400">{{ st.line_ref }}</div>
+                    <div class="text-[11px] font-mono theme-accent-text">{{ st.line_ref }}</div>
                     <div class="text-sm font-bold text-white">{{ st.title }}</div>
                     <p class="text-xs text-slate-300 leading-relaxed">{{ st.text }}</p>
                 </div>
@@ -55,7 +55,7 @@
                     {% endif %}
                 </h3>
                 <p class="text-xs sm:text-sm text-slate-400">
-                    Новичкам не обязательно писать код с нуля! Вы можете попробовать сами или нажать кнопку <strong class="text-sky-300">«✨ Вставить готовое решение»</strong> и посмотреть, как оно проходит проверку.
+                    Новичкам не обязательно писать код с нуля! Вы можете попробовать сами или нажать кнопку <strong class="theme-accent-text">«✨ Вставить готовое решение»</strong> и посмотреть, как оно проходит проверку.
                 </p>
             </div>
         </div>
@@ -93,7 +93,7 @@
                 <div id="task-pane-{{ task.id }}" class="practice-task-pane lg:w-[42%] shrink-0 space-y-5">
                     <div class="space-y-2">
                         <div class="flex items-center justify-between flex-wrap gap-2">
-                            <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                            <span class="text-xs font-mono font-bold px-2.5 py-1 rounded theme-badge">
                                 {{ task.difficulty }}
                             </span>
                             <span class="text-xs font-mono text-emerald-400">Без снятия баллов</span>
@@ -103,7 +103,7 @@
                     </div>
 
                     <div class="p-4 rounded-xl bg-slate-950/90 border border-slate-800 space-y-2.5">
-                        <div class="text-xs font-bold uppercase tracking-wider text-sky-400">Как устроен этот шаг:</div>
+                        <div class="text-xs font-bold uppercase tracking-wider theme-accent-text">Как устроен этот шаг:</div>
                         <ol class="list-decimal list-inside space-y-2 text-xs sm:text-sm text-slate-200 leading-relaxed">
                             {% for inst in task.instructions %}
                             <li>{{ inst }}</li>
@@ -123,13 +123,13 @@
                     <div class="pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2">
                         <div class="hidden lg:flex items-center gap-1.5 text-[11px] text-slate-400">
                             <span>Ширина условия:</span>
-                            <button type="button" onclick="setPracticeSplitRatio('{{ task.id }}', 25)" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-sky-300 font-mono transition" title="Узкое условие (25%), широкий код (75%)">25/75</button>
-                            <button type="button" onclick="setPracticeSplitRatio('{{ task.id }}', 35)" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-sky-300 font-mono transition" title="Стандарт для кода (35% / 65%)">35/65</button>
-                            <button type="button" onclick="setPracticeSplitRatio('{{ task.id }}', 50)" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-sky-300 font-mono transition" title="Поровну (50% / 50%)">50/50</button>
+                            <button type="button" onclick="setPracticeSplitRatio('{{ task.id }}', 25)" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-[var(--theme-accent)] font-mono transition" title="Узкое условие (25%), широкий код (75%)">25/75</button>
+                            <button type="button" onclick="setPracticeSplitRatio('{{ task.id }}', 35)" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-[var(--theme-accent)] font-mono transition" title="Стандарт для кода (35% / 65%)">35/65</button>
+                            <button type="button" onclick="setPracticeSplitRatio('{{ task.id }}', 50)" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-[var(--theme-accent)] font-mono transition" title="Поровну (50% / 50%)">50/50</button>
                         </div>
 
                         {% if not loop.last %}
-                        <button type="button" onclick="switchPracticeTask('{{ practice_tasks[loop.index0 + 1].id }}')" class="ml-auto text-xs font-bold text-sky-400 hover:text-sky-300">
+                        <button type="button" onclick="switchPracticeTask('{{ practice_tasks[loop.index0 + 1].id }}')" class="ml-auto text-xs font-bold theme-accent-text hover:brightness-125">
                             Следующий шаг ({{ task.step_number + 1 }} из 3) →
                         </button>
                         {% else %}
@@ -145,14 +145,14 @@
                     id="split-resizer-{{ task.id }}"
                     data-task="{{ task.id }}"
                     title="Потяните влево или вправо, чтобы изменить ширину окна задачи и редактора кода"
-                    class="practice-split-resizer hidden lg:flex w-2.5 cursor-col-resize items-center justify-center bg-slate-800/70 hover:bg-sky-500/60 rounded transition select-none shrink-0"
+                    class="practice-split-resizer hidden lg:flex w-2.5 cursor-col-resize items-center justify-center bg-slate-800/70 hover:bg-[var(--theme-accent)] rounded transition select-none shrink-0"
                 >
                     <span class="text-slate-400 text-xs font-mono leading-none">⋮</span>
                 </div>
 
                 <!-- Right Column: IDE Code Editor & Sandbox Output -->
                 <div id="editor-pane-{{ task.id }}" class="practice-editor-pane flex-1 min-w-[30%] space-y-4">
-                    <div class="rounded-xl overflow-hidden border border-sky-500/30 bg-slate-950 shadow-inner">
+                    <div class="rounded-xl overflow-hidden border theme-border bg-slate-950 shadow-inner">
                         <!-- IDE Toolbar -->
                         <div class="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2">
                             <div class="flex items-center gap-2">
@@ -171,7 +171,7 @@
                                         title="Уменьшить шрифт кода"
                                         class="px-1.5 py-0.5 rounded hover:bg-slate-800 text-slate-300 hover:text-white font-mono font-bold transition"
                                     >A-</button>
-                                    <span class="editor-fontsize-label text-[11px] font-mono text-sky-400 px-1">14px</span>
+                                    <span class="editor-fontsize-label text-[11px] font-mono theme-accent-text px-1">14px</span>
                                     <button
                                         type="button"
                                         onclick="changeEditorFontSize(1)"
@@ -180,7 +180,7 @@
                                     >A+</button>
                                 </div>
 
-                                <button type="button" onclick="fillSolutionCode('{{ task.id }}')" class="px-2.5 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/40 text-xs font-semibold text-sky-300 transition">
+                                <button type="button" onclick="fillSolutionCode('{{ task.id }}')" class="px-2.5 py-1 rounded-lg theme-btn-secondary text-xs font-semibold">
                                     ✨ Вставить готовое решение
                                 </button>
                                 <button type="button" onclick="resetTaskCode('{{ task.id }}')" class="px-2 py-1 rounded-lg bg-slate-800/70 hover:bg-slate-800 text-xs text-slate-300 hover:text-white transition">
@@ -212,14 +212,14 @@
                                 data-solution="{{ task.reference_solution }}"
                                 rows="16"
                                 spellcheck="false"
-                                class="code-editor-textarea flex-1 w-full p-4 bg-slate-950 text-sky-100 text-xs sm:text-sm focus:outline-none resize-y"
+                                class="code-editor-textarea flex-1 w-full p-4 bg-slate-950 text-slate-100 text-xs sm:text-sm focus:outline-none resize-y"
                             >{{ task.starter_code }}</textarea>
                         </div>
 
                         <!-- IDE Status Footer -->
                         <div class="px-4 py-3 bg-slate-900/90 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2">
                             <div class="flex items-center gap-3 text-[11px] text-slate-400">
-                                <span id="line-count-label-{{ task.id }}" class="font-mono font-semibold text-sky-300 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">Строк: 1</span>
+                                <span id="line-count-label-{{ task.id }}" class="font-mono font-semibold theme-accent-text bg-slate-950 px-2 py-0.5 rounded border border-slate-800">Строк: 1</span>
                                 <span class="hidden sm:inline font-mono text-slate-500">Tab = 4 пробела</span>
                                 <span>Тренажер запускает настоящий Python 3.12 + Pytest</span>
                             </div>
@@ -242,7 +242,7 @@
                                 <button
                                     type="button"
                                     onclick="toggleTerminalSize('{{ task.id }}')"
-                                    class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-400 hover:text-sky-300 transition"
+                                    class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-400 hover:text-[var(--theme-accent)] transition"
                                     title="Переключить высоту терминала вывода (компактно / просторно)"
                                 >
                                     ↕ Высота

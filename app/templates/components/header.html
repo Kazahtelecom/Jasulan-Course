@@ -1,5 +1,5 @@
 <!-- Top Brand & Navigation Header with 4-Student Profile Switcher -->
-<header id="main-site-header" class="border-b border-sky-500/20 bg-slate-950/90 backdrop-blur-md sticky top-0 z-50 transition-all duration-200">
+<header id="main-site-header" class="border-b border-slate-800 bg-slate-950/90 backdrop-blur-md sticky top-0 z-50 transition-all duration-200">
     <div id="header-inner-container" class="max-w-6xl mx-auto px-6 pt-5 pb-4 space-y-4 transition-all duration-200">
 
         <!-- Collapsible Upper Rows (Brand + Profile + Week Pills) -->
@@ -29,7 +29,7 @@
                             Учебная платформа
                         </h1>
                         <p class="text-sm text-slate-400 font-medium">
-                            Учимся вместе • <span class="text-sky-400">{{ app_name }}</span>
+                            Учимся вместе • <span class="theme-accent-text">{{ app_name }}</span>
                         </p>
                     </div>
                 </div>
@@ -42,7 +42,7 @@
                         <select
                             id="student-selector"
                             onchange="onStudentChange(this.value)"
-                            class="bg-slate-950 border border-slate-700 text-xs font-bold text-sky-300 rounded-lg px-2.5 py-1 focus:outline-none focus:border-sky-400 cursor-pointer"
+                            class="bg-slate-950 border border-slate-700 text-xs font-bold theme-accent-text rounded-lg px-2.5 py-1 focus:outline-none focus:border-[var(--theme-accent)] cursor-pointer"
                         >
                             <option value="zhasulan" {% if student.username == 'zhasulan' %}selected{% endif %}>Жасулан Куандыков</option>
                             <option value="roman" {% if student.username == 'roman' %}selected{% endif %}>Иванов Роман</option>
@@ -63,17 +63,17 @@
                             {{ progress.grand_total }} / {{ progress.grand_total_max }} б.
                         </span>
                     </div>
-                    <span id="header-status-badge" class="px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider {% if progress.is_course_completed %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/40{% elif progress.is_exam_completed %}bg-amber-500/20 text-amber-300 border border-amber-500/40{% else %}bg-sky-500/20 text-sky-300 border border-sky-500/40{% endif %}">
+                    <span id="header-status-badge" class="px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider {% if progress.is_course_completed %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/40{% elif progress.is_exam_completed %}bg-amber-500/20 text-amber-300 border border-amber-500/40{% else %}theme-badge{% endif %}">
                         {% if progress.is_course_completed %}КУРС ЗАЧТЕН{% elif progress.is_exam_completed %}ЭКЗАМЕН СДАН{% else %}В ПРОЦЕССЕ{% endif %}
                     </span>
                     {% else %}
-                    <div class="px-4 py-2 rounded-xl bg-slate-900/90 border border-sky-500/30 flex items-center gap-2 shadow-[0_0_15px_rgba(56,189,248,0.12)]">
+                    <div class="px-4 py-2 rounded-xl bg-slate-900/90 border theme-border flex items-center gap-2 shadow-[0_0_15px_var(--theme-glow)]">
                         <span class="text-xs text-slate-400">Баллы (Тест):</span>
-                        <span id="header-total-score" class="font-mono font-bold text-sm text-sky-400">
+                        <span id="header-total-score" class="font-mono font-bold text-sm theme-accent-text">
                             {{ progress.total_score }} / {{ progress.max_score }} б.
                         </span>
                     </div>
-                    <span id="header-status-badge" class="px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider {% if progress.is_completed %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/40{% else %}bg-sky-500/20 text-sky-300 border border-sky-500/40{% endif %}">
+                    <span id="header-status-badge" class="px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider {% if progress.is_completed %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/40{% else %}theme-badge{% endif %}">
                         {% if progress.is_completed %}ЗАЧЕТ ПОЛУЧЕН{% else %}В ПРОЦЕССЕ{% endif %}
                     </span>
                     {% endif %}
@@ -114,7 +114,7 @@
                 Итоговая Ведомость (100 б.)
             </button>
             {% else %}
-            <button type="button" data-tab="home" onclick="switchSubTab('home')" class="subtab-btn subtab-active text-sky-400 font-bold px-4 py-2 rounded-xl text-sm transition shrink-0">
+            <button type="button" data-tab="home" onclick="switchSubTab('home')" class="subtab-btn subtab-active font-bold px-4 py-2 rounded-xl text-sm transition shrink-0">
                 Главная
             </button>
             <button type="button" data-tab="theory" onclick="switchSubTab('theory')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
@@ -142,16 +142,16 @@
                     <span>🎨</span>
                     <span class="hidden sm:inline">Тема</span>
                 </button>
-                <button type="button" onclick="openUmlDiagramSection()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-950/40 hover:bg-sky-900/60 border border-sky-500/30 text-sky-300 hover:text-white text-xs font-bold transition shadow-[0_0_12px_rgba(56,189,248,0.15)] shrink-0">
+                <button type="button" onclick="openUmlDiagramSection()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border theme-border theme-accent-text hover:text-white text-xs font-bold transition shadow-[0_0_12px_var(--theme-glow)] shrink-0">
                     <span>📐 UML-Диаграммы</span>
-                    <span class="text-[10px] px-1 rounded bg-sky-500/20 text-sky-300 border border-sky-400/30">🔍 Лупа</span>
+                    <span class="text-[10px] px-1 rounded theme-badge">🔍 Лупа</span>
                 </button>
                 <button
                     id="header-collapse-toggle"
                     type="button"
                     onclick="toggleHeaderCollapse()"
                     title="Свернуть или развернуть верхнюю шапку для увеличения рабочей области кода"
-                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-sky-400/50 text-slate-300 hover:text-white text-xs font-semibold transition shrink-0"
+                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-[var(--theme-accent)] text-slate-300 hover:text-white text-xs font-semibold transition shrink-0"
                 >
                     <span id="header-collapse-label">▲ Свернуть меню</span>
                 </button>

@@ -5,13 +5,13 @@
     <div class="cyber-card rounded-2xl p-6 sm:p-8 space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-                <span class="text-xs font-mono font-bold text-sky-400 uppercase">Сводка успеваемости</span>
+                <span class="text-xs font-mono font-bold theme-accent-text uppercase">Сводка успеваемости</span>
                 <h2 class="text-2xl font-extrabold text-white mt-1">Результаты: {{ overview.badge }}</h2>
                 <p class="text-sm text-slate-400">Оценка недели формируется на 100% из итогового Тестирования (практика — свободный тренажер без снятия баллов).</p>
             </div>
             <div class="text-right">
                 <div class="text-xs text-slate-400">Баллы за неделю</div>
-                <div id="results-total-score" class="text-3xl font-extrabold font-mono text-sky-400">
+                <div id="results-total-score" class="text-3xl font-extrabold font-mono theme-accent-text">
                     {{ progress.total_score }} / {{ progress.max_score }} б.
                 </div>
             </div>
@@ -21,10 +21,10 @@
         <div class="space-y-2">
             <div class="flex justify-between text-xs font-medium text-slate-300">
                 <span>Прогресс зачета недели (порог зачета: 12.0 из 20.0 баллов в тесте)</span>
-                <span id="results-percent-label" class="font-mono text-sky-400">{{ progress.progress_percent }}%</span>
+                <span id="results-percent-label" class="font-mono theme-accent-text">{{ progress.progress_percent }}%</span>
             </div>
             <div class="w-full h-3 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
-                <div id="results-progress-bar" class="h-full bg-gradient-to-r from-blue-600 via-sky-400 to-emerald-400 transition-all duration-500" style="width: {{ progress.progress_percent }}%"></div>
+                <div id="results-progress-bar" class="h-full bg-gradient-to-r from-[var(--theme-primary)] to-emerald-400 transition-all duration-500" style="width: {{ progress.progress_percent }}%"></div>
             </div>
         </div>
 
@@ -47,7 +47,7 @@
                 <div id="res-status-{{ task.id }}" class="text-base font-bold font-mono text-slate-200">
                     {% if t_prog.is_completed %}✅ Пройдено{% else %}По желанию{% endif %}
                 </div>
-                <button type="button" onclick="switchSubTab('practice'); switchPracticeTask('{{ task.id }}');" class="text-xs text-sky-400 hover:underline">
+                <button type="button" onclick="switchSubTab('practice'); switchPracticeTask('{{ task.id }}');" class="text-xs theme-accent-text hover:underline">
                     Открыть тренажер →
                 </button>
             </div>

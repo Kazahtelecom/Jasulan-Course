@@ -43,10 +43,10 @@ function switchSubTab(tabId) {
     document.querySelectorAll(".subtab-btn").forEach((btn) => {
         const isCurrent = btn.dataset.tab === target;
         if (isCurrent) {
-            btn.classList.add("subtab-active", "text-sky-400", "font-bold");
+            btn.classList.add("subtab-active", "theme-accent-text", "font-bold");
             btn.classList.remove("text-slate-400", "border-transparent");
         } else {
-            btn.classList.remove("subtab-active", "text-sky-400", "font-bold");
+            btn.classList.remove("subtab-active", "theme-accent-text", "font-bold");
             btn.classList.add("text-slate-400", "border-transparent");
         }
     });
@@ -473,7 +473,7 @@ function selectQuizOption(questionId, optionIndex) {
     document.querySelectorAll(`.quiz-opt-${questionId}`).forEach((btn) => {
         const idx = parseInt(btn.dataset.index, 10);
         if (idx === optionIndex) {
-            btn.className = `quiz-opt-${questionId} w-full text-left p-3.5 rounded-xl border transition flex items-center gap-3 bg-sky-500/20 border-sky-400 text-white shadow-sm`;
+            btn.className = `quiz-opt-${questionId} w-full text-left p-3.5 rounded-xl border transition flex items-center gap-3 theme-glow-card text-white shadow-sm`;
         } else {
             btn.className = `quiz-opt-${questionId} w-full text-left p-3.5 rounded-xl border transition flex items-center gap-3 bg-slate-900/70 border-slate-800 text-slate-300 hover:border-slate-700`;
         }
@@ -527,7 +527,7 @@ async function submitWeek1Quiz() {
                             }
                         </p>
                     </div>
-                    <button onclick="switchSubTab('results')" class="px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs transition shrink-0">
+                    <button onclick="switchSubTab('results')" class="px-4 py-2 rounded-lg theme-btn-primary font-bold text-xs transition shrink-0">
                         Перейти в Результаты →
                     </button>
                 </div>
@@ -723,7 +723,7 @@ function updateProgressUI(progress) {
         } else {
             headerBadge.textContent = "В ПРОЦЕССЕ";
             headerBadge.className =
-                "px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-500/40";
+                "px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider theme-badge";
         }
     }
 
@@ -794,7 +794,7 @@ function updateProgressUI(progress) {
             } else {
                 headerBadge.textContent = "В ПРОЦЕССЕ";
                 headerBadge.className =
-                    "px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-500/40";
+                    "px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider theme-badge";
             }
         }
     }
@@ -924,7 +924,7 @@ function switchUmlDiagramTab(tabKey) {
         const isCurrent = btn.dataset.diagramTab === tabKey;
         if (isCurrent) {
             btn.className =
-                "uml-tab-btn px-4 py-2 rounded-xl font-bold transition shrink-0 bg-sky-500/20 text-sky-300 border border-sky-500/50 shadow-[0_0_12px_rgba(56,189,248,0.2)]";
+                "uml-tab-btn px-4 py-2 rounded-xl font-bold transition shrink-0 week-pill-active";
         } else {
             btn.className =
                 "uml-tab-btn px-4 py-2 rounded-xl font-medium transition shrink-0 bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200";
@@ -985,7 +985,7 @@ function toggleUmlLens() {
     } else {
         if (btn) {
             btn.className =
-                "px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-sky-300 border border-sky-500/40 shadow-[0_0_15px_rgba(56,189,248,0.15)]";
+                "px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 theme-btn-secondary";
         }
         if (btnText) btnText.textContent = "Включить лупу";
         if (hint) hint.textContent = "Нажмите «Включить лупу» или дважды кликните по диаграмме для зума.";
