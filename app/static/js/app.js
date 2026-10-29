@@ -35,7 +35,10 @@ function switchSubTab(tabId) {
     }
 
     const validTabs = ["home", "theory", "practice", "quiz", "results"];
-    const target = validTabs.includes(tabId) ? tabId : "home";
+    let target = validTabs.includes(tabId) ? tabId : "home";
+    if (ACTIVE_WEEK === "exam" && target === "theory") {
+        target = "home";
+    }
 
     document.querySelectorAll(".subtab-btn").forEach((btn) => {
         const isCurrent = btn.dataset.tab === target;
@@ -887,6 +890,18 @@ let panStartY = 0;
  * Quick jump from any tab/header to the UML diagram section in Theory
  */
 function openUmlDiagramSection() {
+    if (ACTIVE_WEEK === "exam") {
+        const currentActiveSubtab = document.querySelector(".subtab-btn.subtab-active")?.dataset.tab;
+        if (currentActiveSubtab === "home") {
+            const sec = document.getElementById("uml-diagram-section");
+            if (sec) {
+                sec.scrollIntoView({ behavior: "smooth", block: "start" });
+                return;
+            }
+        }
+        openUmlFullscreen();
+        return;
+    }
     switchSubTab("theory");
     setTimeout(() => {
         const sec = document.getElementById("uml-diagram-section");
@@ -927,7 +942,7 @@ function switchUmlDiagramTab(tabKey) {
         const pane = document.getElementById("uml-diagram-week3");
         if (pane) pane.classList.remove("hidden");
     } else if (tabKey === "week") {
-        const activeWeekId = ACTIVE_WEEK === "3" ? "uml-diagram-week3" : (ACTIVE_WEEK === "2" ? "uml-diagram-week2" : "uml-diagram-week1");
+        const activeWeekId = ACTIVE_WEEK === "3" || ACTIVE_WEEK === "exam" ? "uml-diagram-week3" : (ACTIVE_WEEK === "2" ? "uml-diagram-week2" : "uml-diagram-week1");
         const pane = document.getElementById(activeWeekId);
         if (pane) pane.classList.remove("hidden");
     } else if (tabKey === "arch") {
@@ -1091,7 +1106,19 @@ function openUmlFullscreen() {
 
     // Determine title
     let title = "UML-диаграмма классов: Неделя 1 (Инкапсуляция SmartCard)";
-    if (currentUmlTab === "week3" || (currentUmlTab === "week" && ACTIVE_WEEK === "3")) {
+    if (ACTIVE_WEEK === "exam") {
+        if (currentUmlTab === "week1") {
+            title = "UML-диаграмма классов: Неделя 1 (Инкапсуляция и SmartCard)";
+        } else if (currentUmlTab === "week2") {
+            title = "UML-диаграмма классов: Неделя 2 (SOLID & Dependency Injection)";
+        } else if (currentUmlTab === "arch") {
+            title = "Архитектура платформы Web-OOP (WeekModule & Services)";
+        } else if (currentUmlTab === "db") {
+            title = "ER-диаграмма базы данных (SQLite: Student, Progress, Submissions)";
+        } else {
+            title = "UML-диаграмма классов: Неделя 3 (Паттерны GoF и Clean Architecture)";
+        }
+    } else if (currentUmlTab === "week3" || (currentUmlTab === "week" && ACTIVE_WEEK === "3")) {
         title = "UML-диаграмма классов: Неделя 3 (Паттерны GoF и Clean Architecture)";
     } else if (currentUmlTab === "week2" || (currentUmlTab === "week" && ACTIVE_WEEK === "2")) {
         title = "UML-диаграмма классов: Неделя 2 (SOLID & Dependency Injection)";
@@ -1103,7 +1130,10 @@ function openUmlFullscreen() {
     if (modalTitle) modalTitle.textContent = title;
 
     // Find visible SVG and clone into modal
-    const visiblePane = document.querySelector(".uml-diagram-pane:not(.hidden)");
+    let visiblePane = document.querySelector(".uml-diagram-pane:not(.hidden)");
+    if (!visiblePane) {
+        visiblePane = document.getElementById("uml-diagram-week3") || document.getElementById("uml-diagram-week1");
+    }
     if (visiblePane) {
         const svg = visiblePane.querySelector("svg");
         if (svg) {

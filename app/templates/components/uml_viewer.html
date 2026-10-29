@@ -112,7 +112,7 @@
 
         >
 
-            ⭐ Диаграмма классов: Неделя {{ active_week|default(1) }} ({% if active_week|default(1) == 3 %}GoF & Clean Arch{% elif active_week|default(1) == 2 %}SOLID & DI{% else %}Инкапсуляция{% endif %})
+            ⭐ Диаграмма классов: {% if active_week == 'exam' %}Архитектура курса (Недели 1–3){% else %}Неделя {{ active_week|default(1) }} ({% if active_week|default(1) == 3 %}GoF & Clean Arch{% elif active_week|default(1) == 2 %}SOLID & DI{% else %}Инкапсуляция{% endif %}){% endif %}
 
         </button>
 
@@ -212,7 +212,7 @@
 
         <!-- 1. DIAGRAM: WEEK 1 (SmartCard, Passenger, Validator) -->
 
-        <div id="uml-diagram-week1" class="uml-diagram-pane w-full {% if active_week|default(1) != 1 %}hidden{% endif %}">
+        <div id="uml-diagram-week1" class="uml-diagram-pane w-full {% if active_week|default(1) != 1 or active_week == 'exam' %}hidden{% endif %}">
 
             <svg id="svg-week1" viewBox="0 0 1020 480" class="w-full h-auto max-h-[500px]" xmlns="http://www.w3.org/2000/svg">
 
@@ -658,7 +658,7 @@
 
         <!-- 2B. DIAGRAM: WEEK 3 (GoF Patterns & Clean Architecture) -->
 
-        <div id="uml-diagram-week3" class="uml-diagram-pane w-full {% if active_week|default(1) != 3 %}hidden{% endif %}">
+        <div id="uml-diagram-week3" class="uml-diagram-pane w-full {% if active_week|default(1) != 3 and active_week != 'exam' %}hidden{% endif %}">
 
             <svg id="svg-week3" viewBox="0 0 1120 560" class="w-full h-auto max-h-[560px]" xmlns="http://www.w3.org/2000/svg">
 

@@ -262,6 +262,10 @@ def test_exam_ui_integrity(client: TestClient) -> None:
     assert "Часть 2: Практика" in html or "Часть 2 · Практика" in html
     assert "Итоговая Ведомость" in html or "Официальная ведомость" in html
 
+    # UML diagram viewer is accessible on exam page
+    assert 'id="uml-diagram-section"' in html
+    assert 'id="uml-fullscreen-modal"' in html
+
     # Check that standard week pages also have the 🏆 Экзамен tab link
     w1_res = client.get("/week1")
     assert w1_res.status_code == 200
