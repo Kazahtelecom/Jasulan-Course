@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Итоговый Экзамен ООП — {{ app_name }}</title>
+    <!-- Tailwind CSS (Zero-Build CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body data-active-week="exam" class="min-h-screen flex flex-col font-sans selection:bg-amber-500 selection:text-slate-950">
+
+    {% include "components/header.html" %}
+
+    <!-- Main Exam Content Container with Decomposed Sub-Tabs -->
+    <main class="max-w-6xl mx-auto px-6 py-8 flex-1 w-full space-y-8">
+
+        <!-- ============================================================= -->
+        <!-- TAB 1: ИНСТРУКЦИЯ И РЕГЛАМЕНТ (OVERVIEW)                     -->
+        <!-- ============================================================= -->
+        <section id="panel-home" class="subtab-panel space-y-8">
+            <!-- Hero Card -->
+            <div class="cyber-card rounded-2xl p-6 sm:p-10 border-amber-500/40 relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-amber-950/20 shadow-[0_0_35px_rgba(245,158,11,0.15)]">
+                <div class="space-y-4 max-w-3xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-bold uppercase tracking-wider">
+                        <span>🏆</span> {{ overview.badge }}
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl font-black text-white tracking-tight">
+                        {{ overview.title }}
+                    </h1>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        {{ overview.description }}
+                    </p>
+                </div>
+
+                <!-- Academic Integrity Alert Banner -->
+                <div class="mt-8 p-4 rounded-xl bg-amber-950/40 border border-amber-500/40 flex items-start gap-3.5 text-xs text-amber-200">
+                    <span class="text-xl shrink-0">🛡️</span>
+                    <div>
+                        <strong class="font-bold text-amber-300">Режим академической честности:</strong>
+                        <p class="mt-0.5 opacity-90 leading-relaxed">
+                            На экзамене полностью отключены кнопки подсказок и готовых решений. Все задания проверяются строгим белым списком AST в песочнице Python 3.12 + Pytest. Сданные баллы фиксируются по принципу High-Water Mark в изолированной базе данных SQLite WAL.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Grand Total Progress Widget -->
+                <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-slate-800/80 pt-6">
+                    <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800">
+                        <div class="text-xs text-slate-400">Текущий контроль (Недели 1–3)</div>
+                        <div class="text-xl font-mono font-bold text-sky-400 mt-1">
+                            <span id="overview-semester-score">{{ progress.semester_score }}</span> / 60.0 б.
+                        </div>
+                        <div class="text-[11px] text-slate-500 mt-0.5">3 недели x 20.0 б.</div>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-slate-900/90 border border-amber-500/30">
+                        <div class="text-xs text-slate-400">Экзамен (Тест + Код)</div>
+                        <div class="text-xl font-mono font-bold text-amber-400 mt-1">
+                            <span id="overview-exam-score">{{ progress.exam_total }}</span> / 40.0 б.
+                        </div>
+                        <div class="text-[11px] text-slate-500 mt-0.5">Порог сдачи: 20.0 б.</div>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-slate-900/90 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                        <div class="text-xs text-slate-400">ИТОГО ЗА КУРС</div>
+                        <div class="text-xl font-mono font-bold text-emerald-400 mt-1">
+                            <span id="overview-grand-total">{{ progress.grand_total }}</span> / 100.0 б.
+                        </div>
+                        <div class="text-[11px] text-slate-500 mt-0.5">Оценка: <strong id="overview-grade-letter" class="text-emerald-300">{{ progress.grade_letter }}</strong></div>
+                    </div>
+                </div>
+
+                <!-- Actions Navigation -->
+                <div class="mt-8 flex flex-wrap gap-4 items-center">
+                    <button type="button" onclick="switchSubTab('quiz')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-400 hover:to-rose-500 text-slate-950 font-extrabold text-sm transition shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+                        Начать Часть 1: Тестирование (20 вопросов) →
+                    </button>
+                    <button type="button" onclick="switchSubTab('practice')" class="px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700 text-sm font-semibold transition">
+                        Перейти к Части 2: Практика (2 задачи) →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Rules Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="cyber-card rounded-2xl p-6 space-y-4">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <span>📋</span> Регламент проведения экзамена
+                    </h3>
+                    <ul class="space-y-2.5 text-xs sm:text-sm text-slate-300 leading-relaxed">
+                        {% for r in overview.rules %}
+                        <li class="flex items-start gap-2">
+                            <span class="text-amber-400 font-bold shrink-0">•</span>
+                            <span>{{ r }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="cyber-card rounded-2xl p-6 space-y-4">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <span>⚖️</span> Структура оценивания
+                    </h3>
+                    <div class="space-y-3">
+                        {% for st in overview.structure %}
+                        <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1">
+                            <div class="flex items-center justify-between text-xs font-bold">
+                                <span class="text-white">{{ st.name }}</span>
+                                <span class="font-mono text-amber-400">{{ st.score }}</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400">{{ st.scope }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- TAB 2: ТЕСТИРОВАНИЕ (20 ВОПРОСОВ · 20.0 БАЛЛОВ)              -->
+        <!-- ============================================================= -->
+        <section id="panel-quiz" class="subtab-panel hidden space-y-8">
+            <div class="cyber-card rounded-2xl p-6 sm:p-8 space-y-4 border-amber-500/30">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+                    <div>
+                        <span class="text-xs font-mono font-bold text-amber-400 uppercase">Часть 1 · Теоретический контроль</span>
+                        <h2 class="text-2xl font-extrabold text-white mt-1">Итоговое Тестирование (20 вопросов)</h2>
+                        <p class="text-xs sm:text-sm text-slate-400">
+                            20 сквозных вопросов по Неделям 1, 2 и 3 • 1.0 балл за каждый верный ответ • Порог: 12.0 б.
+                        </p>
+                    </div>
+                    <div class="px-4 py-2 rounded-xl bg-slate-950 border border-amber-500/30 text-right shrink-0">
+                        <div class="text-[11px] text-slate-400">Текущий балл за квиз:</div>
+                        <div id="quiz-live-score" class="font-mono font-bold text-lg text-amber-400">
+                            {{ progress.quiz_score }} / {{ progress.quiz_max }} б.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Result Banner -->
+                <div id="quiz-result-banner" class="hidden"></div>
+
+                <!-- 20 Question Cards -->
+                <div class="space-y-6 pt-4">
+                    {% for q in quiz_questions %}
+                    <div class="p-5 sm:p-6 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                                Вопрос {{ q.number }} из 20 • Неделя {{ q.week }}
+                            </span>
+                            <span class="text-xs font-mono text-slate-400">{{ q.topic }}</span>
+                        </div>
+
+                        <p class="text-sm sm:text-base font-semibold text-white leading-relaxed">
+                            {{ q.question }}
+                        </p>
+
+                        <!-- Options -->
+                        <div class="grid grid-cols-1 gap-2.5 pt-2">
+                            {% for opt in q.options %}
+                            <button
+                                type="button"
+                                data-index="{{ loop.index0 }}"
+                                onclick="selectQuizOption('{{ q.id }}', {{ loop.index0 }})"
+                                class="quiz-opt-{{ q.id }} w-full text-left p-3.5 rounded-xl border border-slate-800 bg-slate-950/70 hover:border-slate-700 text-xs sm:text-sm text-slate-300 transition flex items-center gap-3"
+                            >
+                                <span class="w-6 h-6 rounded-lg bg-slate-900 border border-slate-700 font-mono text-xs font-bold flex items-center justify-center shrink-0">
+                                    {{ ["A", "B", "C", "D"][loop.index0] }}
+                                </span>
+                                <span class="leading-relaxed">{{ opt }}</span>
+                            </button>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Answer Feedback Box -->
+                        <div id="quiz-exp-{{ q.id }}" class="hidden"></div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-6 border-t border-slate-800 flex justify-end">
+                    <button
+                        id="btn-submit-quiz"
+                        type="button"
+                        onclick="submitExamQuiz()"
+                        class="px-8 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-400 hover:to-rose-500 text-slate-950 font-black text-sm transition shadow-[0_0_20px_rgba(245,158,11,0.3)]"
+                    >
+                        Отправить ответы на проверку →
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- TAB 3: ПРАКТИКА (2 БОЕВЫЕ ЗАДАЧИ · 20.0 БАЛЛОВ)              -->
+        <!-- ============================================================= -->
+        <section id="panel-practice" class="subtab-panel hidden space-y-8">
+            <div class="cyber-card rounded-2xl p-6 sm:p-8 space-y-4 border-amber-500/30">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+                    <div>
+                        <span class="text-xs font-mono font-bold text-emerald-400 uppercase">Часть 2 · Практический контроль</span>
+                        <h2 class="text-2xl font-extrabold text-white mt-1">Боевые задачи тренажера (2 задачи по 10.0 б.)</h2>
+                        <p class="text-xs sm:text-sm text-slate-400">
+                            Проверка кода в изолированной песочнице ASTValidator • Без готовых решений • 10.0 баллов за каждую решенную задачу
+                        </p>
+                    </div>
+                    <div class="px-4 py-2 rounded-xl bg-slate-950 border border-emerald-500/30 text-right shrink-0">
+                        <div class="text-[11px] text-slate-400">Баллы за практику:</div>
+                        <div id="practice-live-score" class="font-mono font-bold text-lg text-emerald-400">
+                            {{ progress.tasks_score }} / {{ progress.tasks_max }} б.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step Switcher Pills -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                    {% for task in practice_tasks %}
+                    {% set t_prog = progress.tasks[task.id] %}
+                    <button
+                        type="button"
+                        data-task="{{ task.id }}"
+                        onclick="switchPracticeTask('{{ task.id }}')"
+                        class="practice-step-btn {% if loop.first %}week-pill-active{% else %}bg-slate-900/70 text-slate-400 border-slate-800{% endif %} p-4 rounded-xl border text-left transition flex items-center justify-between"
+                    >
+                        <div class="flex items-center gap-3">
+                            <span id="step-dot-{{ task.id }}" class="w-3 h-3 rounded-full {% if t_prog.is_completed %}bg-emerald-400 shadow-[0_0_8px_#34d399]{% else %}bg-slate-600{% endif %}"></span>
+                            <div>
+                                <div class="text-xs font-bold text-white">Задача {{ task.step_number }} из 2 ({{ task.max_score }} б.)</div>
+                                <div class="text-xs opacity-80 truncate max-w-[240px]">{{ task.title }}</div>
+                            </div>
+                        </div>
+                        <span id="step-status-{{ task.id }}" class="font-mono text-xs font-bold px-2.5 py-1 rounded {% if t_prog.is_completed %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/40{% else %}bg-slate-950/60 text-slate-400 border border-slate-800{% endif %}">
+                            {% if t_prog.is_completed %}✅ 10.0 / 10.0 б.{% else %}0.0 / 10.0 б.{% endif %}
+                        </span>
+                    </button>
+                    {% endfor %}
+                </div>
+
+                <!-- Task Cards -->
+                {% for task in practice_tasks %}
+                <div id="practice-card-{{ task.id }}" class="practice-task-card {% if not loop.first %}hidden{% endif %} cyber-card rounded-2xl p-6 sm:p-8">
+                    <div id="split-layout-{{ task.id }}" class="practice-split-layout flex flex-col lg:flex-row gap-4 items-stretch">
+
+                        <!-- Left Column: Task Description & Instructions (Resizable Pane) -->
+                        <div id="task-pane-{{ task.id }}" class="practice-task-pane lg:w-[42%] shrink-0 space-y-5">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between flex-wrap gap-2">
+                                    <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                                        {{ task.difficulty }}
+                                    </span>
+                                    <span class="text-xs font-mono text-amber-400 font-bold">Оцениваемая задача</span>
+                                </div>
+                                <h4 class="text-lg font-extrabold text-white">{{ task.title }}</h4>
+                                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">{{ task.story }}</p>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-slate-950/90 border border-slate-800 space-y-2.5">
+                                <div class="text-xs font-bold uppercase tracking-wider text-sky-400">Требования к решению:</div>
+                                <ol class="list-decimal list-inside space-y-2 text-xs sm:text-sm text-slate-200 leading-relaxed">
+                                    {% for inst in task.instructions %}
+                                    <li>{{ inst }}</li>
+                                    {% endfor %}
+                                </ol>
+                            </div>
+
+                            <!-- Hint Toggle -->
+                            <div class="space-y-2">
+                                <button type="button" onclick="toggleTaskHint('{{ task.id }}')" class="text-xs font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1.5 transition">
+                                    <span>💡 Показать подсказку по контрактам</span>
+                                </button>
+                                <pre id="hint-box-{{ task.id }}" class="hidden p-4 rounded-xl bg-amber-950/30 border border-amber-500/40 text-xs font-mono text-amber-200 whitespace-pre-wrap leading-relaxed">{{ task.hint }}</pre>
+                            </div>
+
+                            <!-- Split Width Presets & Step Navigation -->
+                            <div class="pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2">
+                                <div class="hidden lg:flex items-center gap-1.5 text-[11px] text-slate-400">
+                                    <span>Ширина:</span>
+                                    <button type="button" onclick="setPracticeSplitRatio('{{ task.id }}', 25)" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-sky-300 font-mono transition">25/75</button>
+                                    <button type="button" onclick="setPracticeSplitRatio('{{ task.id }}', 35)" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-sky-300 font-mono transition">35/65</button>
+                                    <button type="button" onclick="setPracticeSplitRatio('{{ task.id }}', 50)" class="px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-sky-300 font-mono transition">50/50</button>
+                                </div>
+
+                                {% if not loop.last %}
+                                <button type="button" onclick="switchPracticeTask('{{ practice_tasks[loop.index0 + 1].id }}')" class="ml-auto text-xs font-bold text-amber-400 hover:text-amber-300">
+                                    Следующая задача (2 из 2) →
+                                </button>
+                                {% else %}
+                                <button type="button" onclick="switchSubTab('results')" class="ml-auto px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition">
+                                    Посмотреть Итоговую Ведомость →
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Interactive Drag Resizer (Splitter) -->
+                        <div
+                            id="split-resizer-{{ task.id }}"
+                            data-task="{{ task.id }}"
+                            title="Потяните влево или вправо, чтобы изменить ширину окна задачи и редактора кода"
+                            class="practice-split-resizer hidden lg:flex w-2.5 cursor-col-resize items-center justify-center bg-slate-800/70 hover:bg-amber-500/60 rounded transition select-none shrink-0"
+                        >
+                            <span class="text-slate-400 text-xs font-mono leading-none">⋮</span>
+                        </div>
+
+                        <!-- Right Column: IDE Code Editor & Sandbox Output (STRICT AC-4: NO SOLUTION BUTTON, NO DATA-SOLUTION) -->
+                        <div id="editor-pane-{{ task.id }}" class="practice-editor-pane flex-1 min-w-[30%] space-y-4">
+                            <div class="rounded-xl overflow-hidden border border-amber-500/30 bg-slate-950 shadow-inner">
+                                <!-- IDE Toolbar -->
+                                <div class="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
+                                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
+                                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+                                        <span class="text-xs font-mono text-slate-300 font-semibold ml-1.5">solution.py ({{ task.id }})</span>
+                                    </div>
+
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <!-- Font Size Controls -->
+                                        <div class="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-950 border border-slate-800 text-xs">
+                                            <button
+                                                type="button"
+                                                onclick="changeEditorFontSize(-1)"
+                                                title="Уменьшить шрифт кода"
+                                                class="px-1.5 py-0.5 rounded hover:bg-slate-800 text-slate-300 hover:text-white font-mono font-bold transition"
+                                            >A-</button>
+                                            <span class="editor-fontsize-label text-[11px] font-mono text-amber-400 px-1">14px</span>
+                                            <button
+                                                type="button"
+                                                onclick="changeEditorFontSize(1)"
+                                                title="Увеличить шрифт кода"
+                                                class="px-1.5 py-0.5 rounded hover:bg-slate-800 text-slate-300 hover:text-white font-mono font-bold transition"
+                                            >A+</button>
+                                        </div>
+
+                                        <button type="button" onclick="resetTaskCode('{{ task.id }}')" class="px-2.5 py-1 rounded-lg bg-slate-800/70 hover:bg-slate-800 text-xs text-slate-300 hover:text-white transition">
+                                            ↺ Сбросить к стартовому шаблону
+                                        </button>
+                                        <button
+                                            id="fullscreen-btn-{{ task.id }}"
+                                            type="button"
+                                            onclick="togglePracticeFullscreen('{{ task.id }}')"
+                                            title="Развернуть условие задачи и редактор кода на весь экран (Esc — выход)"
+                                            class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-xs font-semibold text-amber-200 hover:text-white transition"
+                                        >
+                                            <span id="fullscreen-btn-label-{{ task.id }}">⛶ На весь экран</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- IDE Coding Workspace with Line Numbers Gutter -->
+                                <div class="code-editor-workspace flex items-stretch bg-slate-950 relative">
+                                    <div
+                                        id="line-numbers-{{ task.id }}"
+                                        aria-hidden="true"
+                                        class="line-numbers-gutter select-none text-right pr-3 pl-3 py-4 bg-slate-900/90 text-slate-500 font-mono text-xs sm:text-sm border-r border-slate-800 overflow-hidden"
+                                    >1</div>
+                                    <textarea
+                                        id="editor-{{ task.id }}"
+                                        data-task="{{ task.id }}"
+                                        data-starter="{{ task.starter_code }}"
+                                        rows="16"
+                                        spellcheck="false"
+                                        class="code-editor-textarea flex-1 w-full p-4 bg-slate-950 text-amber-100 text-xs sm:text-sm focus:outline-none resize-y"
+                                    >{{ task.starter_code }}</textarea>
+                                </div>
+
+                                <!-- IDE Status Footer -->
+                                <div class="px-4 py-3 bg-slate-900/90 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2">
+                                    <div class="flex items-center gap-3 text-[11px] text-slate-400">
+                                        <span id="line-count-label-{{ task.id }}" class="font-mono font-semibold text-amber-300 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">Строк: 1</span>
+                                        <span class="hidden sm:inline font-mono text-slate-500">Tab = 4 пробела</span>
+                                        <span>Песочница Python 3.12 + Pytest (10.0 б. за сдачу)</span>
+                                    </div>
+                                    <button
+                                        id="run-btn-{{ task.id }}"
+                                        type="button"
+                                        onclick="runPracticeTask('{{ task.id }}')"
+                                        class="px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold text-xs sm:text-sm shadow-[0_0_15px_rgba(16,185,129,0.3)] transition"
+                                    >
+                                        ▶ Проверить в песочнице
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Execution Result Box -->
+                            <div id="result-box-{{ task.id }}" class="hidden rounded-xl bg-slate-950 border border-slate-800 p-4 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <span id="verdict-badge-{{ task.id }}" class="px-3 py-1 rounded-full text-xs font-bold"></span>
+                                        <button
+                                            type="button"
+                                            onclick="toggleTerminalSize('{{ task.id }}')"
+                                            class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-400 hover:text-amber-300 transition"
+                                            title="Переключить высоту терминала вывода"
+                                        >
+                                            ↕ Высота
+                                        </button>
+                                    </div>
+                                    <span class="text-xs text-slate-400 font-mono">Время: <strong id="time-label-{{ task.id }}">0 мс</strong></span>
+                                </div>
+                                <pre id="output-pre-{{ task.id }}" class="p-3 rounded-lg bg-slate-900 text-slate-200 text-xs font-mono overflow-auto whitespace-pre-wrap min-h-[140px] max-h-[520px] resize-y"></pre>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- TAB 4: ИТОГОВАЯ ВЕДОМОСТЬ (100-БАЛЛЬНАЯ ШКАЛА КУРСА)          -->
+        <!-- ============================================================= -->
+        <section id="panel-results" class="subtab-panel hidden space-y-8">
+            <div class="cyber-card rounded-2xl p-6 sm:p-10 border-amber-500/40 space-y-8 bg-slate-950/80">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+                    <div>
+                        <span class="text-xs font-mono font-bold text-amber-400 uppercase">Официальная ведомость успеваемости</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">Итоговая аттестация по курсу ООП</h2>
+                        <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                            Студент: <strong class="text-white">{{ student.full_name }}</strong> (ID: {{ student.username }}) • Специальность «Программная инженерия»
+                        </p>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-emerald-500/40 text-center shrink-0 shadow-[0_0_20px_rgba(16,185,129,0.15)]">
+                        <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Итоговый балл курса</div>
+                        <div id="results-grand-total" class="font-mono text-3xl font-black text-emerald-400 mt-0.5">
+                            {{ progress.grand_total }} / 100.0
+                        </div>
+                        <div class="text-xs font-bold text-emerald-300 mt-0.5">
+                            {{ progress.grade_letter }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Breakdown Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase font-mono">
+                                <th class="py-3 px-4">Учебный этап / Модуль</th>
+                                <th class="py-3 px-4">Формат контроля</th>
+                                <th class="py-3 px-4">Макс. балл</th>
+                                <th class="py-3 px-4">Набранный балл</th>
+                                <th class="py-3 px-4 text-right">Статус</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60 font-mono">
+                            <tr class="hover:bg-slate-900/50">
+                                <td class="py-3.5 px-4 font-sans font-bold text-white">Неделя 1 · Инкапсуляция и инварианты</td>
+                                <td class="py-3.5 px-4 text-slate-400 font-sans">Тестирование (10 вопр.)</td>
+                                <td class="py-3.5 px-4 text-slate-400">20.0 б.</td>
+                                <td class="py-3.5 px-4 font-bold text-sky-400"><span id="table-w1-score">{{ progress.week1_score }}</span> б.</td>
+                                <td class="py-3.5 px-4 text-right font-sans">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold {% if progress.week1_score >= 12.0 %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/30{% else %}bg-slate-800 text-slate-400{% endif %}">
+                                        {% if progress.week1_score >= 12.0 %}Зачет{% else %}В процессе{% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-900/50">
+                                <td class="py-3.5 px-4 font-sans font-bold text-white">Неделя 2 · SOLID и Dependency Injection</td>
+                                <td class="py-3.5 px-4 text-slate-400 font-sans">Тестирование (10 вопр.)</td>
+                                <td class="py-3.5 px-4 text-slate-400">20.0 б.</td>
+                                <td class="py-3.5 px-4 font-bold text-sky-400"><span id="table-w2-score">{{ progress.week2_score }}</span> б.</td>
+                                <td class="py-3.5 px-4 text-right font-sans">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold {% if progress.week2_score >= 12.0 %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/30{% else %}bg-slate-800 text-slate-400{% endif %}">
+                                        {% if progress.week2_score >= 12.0 %}Зачет{% else %}В процессе{% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-900/50">
+                                <td class="py-3.5 px-4 font-sans font-bold text-white">Неделя 3 · Паттерны GoF и Clean Architecture</td>
+                                <td class="py-3.5 px-4 text-slate-400 font-sans">Тестирование (10 вопр.)</td>
+                                <td class="py-3.5 px-4 text-slate-400">20.0 б.</td>
+                                <td class="py-3.5 px-4 font-bold text-sky-400"><span id="table-w3-score">{{ progress.week3_score }}</span> б.</td>
+                                <td class="py-3.5 px-4 text-right font-sans">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold {% if progress.week3_score >= 12.0 %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/30{% else %}bg-slate-800 text-slate-400{% endif %}">
+                                        {% if progress.week3_score >= 12.0 %}Зачет{% else %}В процессе{% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="bg-sky-950/20 font-bold border-t border-sky-500/30">
+                                <td class="py-3 px-4 font-sans text-sky-200">ИТОГО ТЕКУЩИЙ КОНТРОЛЬ (СЕМЕСТР)</td>
+                                <td class="py-3 px-4 font-sans text-slate-400">Сумма Недель 1–3</td>
+                                <td class="py-3 px-4 text-sky-300">60.0 б.</td>
+                                <td class="py-3 px-4 text-sky-300"><span id="table-semester-score">{{ progress.semester_score }}</span> б.</td>
+                                <td class="py-3 px-4 text-right font-sans text-xs text-sky-300">Рейтинг допуска</td>
+                            </tr>
+                            <tr class="hover:bg-slate-900/50">
+                                <td class="py-3.5 px-4 font-sans font-bold text-white">Экзамен · Часть 1 (Теория)</td>
+                                <td class="py-3.5 px-4 text-slate-400 font-sans">Тестирование (20 вопр.)</td>
+                                <td class="py-3.5 px-4 text-slate-400">20.0 б.</td>
+                                <td class="py-3.5 px-4 font-bold text-amber-400"><span id="table-quiz-score">{{ progress.quiz_score }}</span> б.</td>
+                                <td class="py-3.5 px-4 text-right font-sans">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold {% if progress.quiz_score >= 12.0 %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/30{% else %}bg-slate-800 text-slate-400{% endif %}">
+                                        {% if progress.quiz_score >= 12.0 %}Пройден{% else %}В процессе{% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-900/50">
+                                <td class="py-3.5 px-4 font-sans font-bold text-white">Экзамен · Часть 2 (Практика)</td>
+                                <td class="py-3.5 px-4 text-slate-400 font-sans">2 задачи (песочница AST)</td>
+                                <td class="py-3.5 px-4 text-slate-400">20.0 б.</td>
+                                <td class="py-3.5 px-4 font-bold text-amber-400"><span id="table-tasks-score">{{ progress.tasks_score }}</span> б.</td>
+                                <td class="py-3.5 px-4 text-right font-sans">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold {% if progress.tasks_score >= 10.0 %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/30{% else %}bg-slate-800 text-slate-400{% endif %}">
+                                        {% if progress.tasks_score >= 10.0 %}Пройден{% else %}В процессе{% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="bg-amber-950/20 font-bold border-t border-amber-500/30">
+                                <td class="py-3 px-4 font-sans text-amber-200">ИТОГО ЗА ЭКЗАМЕН</td>
+                                <td class="py-3 px-4 font-sans text-slate-400">Тест + Практика</td>
+                                <td class="py-3 px-4 text-amber-300">40.0 б.</td>
+                                <td class="py-3 px-4 text-amber-300"><span id="table-exam-score">{{ progress.exam_total }}</span> б.</td>
+                                <td class="py-3 px-4 text-right font-sans">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold {% if progress.is_exam_completed %}bg-emerald-500/20 text-emerald-300 border border-emerald-500/30{% else %}bg-amber-500/20 text-amber-300 border border-amber-500/30{% endif %}">
+                                        {% if progress.is_exam_completed %}Сдан (>=20 б.){% else %}В процессе{% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="bg-emerald-950/30 font-black text-sm border-t-2 border-emerald-500/60">
+                                <td class="py-4 px-4 font-sans text-emerald-200 text-base">ИТОГОВАЯ ОЦЕНКА ЗА КУРС</td>
+                                <td class="py-4 px-4 font-sans text-slate-300">Семестр (60) + Экзамен (40)</td>
+                                <td class="py-4 px-4 text-emerald-300">100.0 б.</td>
+                                <td class="py-4 px-4 text-emerald-400 text-base"><span id="table-grand-total">{{ progress.grand_total }}</span> б.</td>
+                                <td class="py-4 px-4 text-right font-sans">
+                                    <span id="table-grand-badge" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider {% if progress.is_course_completed %}bg-emerald-500 text-slate-950 shadow-[0_0_12px_rgba(16,185,129,0.4)]{% else %}bg-rose-500/20 text-rose-300 border border-rose-500/40{% endif %}">
+                                        {% if progress.is_course_completed %}КУРС УСПЕШНО ЗАВЕРШЕН{% else %}НЕ ЗАЧТЕНО (&lt;50 б.){% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Academic Certificate Card -->
+                <div class="p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-950 to-indigo-950/40 border border-indigo-500/40 space-y-4 shadow-xl">
+                    <div class="flex items-center justify-between flex-wrap gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-indigo-500/20 border border-indigo-400/40 flex items-center justify-center text-2xl select-none">
+                                🎓
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-extrabold text-white">Электронный сертификат курса ООП</h4>
+                                <p class="text-xs text-slate-400">КазНУ им. аль-Фараби • Кафедра программной инженерии</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs text-slate-400 font-mono">Статус аккредитации:</div>
+                            <div class="text-xs font-bold text-emerald-400 font-mono">
+                                {% if progress.is_course_completed %}ВЕДОМОСТЬ ПОДТВЕРЖДЕНА (100%){% else %}ОЖИДАЕТ СДАЧИ ЭКЗАМЕНА{% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-slate-800/80 pt-4">
+                        Настоящим удостоверяется, что студент <strong>{{ student.full_name }}</strong> прошел полный интерактивный курс практического объектно-ориентированного программирования на сквозном транспортном домене <strong>Avtobys</strong>, включающий базовое ООП и инкапсуляцию, принципы SOLID и Dependency Injection, а также паттерны GoF и Чистую Архитектуру, с итоговым результатом <strong class="text-emerald-300">{{ progress.grand_total }} из 100.0 баллов</strong> ({{ progress.grade_letter }}).
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950/80 py-5 text-center text-xs text-slate-500">
+        Web-OOP • Учебная платформа ООП (КазНУ им. аль-Фараби) • 🏆 Финальная аттестация курса (100 баллов)
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

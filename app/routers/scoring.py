@@ -57,4 +57,6 @@ def get_student_scores(
         },
         "week1": ScoringService.get_progress_summary(db, student.id, week_number=1),
         "week2": ScoringService.get_progress_summary(db, student.id, week_number=2),
+        "week3": ScoringService.get_progress_summary(db, student.id, week_number=3),
+        "exam": ScoringService.get_exam_progress_summary(db, student.id),
     }

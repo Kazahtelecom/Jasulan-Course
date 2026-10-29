@@ -404,7 +404,11 @@ async function runPracticeTask(taskId) {
     const activeStudent = getActiveStudent();
 
     try {
-        const res = await fetch(`/api/week${ACTIVE_WEEK}/practice/${taskId}/run`, {
+        const runUrl = (ACTIVE_WEEK === "exam")
+            ? `/api/exam/practice/${taskId}/run`
+            : `/api/week${ACTIVE_WEEK}/practice/${taskId}/run`;
+
+        const res = await fetch(runUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -556,6 +560,89 @@ async function submitWeek1Quiz() {
     }
 }
 
+/**
+ * Submit final exam quiz answers (20 questions) to /api/exam/quiz/check
+ */
+async function submitExamQuiz() {
+    const submitBtn = document.getElementById("btn-submit-quiz");
+    const banner = document.getElementById("quiz-result-banner");
+    if (!submitBtn) return;
+
+    const originalHtml = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = "<span>Проверка ответов...</span>";
+
+    const activeStudent = getActiveStudent();
+
+    try {
+        const res = await fetch("/api/exam/quiz/check", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Student-Id": activeStudent,
+            },
+            body: JSON.stringify({ answers: quizSelections }),
+        });
+        const data = await res.json();
+
+        if (banner) {
+            banner.classList.remove("hidden");
+            const isGood = data.score >= 12.0;
+            banner.className = `p-5 rounded-xl border ${
+                isGood
+                    ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-200"
+                    : "bg-amber-500/15 border-amber-500/40 text-amber-200"
+            }`;
+            banner.innerHTML = `
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <div class="text-base font-bold">
+                            Ваш результат за тест: ${data.correct_count} из ${data.total_questions} (${data.score} / ${data.max_score} баллов)
+                        </div>
+                        <p class="text-xs opacity-90 mt-1">
+                            ${
+                                isGood
+                                    ? "🎉 Поздравляем! Теоретическая часть экзамена успешно сдана!"
+                                    : "Для зачета теоретической части нужно минимум 12 баллов из 20. Посмотрите подсказки и попробуйте улучшить результат."
+                            }
+                        </p>
+                    </div>
+                    <button onclick="switchSubTab('results')" class="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition shrink-0">
+                        В Итоговую Ведомость →
+                    </button>
+                </div>
+            `;
+        }
+
+        if (Array.isArray(data.results)) {
+            data.results.forEach((item) => {
+                const expBox = document.getElementById(`quiz-exp-${item.id}`);
+                if (expBox) {
+                    expBox.classList.remove("hidden");
+                    if (item.is_correct) {
+                        expBox.className =
+                            "mt-3 p-3.5 rounded-lg text-xs bg-emerald-500/15 border border-emerald-500/40 text-emerald-200";
+                        expBox.innerHTML = `<strong>✅ Верно (+1.0 балл)!</strong> ${item.explanation}`;
+                    } else {
+                        expBox.className =
+                            "mt-3 p-3.5 rounded-lg text-xs bg-rose-500/15 border border-rose-500/40 text-rose-200";
+                        expBox.innerHTML = `<strong>❌ Неверно.</strong> ${item.explanation}`;
+                    }
+                }
+            });
+        }
+
+        if (data.progress) {
+            updateProgressUI(data.progress);
+        }
+    } catch (err) {
+        console.error("Exam quiz error:", err);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalHtml;
+    }
+}
+
 /* ========================================================================= */
 /* MODULE 6: THEORY COMPLETION TRANSPORT                                     */
 /* ========================================================================= */
@@ -641,8 +728,12 @@ function updateProgressUI(progress) {
         Object.keys(progress.tasks).forEach((tid) => {
             const tinfo = progress.tasks[tid];
             if (!tinfo) return;
-            setTxt(`step-status-${tid}`, tinfo.is_completed ? "✅ Разобрано" : "Тренажер");
-            setTxt(`res-status-${tid}`, tinfo.is_completed ? "✅ Пройдено" : "По желанию");
+            if (ACTIVE_WEEK === "exam") {
+                setTxt(`step-status-${tid}`, tinfo.is_completed ? "✅ 10.0 / 10.0 б." : "0.0 / 10.0 б.");
+            } else {
+                setTxt(`step-status-${tid}`, tinfo.is_completed ? "✅ Разобрано" : "Тренажер");
+                setTxt(`res-status-${tid}`, tinfo.is_completed ? "✅ Пройдено" : "По желанию");
+            }
             const dot = document.getElementById(`step-dot-${tid}`);
             if (dot) {
                 dot.className = tinfo.is_completed
@@ -650,6 +741,59 @@ function updateProgressUI(progress) {
                     : "w-2.5 h-2.5 rounded-full bg-slate-600";
             }
         });
+    }
+
+    // Exam-specific and Course Grand Total updates
+    if (progress.exam_total !== undefined) {
+        setTxt("header-exam-score", `${progress.exam_total} / ${progress.exam_max} б.`);
+        setTxt("header-grand-total", `${progress.grand_total} / ${progress.grand_total_max} б.`);
+
+        setTxt("overview-semester-score", progress.semester_score);
+        setTxt("overview-exam-score", progress.exam_total);
+        setTxt("overview-grand-total", progress.grand_total);
+        setTxt("overview-grade-letter", progress.grade_letter);
+
+        setTxt("quiz-live-score", `${progress.quiz_score} / ${progress.quiz_max} б.`);
+        setTxt("practice-live-score", `${progress.tasks_score} / ${progress.tasks_max} б.`);
+
+        setTxt("results-grand-total", `${progress.grand_total} / 100.0`);
+        setTxt("table-w1-score", progress.week1_score);
+        setTxt("table-w2-score", progress.week2_score);
+        setTxt("table-w3-score", progress.week3_score);
+        setTxt("table-semester-score", progress.semester_score);
+        setTxt("table-quiz-score", progress.quiz_score);
+        setTxt("table-tasks-score", progress.tasks_score);
+        setTxt("table-exam-score", progress.exam_total);
+        setTxt("table-grand-total", progress.grand_total);
+
+        const tableGrandBadge = document.getElementById("table-grand-badge");
+        if (tableGrandBadge) {
+            if (progress.is_course_completed) {
+                tableGrandBadge.textContent = "КУРС УСПЕШНО ЗАВЕРШЕН";
+                tableGrandBadge.className =
+                    "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500 text-slate-950 shadow-[0_0_12px_rgba(16,185,129,0.4)]";
+            } else {
+                tableGrandBadge.textContent = "НЕ ЗАЧТЕНО (<50 б.)";
+                tableGrandBadge.className =
+                    "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/40";
+            }
+        }
+
+        if (headerBadge) {
+            if (progress.is_course_completed) {
+                headerBadge.textContent = "КУРС ЗАЧТЕН";
+                headerBadge.className =
+                    "px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
+            } else if (progress.is_exam_completed) {
+                headerBadge.textContent = "ЭКЗАМЕН СДАН";
+                headerBadge.className =
+                    "px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40";
+            } else {
+                headerBadge.textContent = "В ПРОЦЕССЕ";
+                headerBadge.className =
+                    "px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-500/40";
+            }
+        }
     }
 }
 
