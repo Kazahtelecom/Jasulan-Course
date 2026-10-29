@@ -83,13 +83,13 @@ No findings or observations.
 - [x] every §5 item retains class, completion route, disposition and Candidate effect (no open items)
 
 Coordinator closing checklist:
-- [ ] Coordinator §5 rulings complete; no pending owed item
-- [ ] tfw-docs: scheduled at task close
-- [ ] tfw-knowledge: scheduled at task close
-- [ ] one truthful task changelog entry preserved
-- [ ] task-owned sessions, worktrees/branches, helpers, containers/processes and temporary files each removed, specifically retained, or pending with actor/action
-- [ ] final accepted output identity and affected independent judgment recorded
-- [ ] selected landing/final effects complete and status/event validated before terminal write
+- [x] Coordinator §5 rulings complete; no pending owed item
+- [x] tfw-docs: documentation update prepared at task close
+- [x] tfw-knowledge: N/A — no fact candidates recorded in Phase B
+- [x] one truthful task changelog entry preserved: prepared at task close
+- [x] task-owned sessions, worktrees/branches, helpers, containers/processes and temporary files each removed, specifically retained, or pending with actor/action: isolated %TEMP% test dirs cleaned up
+- [x] final accepted output identity and affected independent judgment recorded (Candidate `73152acdb5954e2bf1c38c84a69296ad987c91d2`)
+- [x] selected landing/final effects complete and status/event validated before terminal write
 
 ## 7. Fact Candidates
 
