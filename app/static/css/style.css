@@ -1,5 +1,54 @@
 /* Dark Cyberpunk / Tech Modern stylesheet for Web-OOP */
 
+/* ========================================================================= */
+/* THEME SYSTEM DESIGN TOKENS (4 PALETTES & 2 GLOW MODES)                     */
+/* ========================================================================= */
+
+:root,
+[data-theme="cyber-gold"] {
+    --theme-primary: #f59e0b;
+    --theme-accent: #fbbf24;
+    --theme-glow: rgba(245, 158, 11, 0.45);
+    --theme-border: rgba(245, 158, 11, 0.35);
+    --theme-bg-gradient:
+        radial-gradient(circle at 12% 10%, rgba(245, 158, 11, 0.12), transparent 35%),
+        radial-gradient(circle at 88% 15%, rgba(251, 191, 36, 0.08), transparent 35%),
+        radial-gradient(circle at 50% 90%, rgba(217, 119, 6, 0.10), transparent 40%);
+}
+
+[data-theme="electric-cyan"] {
+    --theme-primary: #00f0ff;
+    --theme-accent: #38bdf8;
+    --theme-glow: rgba(0, 240, 255, 0.45);
+    --theme-border: rgba(56, 189, 248, 0.35);
+    --theme-bg-gradient:
+        radial-gradient(circle at 12% 10%, rgba(59, 130, 246, 0.14), transparent 35%),
+        radial-gradient(circle at 88% 15%, rgba(0, 240, 255, 0.10), transparent 35%),
+        radial-gradient(circle at 50% 90%, rgba(99, 102, 241, 0.10), transparent 40%);
+}
+
+[data-theme="matrix-emerald"] {
+    --theme-primary: #10b981;
+    --theme-accent: #34d399;
+    --theme-glow: rgba(16, 185, 129, 0.45);
+    --theme-border: rgba(16, 185, 129, 0.35);
+    --theme-bg-gradient:
+        radial-gradient(circle at 12% 10%, rgba(16, 185, 129, 0.12), transparent 35%),
+        radial-gradient(circle at 88% 15%, rgba(52, 211, 153, 0.08), transparent 35%),
+        radial-gradient(circle at 50% 90%, rgba(5, 150, 105, 0.10), transparent 40%);
+}
+
+[data-theme="synthwave-purple"] {
+    --theme-primary: #d946ef;
+    --theme-accent: #c084fc;
+    --theme-glow: rgba(217, 70, 239, 0.45);
+    --theme-border: rgba(217, 70, 239, 0.35);
+    --theme-bg-gradient:
+        radial-gradient(circle at 12% 10%, rgba(217, 70, 239, 0.12), transparent 35%),
+        radial-gradient(circle at 88% 15%, rgba(192, 132, 252, 0.08), transparent 35%),
+        radial-gradient(circle at 50% 90%, rgba(129, 140, 248, 0.10), transparent 40%);
+}
+
 :root {
     --bg-deep: #070b14;
     --bg-panel: #0f1629;
@@ -13,10 +62,7 @@
 
 body {
     background-color: var(--bg-deep);
-    background-image:
-        radial-gradient(circle at 12% 10%, rgba(59, 130, 246, 0.14), transparent 35%),
-        radial-gradient(circle at 88% 15%, rgba(0, 240, 255, 0.10), transparent 35%),
-        radial-gradient(circle at 50% 90%, rgba(99, 102, 241, 0.10), transparent 40%);
+    background-image: var(--theme-bg-gradient);
     color: #e2e8f0;
 }
 
@@ -59,6 +105,49 @@ body {
 .cyber-card-glow:hover {
     border-color: rgba(0, 240, 255, 0.45);
     box-shadow: 0 0 24px rgba(0, 240, 255, 0.12), 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* Glow Modes: Cyberpunk (default neon intensity) vs Clean (minimalist / eye-strain relief) */
+[data-glow="cyberpunk"] .cyber-card-glow:hover {
+    border-color: var(--theme-accent);
+    box-shadow: 0 0 24px var(--theme-glow), 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+[data-glow="clean"] body {
+    background-image: none !important;
+}
+
+[data-glow="clean"] .cyber-card {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6) !important;
+}
+
+[data-glow="clean"] .cyber-card-glow:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7) !important;
+    border-color: var(--theme-accent) !important;
+}
+
+[data-glow="clean"] .week-pill-active,
+[data-glow="clean"] .subtab-active {
+    box-shadow: none !important;
+}
+
+[data-glow="clean"] #header-logo-cube text {
+    filter: none !important;
+}
+
+/* Theme Settings Modal Option Styles */
+.theme-card-option.theme-card-active {
+    border-color: var(--theme-accent) !important;
+    background-color: rgba(30, 41, 59, 0.8) !important;
+    box-shadow: 0 0 12px var(--theme-glow);
+}
+
+.glow-mode-btn.glow-mode-active {
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    border: 1px solid rgba(148, 163, 184, 0.3) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .week-pill-active {

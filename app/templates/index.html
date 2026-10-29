@@ -8,6 +8,20 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Zero-Build reference: cdn.jsdelivr.net/npm/mermaid kept in docs/domain_model_uml.md -->
     <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Zero-FOUC Theme Initialization Script -->
+    <script>
+        (function() {
+            try {
+                var savedTheme = localStorage.getItem('weboop_theme') || 'cyber-gold';
+                var savedGlow = localStorage.getItem('weboop_glow') || 'cyberpunk';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                document.documentElement.setAttribute('data-glow', savedGlow);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'cyber-gold');
+                document.documentElement.setAttribute('data-glow', 'cyberpunk');
+            }
+        })();
+    </script>
 </head>
 <body data-active-week="{{ active_week|default(1) }}" class="min-h-screen flex flex-col font-sans selection:bg-sky-500 selection:text-slate-950">
 

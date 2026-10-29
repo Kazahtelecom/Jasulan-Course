@@ -7,6 +7,20 @@
     <!-- Tailwind CSS (Zero-Build CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Zero-FOUC Theme Initialization Script -->
+    <script>
+        (function() {
+            try {
+                var savedTheme = localStorage.getItem('weboop_theme') || 'cyber-gold';
+                var savedGlow = localStorage.getItem('weboop_glow') || 'cyberpunk';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                document.documentElement.setAttribute('data-glow', savedGlow);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'cyber-gold');
+                document.documentElement.setAttribute('data-glow', 'cyberpunk');
+            }
+        })();
+    </script>
 </head>
 <body data-active-week="exam" class="min-h-screen flex flex-col font-sans selection:bg-amber-500 selection:text-slate-950">
 

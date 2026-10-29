@@ -7,8 +7,22 @@
             <!-- Brand Row & Student Profile Selector -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 via-sky-500 to-cyan-400 flex items-center justify-center font-extrabold text-lg tracking-wider text-white shadow-[0_0_25px_rgba(56,189,248,0.45)] border border-sky-300/40 select-none">
-                        ООП
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center select-none shrink-0 transition-transform hover:scale-105" title="Web-OOP">
+                        <svg id="header-logo-cube" class="w-full h-full" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <filter id="cube-glow" x="-20%" y="-20%" width="140%" height="140%">
+                                    <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="var(--theme-glow)" flood-opacity="0.6"/>
+                                </filter>
+                            </defs>
+                            <!-- Isometric Top Face -->
+                            <path d="M32 6 L54 18 L32 30 L10 18 Z" fill="var(--theme-primary)" fill-opacity="0.25" stroke="var(--theme-accent)" stroke-width="1.75" stroke-linejoin="round"/>
+                            <!-- Isometric Left Face -->
+                            <path d="M10 18 L32 30 L32 56 L10 44 Z" fill="var(--theme-primary)" fill-opacity="0.4" stroke="var(--theme-accent)" stroke-width="1.75" stroke-linejoin="round"/>
+                            <!-- Isometric Right Face -->
+                            <path d="M32 30 L54 18 L54 44 L32 56 Z" fill="var(--theme-primary)" fill-opacity="0.15" stroke="var(--theme-accent)" stroke-width="1.75" stroke-linejoin="round"/>
+                            <!-- Floating Bracket Symbols { } inside Cube -->
+                            <text x="32" y="38" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-weight="900" font-size="14" fill="var(--theme-accent)" filter="url(#cube-glow)">{ }</text>
+                        </svg>
                     </div>
                     <div>
                         <h1 class="text-2xl font-extrabold tracking-tight text-white">
@@ -118,6 +132,16 @@
             {% endif %}
 
             <div class="ml-auto flex items-center gap-2 shrink-0">
+                <button
+                    id="theme-settings-btn"
+                    type="button"
+                    onclick="openThemeSettings()"
+                    title="Настройки оформления: выбор палитры и режима свечения"
+                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white text-xs font-semibold transition shrink-0"
+                >
+                    <span>🎨</span>
+                    <span class="hidden sm:inline">Тема</span>
+                </button>
                 <button type="button" onclick="openUmlDiagramSection()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-950/40 hover:bg-sky-900/60 border border-sky-500/30 text-sky-300 hover:text-white text-xs font-bold transition shadow-[0_0_12px_rgba(56,189,248,0.15)] shrink-0">
                     <span>📐 UML-Диаграммы</span>
                     <span class="text-[10px] px-1 rounded bg-sky-500/20 text-sky-300 border border-sky-400/30">🔍 Лупа</span>
@@ -133,5 +157,120 @@
                 </button>
             </div>
         </nav>
+    </div>
+
+    <!-- Theme & Display Settings Modal Overlay -->
+    <div
+        id="theme-settings-modal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm hidden"
+        onclick="handleThemeModalBackdropClick(event)"
+    >
+        <div class="cyber-card max-w-md w-full mx-4 p-6 rounded-2xl relative shadow-2xl border border-slate-700/80" onclick="event.stopPropagation()">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">⚙️</span>
+                    <h3 class="text-lg font-bold text-white tracking-tight">Настройки оформления</h3>
+                </div>
+                <button
+                    id="close-theme-settings-btn"
+                    type="button"
+                    onclick="closeThemeSettings()"
+                    class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition text-sm font-bold"
+                    title="Закрыть (Esc)"
+                >
+                    ✕
+                </button>
+            </div>
+
+            <!-- Palettes Selection -->
+            <div class="mt-5 space-y-3">
+                <label class="text-xs font-bold text-slate-300 uppercase tracking-wider block">
+                    Цветовая палитра
+                </label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="theme-options-container">
+                    <!-- Cyber Gold -->
+                    <button
+                        type="button"
+                        class="theme-card-option flex items-center gap-3 p-3 rounded-xl border border-slate-800 hover:border-amber-500/50 bg-slate-900/60 hover:bg-slate-900 transition text-left cursor-pointer"
+                        data-theme-value="cyber-gold"
+                        onclick="switchTheme('cyber-gold')"
+                    >
+                        <span class="w-5 h-5 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-300 shrink-0 shadow-[0_0_8px_rgba(245,158,11,0.5)]"></span>
+                        <div>
+                            <div class="text-xs font-bold text-white">Cyber Gold</div>
+                            <div class="text-[10px] text-slate-400">Золотой янтарь / 2077</div>
+                        </div>
+                    </button>
+                    <!-- Electric Cyan -->
+                    <button
+                        type="button"
+                        class="theme-card-option flex items-center gap-3 p-3 rounded-xl border border-slate-800 hover:border-cyan-500/50 bg-slate-900/60 hover:bg-slate-900 transition text-left cursor-pointer"
+                        data-theme-value="electric-cyan"
+                        onclick="switchTheme('electric-cyan')"
+                    >
+                        <span class="w-5 h-5 rounded-full bg-gradient-to-tr from-cyan-400 to-sky-300 shrink-0 shadow-[0_0_8px_rgba(0,240,255,0.5)]"></span>
+                        <div>
+                            <div class="text-xs font-bold text-white">Electric Cyan</div>
+                            <div class="text-[10px] text-slate-400">Неоновый циан / High-Tech</div>
+                        </div>
+                    </button>
+                    <!-- Matrix Emerald -->
+                    <button
+                        type="button"
+                        class="theme-card-option flex items-center gap-3 p-3 rounded-xl border border-slate-800 hover:border-emerald-500/50 bg-slate-900/60 hover:bg-slate-900 transition text-left cursor-pointer"
+                        data-theme-value="matrix-emerald"
+                        onclick="switchTheme('matrix-emerald')"
+                    >
+                        <span class="w-5 h-5 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-300 shrink-0 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
+                        <div>
+                            <div class="text-xs font-bold text-white">Matrix Emerald</div>
+                            <div class="text-[10px] text-slate-400">Матричный терминал</div>
+                        </div>
+                    </button>
+                    <!-- Synthwave Purple -->
+                    <button
+                        type="button"
+                        class="theme-card-option flex items-center gap-3 p-3 rounded-xl border border-slate-800 hover:border-fuchsia-500/50 bg-slate-900/60 hover:bg-slate-900 transition text-left cursor-pointer"
+                        data-theme-value="synthwave-purple"
+                        onclick="switchTheme('synthwave-purple')"
+                    >
+                        <span class="w-5 h-5 rounded-full bg-gradient-to-tr from-fuchsia-500 to-purple-400 shrink-0 shadow-[0_0_8px_rgba(217,70,239,0.5)]"></span>
+                        <div>
+                            <div class="text-xs font-bold text-white">Synthwave Purple</div>
+                            <div class="text-[10px] text-slate-400">Ретровейв / Маджента</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Glow Mode Toggle Section -->
+            <div class="mt-6 pt-5 border-t border-slate-800 space-y-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-xs font-bold text-slate-300 uppercase tracking-wider">Режим свечения</div>
+                        <div class="text-[11px] text-slate-400">Clean отключает неоновые тени и радиальные градиенты</div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 p-1 rounded-xl bg-slate-900/80 border border-slate-800" id="glow-options-container">
+                    <button
+                        type="button"
+                        id="glow-btn-clean"
+                        class="glow-mode-btn py-2 px-3 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition cursor-pointer flex items-center justify-center gap-1.5"
+                        onclick="setGlowMode('clean')"
+                    >
+                        <span>👓</span> Clean (Строгий)
+                    </button>
+                    <button
+                        type="button"
+                        id="glow-btn-cyberpunk"
+                        class="glow-mode-btn py-2 px-3 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition cursor-pointer flex items-center justify-center gap-1.5"
+                        onclick="setGlowMode('cyberpunk')"
+                    >
+                        <span>⚡</span> Cyberpunk (Неон)
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </header>

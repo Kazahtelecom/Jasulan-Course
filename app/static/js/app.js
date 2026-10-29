@@ -805,6 +805,9 @@ function updateProgressUI(progress) {
 /* ========================================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Initialize theme system & settings modal state
+    initThemeSystem();
+
     // Sync student selector with current URL or localStorage
     const currentStudent = getActiveStudent();
     const selector = document.getElementById("student-selector");
@@ -1228,4 +1231,138 @@ function applyUmlModalTransform() {
         content.style.transform = `translate(${modalPanX}px, ${modalPanY}px) scale(${modalZoomScale})`;
     }
 }
+
+/* ========================================================================= */
+/* MODULE 9: THEME & DISPLAY SETTINGS CONTROLLER                             */
+/* ========================================================================= */
+
+const DEFAULT_THEME = "cyber-gold";
+const DEFAULT_GLOW = "cyberpunk";
+
+/**
+ * Open Theme & Display Settings modal
+ */
+function openThemeSettings() {
+    const modal = document.getElementById("theme-settings-modal");
+    if (modal) {
+        modal.classList.remove("hidden");
+        syncThemeUiState();
+    }
+}
+
+/**
+ * Close Theme & Display Settings modal
+ */
+function closeThemeSettings() {
+    const modal = document.getElementById("theme-settings-modal");
+    if (modal) {
+        modal.classList.add("hidden");
+    }
+}
+
+/**
+ * Handle backdrop click outside modal card
+ */
+function handleThemeModalBackdropClick(e) {
+    if (e.target && e.target.id === "theme-settings-modal") {
+        closeThemeSettings();
+    }
+}
+
+/**
+ * Switch active color theme: 'cyber-gold' | 'electric-cyan' | 'matrix-emerald' | 'synthwave-purple'
+ */
+function switchTheme(themeId) {
+    const validThemes = ["cyber-gold", "electric-cyan", "matrix-emerald", "synthwave-purple"];
+    const targetTheme = validThemes.includes(themeId) ? themeId : DEFAULT_THEME;
+
+    document.documentElement.setAttribute("data-theme", targetTheme);
+    try {
+        localStorage.setItem("weboop_theme", targetTheme);
+    } catch (e) {
+        // Fallback for private mode without localStorage
+    }
+
+    syncThemeUiState();
+}
+
+/**
+ * Switch active glow mode: 'clean' | 'cyberpunk'
+ */
+function setGlowMode(mode) {
+    const validModes = ["clean", "cyberpunk"];
+    const targetMode = validModes.includes(mode) ? mode : DEFAULT_GLOW;
+
+    document.documentElement.setAttribute("data-glow", targetMode);
+    try {
+        localStorage.setItem("weboop_glow", targetMode);
+    } catch (e) {
+        // Fallback for private mode without localStorage
+    }
+
+    syncThemeUiState();
+}
+
+/**
+ * Synchronize modal visual active states with current HTML attributes
+ */
+function syncThemeUiState() {
+    const currentTheme = document.documentElement.getAttribute("data-theme") || DEFAULT_THEME;
+    const currentGlow = document.documentElement.getAttribute("data-glow") || DEFAULT_GLOW;
+
+    // Highlight active theme option card
+    document.querySelectorAll(".theme-card-option").forEach((card) => {
+        if (card.dataset.themeValue === currentTheme) {
+            card.classList.add("theme-card-active");
+            card.style.borderColor = "var(--theme-accent)";
+            card.style.boxShadow = "0 0 12px var(--theme-glow)";
+        } else {
+            card.classList.remove("theme-card-active");
+            card.style.borderColor = "";
+            card.style.boxShadow = "";
+        }
+    });
+
+    // Highlight active glow mode toggle button
+    const cleanBtn = document.getElementById("glow-btn-clean");
+    const cyberpunkBtn = document.getElementById("glow-btn-cyberpunk");
+
+    if (cleanBtn && cyberpunkBtn) {
+        if (currentGlow === "clean") {
+            cleanBtn.classList.add("glow-mode-active");
+            cyberpunkBtn.classList.remove("glow-mode-active");
+        } else {
+            cyberpunkBtn.classList.add("glow-mode-active");
+            cleanBtn.classList.remove("glow-mode-active");
+        }
+    }
+}
+
+/**
+ * Initialize theme system on page load
+ */
+function initThemeSystem() {
+    let savedTheme = DEFAULT_THEME;
+    let savedGlow = DEFAULT_GLOW;
+
+    try {
+        savedTheme = localStorage.getItem("weboop_theme") || DEFAULT_THEME;
+        savedGlow = localStorage.getItem("weboop_glow") || DEFAULT_GLOW;
+    } catch (e) {
+        // Fallback for storage errors
+    }
+
+    document.documentElement.setAttribute("data-theme", savedTheme);
+    document.documentElement.setAttribute("data-glow", savedGlow);
+
+    syncThemeUiState();
+
+    // Close on Escape key press
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            closeThemeSettings();
+        }
+    });
+}
+
 
