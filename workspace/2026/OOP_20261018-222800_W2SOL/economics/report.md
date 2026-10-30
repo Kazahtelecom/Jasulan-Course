@@ -1,13 +1,13 @@
 # Task economics — OOP_20261018-222800_W2SOL
 
-<!-- tfw-economics-v1 {"binding_outcomes":[],"calendar_elapsed_seconds":4375.098959,"collector_operation_seconds":0.14,"cutoff":"2026-10-18T18:40:55.098959+00:00","excluded":[],"failed_attempts":[],"failure_only":[],"incomplete":["5c4f8547ef945dfa2dbaf81c4ad245ef8544b27d7d414df2852802d2320ee255"],"keywords":[],"lifecycle":"KNW","measured":["antigravity:thread:local:1da46223-edb5-410d-bad6-cd3c36954a1f","antigravity:thread:local:5aed77d4-7d1f-4fab-86a0-98a05917871c","antigravity:thread:local:63e77ece-bb55-4133-9266-efddbfa3111c"],"missing":[],"omitted":[],"owner":"zhasulan","phase_coverage_gaps":[],"phase_roots":[],"price_basis":null,"primary_area":null,"project":"web-oop","rate_version":"2026-09-29","received":["antigravity:thread:local:1da46223-edb5-410d-bad6-cd3c36954a1f","antigravity:thread:local:5aed77d4-7d1f-4fab-86a0-98a05917871c","antigravity:thread:local:63e77ece-bb55-4133-9266-efddbfa3111c"],"report_at":"2026-10-18T18:41:15.540278+00:00","schema_version":1,"source_diagnostics":[{"notes":["Antigravity DB copied through SQLite read-only backup","daily date omitted: no proved gen_metadata to timestamp join","model generation duration is not agent session time","compacted 22 verified native rows into 2 daily/run/model records"],"sha256":"2cc2d5128bd5445ca9f4e839161f763ef226842201c0a949fa2c39d51d2eb5c8","source_qualification":{},"unit":"antigravity:thread:local:63e77ece-bb55-4133-9266-efddbfa3111c"},{"notes":["Antigravity DB copied through SQLite read-only backup","daily date omitted: no proved gen_metadata to timestamp join","model generation duration is not agent session time","compacted 18 verified native rows into 2 daily/run/model records"],"sha256":"5c4f8547ef945dfa2dbaf81c4ad245ef8544b27d7d414df2852802d2320ee255","source_qualification":{},"unit":"antigravity:thread:local:1da46223-edb5-410d-bad6-cd3c36954a1f"},{"notes":["Antigravity DB copied through SQLite read-only backup","daily date omitted: no proved gen_metadata to timestamp join","model generation duration is not agent session time","1 generation rows report no usage counter; not counted","compacted 40 verified native rows into 4 daily/run/model records"],"sha256":"baa93821751eec1e5e733899059c4fa27658e550379dce31ba2d7807ebb214bc","source_qualification":{},"unit":"antigravity:thread:local:1da46223-edb5-410d-bad6-cd3c36954a1f"},{"notes":["Antigravity DB copied through SQLite read-only backup","daily date omitted: no proved gen_metadata to timestamp join","model generation duration is not agent session time","compacted 58 verified native rows into 2 daily/run/model records"],"sha256":"f8b4ec75cae9b834b08cae6d2b3468510f00b03684065a67f4156c06129b5cbc","source_qualification":{},"unit":"antigravity:thread:local:5aed77d4-7d1f-4fab-86a0-98a05917871c"}],"status_timezone":"+05:00","task":"OOP_20261018-222800_W2SOL","totals":{"cached":14461604,"duration_seconds":{"model_generation":1948.4129863000003},"input":16010965,"output":198943,"priced_usd":"0","tokens":16209908,"undated_tokens":16209908,"unpriced_tokens":16209908},"unknown_collector_operations":0} -->
+<!-- tfw-economics-v1 {"binding_outcomes":[],"calendar_elapsed_seconds":4022.0,"collector_operation_seconds":0.14,"cutoff":"2026-10-18T18:40:55.098959+00:00","excluded":[],"failed_attempts":[],"failure_only":[],"incomplete":["5c4f8547ef945dfa2dbaf81c4ad245ef8544b27d7d414df2852802d2320ee255"],"keywords":[],"lifecycle":"DONE","measured":["antigravity:thread:local:1da46223-edb5-410d-bad6-cd3c36954a1f","antigravity:thread:local:5aed77d4-7d1f-4fab-86a0-98a05917871c","antigravity:thread:local:63e77ece-bb55-4133-9266-efddbfa3111c"],"missing":[],"omitted":[],"owner":"zhasulan","phase_coverage_gaps":[],"phase_roots":[],"price_basis":null,"primary_area":null,"project":"web-oop","rate_version":"2026-09-29","received":["antigravity:thread:local:1da46223-edb5-410d-bad6-cd3c36954a1f","antigravity:thread:local:5aed77d4-7d1f-4fab-86a0-98a05917871c","antigravity:thread:local:63e77ece-bb55-4133-9266-efddbfa3111c"],"report_at":"2026-10-29T22:59:23.288923+00:00","schema_version":1,"source_diagnostics":[{"notes":["Antigravity DB copied through SQLite read-only backup","daily date omitted: no proved gen_metadata to timestamp join","model generation duration is not agent session time","compacted 22 verified native rows into 2 daily/run/model records"],"sha256":"2cc2d5128bd5445ca9f4e839161f763ef226842201c0a949fa2c39d51d2eb5c8","source_qualification":{},"unit":"antigravity:thread:local:63e77ece-bb55-4133-9266-efddbfa3111c"},{"notes":["Antigravity DB copied through SQLite read-only backup","daily date omitted: no proved gen_metadata to timestamp join","model generation duration is not agent session time","compacted 18 verified native rows into 2 daily/run/model records"],"sha256":"5c4f8547ef945dfa2dbaf81c4ad245ef8544b27d7d414df2852802d2320ee255","source_qualification":{},"unit":"antigravity:thread:local:1da46223-edb5-410d-bad6-cd3c36954a1f"},{"notes":["Antigravity DB copied through SQLite read-only backup","daily date omitted: no proved gen_metadata to timestamp join","model generation duration is not agent session time","1 generation rows report no usage counter; not counted","compacted 40 verified native rows into 4 daily/run/model records"],"sha256":"baa93821751eec1e5e733899059c4fa27658e550379dce31ba2d7807ebb214bc","source_qualification":{},"unit":"antigravity:thread:local:1da46223-edb5-410d-bad6-cd3c36954a1f"},{"notes":["Antigravity DB copied through SQLite read-only backup","daily date omitted: no proved gen_metadata to timestamp join","model generation duration is not agent session time","compacted 58 verified native rows into 2 daily/run/model records"],"sha256":"f8b4ec75cae9b834b08cae6d2b3468510f00b03684065a67f4156c06129b5cbc","source_qualification":{},"unit":"antigravity:thread:local:5aed77d4-7d1f-4fab-86a0-98a05917871c"}],"status_timezone":"+05:00","task":"OOP_20261018-222800_W2SOL","totals":{"cached":14461604,"duration_seconds":{"model_generation":1948.4129863000003},"input":16010965,"output":198943,"priced_usd":"6.6574570","tokens":16209908,"undated_tokens":16209908,"unpriced_tokens":0},"unknown_collector_operations":0} -->
 
 ## Purpose, result and value
 
 - Purpose: Создать понятный новичкам интерактивный модуль Недели 2 по принципам SOLID и Dependency Injection со свободным тренажером без снятия баллов и итоговым квизом на 20 баллов
 - Value sought: Студенты-новички на простых примерах терминала оплаты Avtobys осваивают 5 принципов SOLID и внедрение зависимостей (DI) и получают 20 баллов за финальное тестирование Недели 2
-- Lifecycle at report: KNW
-- Accepted result: 120f4bab124360860918d45e683b0f3f92b7bf16
+- Lifecycle at report: DONE
+- Accepted result: not supplied at this cutoff; see RF/REVIEW before final close
 
 ## Resource summary
 
@@ -17,11 +17,11 @@
 | Input, including cache | 16,010,965 |
 | Cached input subset | 14,461,604 |
 | Output, including reasoning when source says so | 198,943 |
-| API reference estimate on priced rows (USD) | unavailable (no applicable priced rows) |
-| Unpriced tokens | 16,209,908 |
+| API reference estimate on priced rows (USD) | 6.6574570 |
+| Unpriced tokens | 0 |
 | Undated tokens, excluded from date filters | 16,209,908 |
 | Collection operation, observed wall seconds | 0.140 (0 files unknown) |
-| Task calendar elapsed, status clock | 4375.099 seconds |
+| Task calendar elapsed, status clock | 4022.000 seconds |
 
 Time kinds remain separate; task calendar elapsed is read from task control,
 not inferred from summed roles. Parallel role times can overlap.
@@ -37,32 +37,32 @@ Unknown models, tariff conditions, storage and tools are excluded.
 
 | Role | Tokens | Priced USD |
 |---|---:|---:|
-| coordinator | 7,738,711 | 0 |
-| executor | 5,904,900 | 0 |
-| reviewer | 2,566,297 | 0 |
+| coordinator | 7,738,711 | 3.4801537 |
+| executor | 5,904,900 | 2.2527089 |
+| reviewer | 2,566,297 | 0.9245944 |
 
 ### Model
 
 | Model | Tokens | Priced USD |
 |---|---:|---:|
-| gemini-4-argon-trial | 14,795,313 | 0 |
-| claude-sonnet-5-5-medium | 1,414,595 | 0 |
+| gemini-4-argon-trial | 14,795,313 | 5.9744378 |
+| claude-sonnet-5-5-medium | 1,414,595 | 0.6830192 |
 
 ### Effort
 
 | Effort | Tokens | Priced USD |
 |---|---:|---:|
-| unknown | 16,209,908 | 0 |
+| unknown | 16,209,908 | 6.6574570 |
 
 ### Consumption date
 
 | Date | Tokens | Priced USD |
 |---|---:|---:|
-| undated | 16,209,908 | 0 |
+| undated | 16,209,908 | 6.6574570 |
 
 ## Coverage and provenance
 
-- Expected units: antigravity:thread:local:1da46223-edb5-410d-bad6-cd3c36954a1f, antigravity:thread:local:5aed77d4-7d1f-4fab-86a0-98a05917871c, antigravity:thread:local:63e77ece-bb55-4133-9266-efddbfa3111c
+- Expected units: not supplied
 - Received units: antigravity:thread:local:1da46223-edb5-410d-bad6-cd3c36954a1f, antigravity:thread:local:5aed77d4-7d1f-4fab-86a0-98a05917871c, antigravity:thread:local:63e77ece-bb55-4133-9266-efddbfa3111c
 - Measured units: antigravity:thread:local:1da46223-edb5-410d-bad6-cd3c36954a1f, antigravity:thread:local:5aed77d4-7d1f-4fab-86a0-98a05917871c, antigravity:thread:local:63e77ece-bb55-4133-9266-efddbfa3111c
 - Missing units: none among declared expected
@@ -76,7 +76,6 @@ Unknown models, tariff conditions, storage and tools are excluded.
 - Finite tail: later report delivery, final message and cleanup are outside this cutoff.
 - Rate card: 2026-09-29; USD per million text tokens, first-party Standard API reference; short context for OpenAI, no subscription allocation or tools
 
-- Whole money total is unknown: unpriced consumption is not observed zero.
 - antigravity:thread:local:63e77ece-bb55-4133-9266-efddbfa3111c: antigravity.ide / 63e77ece-bb55-4133-9266-efddbfa3111c revision 1, range [0, 22), complete True, 2791 bytes, SHA-256 2cc2d5128bd5445ca9f4e839161f763ef226842201c0a949fa2c39d51d2eb5c8, source be3e02e20b1cfbbeb613ac27cf5539860c6b9cf4318a6e037faf27b38a9d6445.
 - Source diagnostic antigravity:thread:local:63e77ece-bb55-4133-9266-efddbfa3111c: Antigravity DB copied through SQLite read-only backup
 - Source diagnostic antigravity:thread:local:63e77ece-bb55-4133-9266-efddbfa3111c: daily date omitted: no proved gen_metadata to timestamp join

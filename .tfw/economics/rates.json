@@ -43,6 +43,14 @@
       "output": 20,
       "source": "https://platform.claude.com/docs/en/about-claude/pricing"
     },
+    "claude-opus-5-5-high": {
+      "fresh": 4,
+      "cached": 0.2,
+      "cache_write_5m": 5,
+      "cache_write_1h": 8,
+      "output": 20,
+      "source": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
     "claude-sonnet-5": {
       "fresh": 2,
       "cached": 0.2,

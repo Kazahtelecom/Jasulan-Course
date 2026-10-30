@@ -1,12 +1,12 @@
 # Task economics — OOP_20261015-022500_CORE
 
-<!-- tfw-economics-v1 {"binding_outcomes":[],"calendar_elapsed_seconds":4559.228212,"collector_operation_seconds":0.063,"cutoff":"2026-10-14T22:40:59.228212+00:00","excluded":[],"failed_attempts":[],"failure_only":[],"incomplete":["1845ae1bcfee191478b0a634895b559c3d4f0ccc4a64df13d8221b19b311f3bf","52f3d4fa4cdc305ca9c51861d484b141c12db1152ab39ecdee6176e20033973b"],"keywords":[],"lifecycle":"RF","measured":["antigravity:coordinator","antigravity:executor"],"missing":[],"omitted":[],"owner":"zhasulan","phase_coverage_gaps":[],"phase_roots":[],"price_basis":null,"primary_area":null,"project":"web-oop","rate_version":"2026-09-29","received":["antigravity:coordinator","antigravity:executor"],"report_at":"2026-10-14T22:42:43.427778+00:00","schema_version":1,"source_diagnostics":[{"notes":["Antigravity DB copied through SQLite read-only backup","daily date omitted: no proved gen_metadata to timestamp join","model generation duration is not agent session time","1 generation rows report no usage counter; not counted","compacted 150 verified native rows into 2 daily/run/model records"],"sha256":"1845ae1bcfee191478b0a634895b559c3d4f0ccc4a64df13d8221b19b311f3bf","source_qualification":{},"unit":"antigravity:executor"},{"notes":["Antigravity DB copied through SQLite read-only backup","daily date omitted: no proved gen_metadata to timestamp join","model generation duration is not agent session time","compacted 49 verified native rows into 2 daily/run/model records"],"sha256":"52f3d4fa4cdc305ca9c51861d484b141c12db1152ab39ecdee6176e20033973b","source_qualification":{},"unit":"antigravity:coordinator"}],"status_timezone":"+05:00","task":"OOP_20261015-022500_CORE","totals":{"cached":17466749,"duration_seconds":{"model_generation":1226.809105},"input":18284050,"output":118558,"priced_usd":"2.367574425","tokens":18402608,"undated_tokens":18402608,"unpriced_tokens":0},"unknown_collector_operations":0} -->
+<!-- tfw-economics-v1 {"binding_outcomes":[],"calendar_elapsed_seconds":48780.0,"collector_operation_seconds":0.063,"cutoff":"2026-10-14T22:40:59.228212+00:00","excluded":[],"failed_attempts":[],"failure_only":[],"incomplete":["1845ae1bcfee191478b0a634895b559c3d4f0ccc4a64df13d8221b19b311f3bf","52f3d4fa4cdc305ca9c51861d484b141c12db1152ab39ecdee6176e20033973b"],"keywords":[],"lifecycle":"DONE","measured":["antigravity:coordinator","antigravity:executor"],"missing":[],"omitted":[],"owner":"zhasulan","phase_coverage_gaps":[],"phase_roots":[],"price_basis":null,"primary_area":null,"project":"web-oop","rate_version":"2026-09-29","received":["antigravity:coordinator","antigravity:executor"],"report_at":"2026-10-29T22:59:23.032684+00:00","schema_version":1,"source_diagnostics":[{"notes":["Antigravity DB copied through SQLite read-only backup","daily date omitted: no proved gen_metadata to timestamp join","model generation duration is not agent session time","1 generation rows report no usage counter; not counted","compacted 150 verified native rows into 2 daily/run/model records"],"sha256":"1845ae1bcfee191478b0a634895b559c3d4f0ccc4a64df13d8221b19b311f3bf","source_qualification":{},"unit":"antigravity:executor"},{"notes":["Antigravity DB copied through SQLite read-only backup","daily date omitted: no proved gen_metadata to timestamp join","model generation duration is not agent session time","compacted 49 verified native rows into 2 daily/run/model records"],"sha256":"52f3d4fa4cdc305ca9c51861d484b141c12db1152ab39ecdee6176e20033973b","source_qualification":{},"unit":"antigravity:coordinator"}],"status_timezone":"+05:00","task":"OOP_20261015-022500_CORE","totals":{"cached":17466749,"duration_seconds":{"model_generation":1226.809105},"input":18284050,"output":118558,"priced_usd":"2.367574425","tokens":18402608,"undated_tokens":18402608,"unpriced_tokens":0},"unknown_collector_operations":0} -->
 
 ## Purpose, result and value
 
 - Purpose: Создать работающий самодостаточный локальный каркас мини-LMS с бэкендом, БД, песочницей и Zero-Build UI
 - Value sought: Обеспечивает надежную и безопасную техническую основу для последующей загрузки учебного контента ООП
-- Lifecycle at report: RF
+- Lifecycle at report: DONE
 - Accepted result: not supplied at this cutoff; see RF/REVIEW before final close
 
 ## Resource summary
@@ -21,7 +21,7 @@
 | Unpriced tokens | 0 |
 | Undated tokens, excluded from date filters | 18,402,608 |
 | Collection operation, observed wall seconds | 0.063 (0 files unknown) |
-| Task calendar elapsed, status clock | 4559.228 seconds |
+| Task calendar elapsed, status clock | 48780.000 seconds |
 
 Time kinds remain separate; task calendar elapsed is read from task control,
 not inferred from summed roles. Parallel role times can overlap.
@@ -60,7 +60,7 @@ Unknown models, tariff conditions, storage and tools are excluded.
 
 ## Coverage and provenance
 
-- Expected units: antigravity:coordinator, antigravity:executor
+- Expected units: not supplied
 - Received units: antigravity:coordinator, antigravity:executor
 - Measured units: antigravity:coordinator, antigravity:executor
 - Missing units: none among declared expected
