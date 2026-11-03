@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from decimal import Decimal
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -24,6 +25,8 @@ from app.models.student import Student
 from app.services.ast_validator import ASTValidator
 from app.services.runner import RunnerService
 from app.services.scoring import ScoringService
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
 @pytest.fixture
@@ -262,9 +265,33 @@ def test_exam_ui_integrity(client: TestClient) -> None:
     assert "Часть 2: Практика" in html or "Часть 2 · Практика" in html
     assert "Итоговая Ведомость" in html or "Официальная ведомость" in html
 
-    # UML diagram viewer is accessible on exam page
+    # UML diagram viewer is accessible on exam page with all 5 category tabs
     assert 'id="uml-diagram-section"' in html
     assert 'id="uml-fullscreen-modal"' in html
+    assert 'data-diagram-tab="week1"' in html
+    assert 'data-diagram-tab="week2"' in html
+    assert 'data-diagram-tab="week3"' in html
+    assert 'data-diagram-tab="arch"' in html
+    assert 'data-diagram-tab="db"' in html
+
+    # Live quiz answered counter & Zero-F5 reactive elements
+    assert 'id="quiz-answered-counter"' in html
+    assert 'id="results-grade-letter"' in html
+    assert 'id="table-w1-status"' in html
+    assert 'id="table-w2-status"' in html
+    assert 'id="table-w3-status"' in html
+    assert 'id="table-quiz-status"' in html
+    assert 'id="table-tasks-status"' in html
+    assert 'id="table-exam-status"' in html
+    assert 'id="cert-status-badge"' in html
+    assert 'id="cert-grand-total"' in html
+    assert 'id="cert-grade-letter"' in html
+
+    # Check client-side app.js No-Cheat sandbox message separation
+    app_js_path = PROJECT_ROOT / "app" / "static" / "js" / "app.js"
+    js_content = app_js_path.read_text(encoding="utf-8")
+    assert 'ACTIVE_WEEK === "exam"' in js_content
+    assert "ПРОВЕРЬТЕ КОНТРАКТЫ И ИНВАРИАНТЫ" in js_content
 
     # Check that standard week pages also have the 🏆 Экзамен tab link
     w1_res = client.get("/week1")

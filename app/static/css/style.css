@@ -74,7 +74,7 @@ body {
 /* Cyberpunk custom scrollbar for horizontal containers */
 .overflow-x-auto {
     scrollbar-width: thin;
-    scrollbar-color: rgba(56, 189, 248, 0.4) rgba(15, 23, 42, 0.7);
+    scrollbar-color: var(--theme-accent) rgba(15, 23, 42, 0.7);
 }
 
 .overflow-x-auto::-webkit-scrollbar {
@@ -87,17 +87,17 @@ body {
 }
 
 .overflow-x-auto::-webkit-scrollbar-thumb {
-    background: rgba(56, 189, 248, 0.35);
+    background: var(--theme-border);
     border-radius: 4px;
 }
 
 .overflow-x-auto::-webkit-scrollbar-thumb:hover {
-    background: rgba(56, 189, 248, 0.7);
+    background: var(--theme-accent);
 }
 
 .cyber-card {
     background: rgba(15, 23, 42, 0.85);
-    border: 1px solid rgba(56, 189, 248, 0.18);
+    border: 1px solid var(--theme-border);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(12px);
 }
@@ -129,7 +129,9 @@ body {
 [data-glow="clean"] .week-pill-active,
 [data-glow="clean"] .subtab-active,
 [data-glow="clean"] .theme-btn-primary,
-[data-glow="clean"] .theme-glow-card {
+[data-glow="clean"] .theme-glow-card,
+[data-glow="clean"] .theme-btn-secondary,
+[data-glow="clean"] .exam-clean-no-glow {
     box-shadow: none !important;
 }
 
@@ -169,6 +171,10 @@ body {
 /* Semantic Theme Utility Classes */
 .theme-accent-text {
     color: var(--theme-accent) !important;
+}
+
+.theme-accent-bg {
+    background-color: var(--theme-accent) !important;
 }
 
 .theme-primary-text {

@@ -19,7 +19,7 @@ CLIENT = TestClient(app)
 
 
 def test_css_theme_variables():
-    """AC-1: style.css defines tokens for all 4 color themes."""
+    """AC-1: style.css defines tokens for all 4 color themes and semantic utilities."""
     css_path = PROJECT_ROOT / "app" / "static" / "css" / "style.css"
     assert css_path.exists(), "style.css must exist"
     content = css_path.read_text(encoding="utf-8")
@@ -40,6 +40,11 @@ def test_css_theme_variables():
     assert "#10b981" in content  # Matrix Emerald
     assert "#d946ef" in content  # Synthwave Purple
 
+    # Verify semantic theme background utility and card border
+    assert ".theme-accent-bg" in content
+    assert "border: 1px solid var(--theme-border);" in content
+    assert "scrollbar-color: var(--theme-accent)" in content
+
 
 def test_css_glow_modes():
     """AC-2: style.css defines rules for both clean and cyberpunk glow modes."""
@@ -52,6 +57,8 @@ def test_css_glow_modes():
     # Verify clean mode resets box-shadow and removes background gradient
     assert "background-image: none !important" in content
     assert "box-shadow: none !important" in content or "box-shadow: 0 4px 16px" in content
+    assert ".exam-clean-no-glow" in content
+    assert ".theme-btn-secondary" in content
 
 
 def test_svg_logo_present():
@@ -176,6 +183,13 @@ def test_exam_page_theme_tokens():
     content = exam_path.read_text(encoding="utf-8")
     assert "theme-accent-text" in content
     assert "theme-border" in content
+    assert "theme-badge" in content
+    assert "theme-btn-primary" in content
+    assert "theme-btn-secondary" in content
+    assert "exam-clean-no-glow" in content
+    assert "text-slate-100" in content, "IDE code text must use neutral slate-100"
+    assert "text-amber-100" not in content, "Hardcoded amber code text must be removed"
+    assert "border-indigo-500/40" not in content, "Mismatched indigo certificate border must be removed"
     assert "amber" in content, "Exam-specific amber rating badge preserved"
 
 
@@ -206,4 +220,5 @@ def test_app_js_dynamic_theme_tokens():
     assert "theme-accent-text" in content
     assert "theme-glow-card" in content
     assert "theme-btn-primary" in content
+    assert "bg-cyan-500/20" not in content, "Hardcoded cyan in toggleUmlLens must be replaced with theme tokens"
 

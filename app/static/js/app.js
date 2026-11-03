@@ -432,7 +432,11 @@ async function runPracticeTask(taskId) {
             verdictBadge.className =
                 "px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
         } else {
-            verdictBadge.textContent = `❌ ЕСТЬ ОШИБКИ (${data.status}) — ПОПРОБУЙТЕ ПОДСКАЗКУ ИЛИ ГОТОВОЕ РЕШЕНИЕ`;
+            if (ACTIVE_WEEK === "exam") {
+                verdictBadge.textContent = `❌ ТЕСТЫ НЕ ПРОЙДЕНЫ (${data.status}) — ПРОВЕРЬТЕ КОНТРАКТЫ И ИНВАРИАНТЫ (СМ. ПОДСКАЗКУ 💡)`;
+            } else {
+                verdictBadge.textContent = `❌ ЕСТЬ ОШИБКИ (${data.status}) — ПОПРОБУЙТЕ ПОДСКАЗКУ ИЛИ ГОТОВОЕ РЕШЕНИЕ`;
+            }
             verdictBadge.className =
                 "px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40";
         }
@@ -470,6 +474,17 @@ async function runPracticeTask(taskId) {
 function selectQuizOption(questionId, optionIndex) {
     quizSelections[questionId] = optionIndex;
 
+    const counter = document.getElementById("quiz-answered-counter");
+    if (counter) {
+        const answeredCount = Object.keys(quizSelections).length;
+        counter.textContent = `Выбрано ответов: ${answeredCount} / 20`;
+        if (answeredCount > 0) {
+            counter.className = "text-xs font-mono theme-accent-text font-bold";
+        } else {
+            counter.className = "text-xs font-mono text-slate-400";
+        }
+    }
+
     document.querySelectorAll(`.quiz-opt-${questionId}`).forEach((btn) => {
         const idx = parseInt(btn.dataset.index, 10);
         if (idx === optionIndex) {
@@ -487,6 +502,21 @@ async function submitWeek1Quiz() {
     const submitBtn = document.getElementById("btn-submit-quiz");
     const banner = document.getElementById("quiz-result-banner");
     if (!submitBtn) return;
+
+    if (Object.keys(quizSelections).length === 0) {
+        if (banner) {
+            banner.classList.remove("hidden");
+            banner.className = "p-5 rounded-xl border bg-amber-500/15 border-amber-500/40 text-amber-200";
+            banner.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <span>⚠️</span>
+                    <span class="text-sm font-semibold">Пожалуйста, выберите хотя бы один вариант ответа перед отправкой теста.</span>
+                </div>
+            `;
+            banner.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+        return;
+    }
 
     const originalHtml = submitBtn.innerHTML;
     submitBtn.disabled = true;
@@ -532,6 +562,7 @@ async function submitWeek1Quiz() {
                     </button>
                 </div>
             `;
+            banner.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
 
         if (Array.isArray(data.results)) {
@@ -570,6 +601,21 @@ async function submitExamQuiz() {
     const submitBtn = document.getElementById("btn-submit-quiz");
     const banner = document.getElementById("quiz-result-banner");
     if (!submitBtn) return;
+
+    if (Object.keys(quizSelections).length === 0) {
+        if (banner) {
+            banner.classList.remove("hidden");
+            banner.className = "p-5 rounded-xl border bg-amber-500/15 border-amber-500/40 text-amber-200";
+            banner.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <span>⚠️</span>
+                    <span class="text-sm font-semibold">Пожалуйста, выберите хотя бы один вариант ответа перед отправкой теста.</span>
+                </div>
+            `;
+            banner.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+        return;
+    }
 
     const originalHtml = submitBtn.innerHTML;
     submitBtn.disabled = true;
@@ -610,11 +656,12 @@ async function submitExamQuiz() {
                             }
                         </p>
                     </div>
-                    <button onclick="switchSubTab('results')" class="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition shrink-0">
+                    <button onclick="switchSubTab('results')" class="px-4 py-2 rounded-lg theme-btn-primary font-bold text-xs transition shrink-0">
                         В Итоговую Ведомость →
                     </button>
                 </div>
             `;
+            banner.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
 
         if (Array.isArray(data.results)) {
@@ -760,6 +807,7 @@ function updateProgressUI(progress) {
         setTxt("practice-live-score", `${progress.tasks_score} / ${progress.tasks_max} б.`);
 
         setTxt("results-grand-total", `${progress.grand_total} / 100.0`);
+        setTxt("results-grade-letter", progress.grade_letter);
         setTxt("table-w1-score", progress.week1_score);
         setTxt("table-w2-score", progress.week2_score);
         setTxt("table-w3-score", progress.week3_score);
@@ -768,6 +816,50 @@ function updateProgressUI(progress) {
         setTxt("table-tasks-score", progress.tasks_score);
         setTxt("table-exam-score", progress.exam_total);
         setTxt("table-grand-total", progress.grand_total);
+
+        setTxt("cert-grand-total", progress.grand_total);
+        setTxt("cert-grade-letter", progress.grade_letter);
+
+        // Reactive status badges for table rows
+        const updateTableStatus = (id, isPassed, passText = "Зачет", failText = "В процессе") => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (isPassed) {
+                el.textContent = passText;
+                el.className = "px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+            } else {
+                el.textContent = failText;
+                el.className = "px-2.5 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400";
+            }
+        };
+
+        updateTableStatus("table-w1-status", progress.week1_score >= 12.0);
+        updateTableStatus("table-w2-status", progress.week2_score >= 12.0);
+        updateTableStatus("table-w3-status", progress.week3_score >= 12.0);
+        updateTableStatus("table-quiz-status", progress.quiz_score >= 12.0, "Пройден", "В процессе");
+        updateTableStatus("table-tasks-status", progress.tasks_score >= 10.0, "Пройден", "В процессе");
+
+        const tableExamStatus = document.getElementById("table-exam-status");
+        if (tableExamStatus) {
+            if (progress.is_exam_completed) {
+                tableExamStatus.textContent = "Сдан (>=20 б.)";
+                tableExamStatus.className = "px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+            } else {
+                tableExamStatus.textContent = "В процессе";
+                tableExamStatus.className = "px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30";
+            }
+        }
+
+        const certStatusBadge = document.getElementById("cert-status-badge");
+        if (certStatusBadge) {
+            if (progress.is_course_completed) {
+                certStatusBadge.textContent = "ВЕДОМОСТЬ ПОДТВЕРЖДЕНА (100%)";
+                certStatusBadge.className = "text-xs font-bold text-emerald-400 font-mono";
+            } else {
+                certStatusBadge.textContent = "ОЖИДАЕТ СДАЧИ ЭКЗАМЕНА";
+                certStatusBadge.className = "text-xs font-bold text-amber-400 font-mono";
+            }
+        }
 
         const tableGrandBadge = document.getElementById("table-grand-badge");
         if (tableGrandBadge) {
@@ -881,7 +973,7 @@ document.addEventListener("DOMContentLoaded", () => {
 /* ========================================================================= */
 
 let umlLensActive = false;
-let currentUmlTab = ACTIVE_WEEK === "3" ? "week3" : (ACTIVE_WEEK === "2" ? "week2" : "week1");
+let currentUmlTab = (ACTIVE_WEEK === "3" || ACTIVE_WEEK === "exam") ? "week3" : (ACTIVE_WEEK === "2" ? "week2" : "week1");
 let modalZoomScale = 1.0;
 let modalPanX = 0;
 let modalPanY = 0;
@@ -976,7 +1068,7 @@ function toggleUmlLens() {
     if (umlLensActive) {
         if (btn) {
             btn.className =
-                "px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-cyan-500/20 text-cyan-300 border border-cyan-400 shadow-[0_0_20px_rgba(0,240,255,0.4)]";
+                "px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 theme-glow-card theme-accent-text bg-slate-900";
         }
         if (btnText) btnText.textContent = "Выключить лупу";
         if (hint) hint.textContent = "🔍 Лупа активна: ведите курсор по диаграмме для увеличения 2.5×.";
