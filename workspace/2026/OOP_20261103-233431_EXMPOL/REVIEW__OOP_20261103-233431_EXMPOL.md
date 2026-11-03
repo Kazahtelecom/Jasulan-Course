@@ -56,7 +56,7 @@
 
 | ID | Class | Subject / affected claim or authority | Observed fact + oracle | Concrete harm and material consequence | Owner + observable completion | Route / rung | Candidate effect | Disposition |
 |---|---|---|---|---|---|---|---|---|
-| O1 | TRACE | `uml_viewer.html:7` (`#uml-diagram-section` shadow) | Инлайновый класс `shadow-[0_0_30px_var(--theme-glow)]` расположен вне диапазона строк TS §6 (101–167) | В режиме Clean внешняя тень корневой секции UML остаётся видимой; вёрстка страниц недель не нарушена | Coordinator | Будущая плановая полировка модала UML | unchanged | not material (observation) |
+| O1 | TRACE | `uml_viewer.html:7` (`#uml-diagram-section` shadow) | Инлайновый класс `shadow-[0_0_30px_var(--theme-glow)]` расположен вне диапазона строк TS §6 (101–167) | В режиме Clean внешняя тень корневой секции UML остаётся видимой; вёрстка страниц недель не нарушена | Coordinator (`zhasulan`) | Будущая плановая полировка модала UML | unchanged | Ruled by Coordinator (`antigravity:thread:local:97f8d680-d228-41e8-8d05-2ec8ccf6ef82`): `not material (observation)` — вне утверждённого диапазона строк TS §6 для `uml_viewer.html` (101–167); Candidate `822e7ac01cfd6ac14a06386dba5b4d8d5b67ca4c` остаётся неизменным |
 
 ## 6. Traces Updated and Completion Signal
 
@@ -75,16 +75,20 @@
   - Полнота: `complete: true`
   - Cutoff: `2026-11-03T19:34:32.302631+00:00`
   - Число записей: `2 daily/model/run rows`
+- Экономика юнита Координатора (`antigravity:thread:local:97f8d680-d228-41e8-8d05-2ec8ccf6ef82`) извлечена из нативной базы Antigravity IDE `97f8d680-d228-41e8-8d05-2ec8ccf6ef82.db` и принята:
+  - Путь: `workspace/2026/OOP_20261103-233431_EXMPOL/economics/roles/1b226fab7f4d74ba0866d6bd48a959fa55ac51ab6d19752a6860031c08c0b527.jsonl`
+  - SHA-256: `1b226fab7f4d74ba0866d6bd48a959fa55ac51ab6d19752a6860031c08c0b527`
+  - Полнота: `complete: true` (`range: [0, 45)`, `revision: 1`, `cutoff: 2026-11-03T19:37:25.986426+00:00`, `2 rows`)
 
 Coordinator appends separately attributed closing facts here under `conventions.md` → `Closing and record recovery`:
 
-- [ ] Coordinator §5 rulings complete; no pending owed item
-- [ ] tfw-docs: {Applied / N/A — actual effect or reason}
-- [ ] tfw-knowledge: {Applied / N/A / Deferred — actual effect or reason}
-- [ ] one truthful task changelog entry preserved; no release inferred
-- [ ] task-owned sessions, worktrees/branches, helpers, containers/processes and temporary files each removed, specifically retained, or pending with actor/action
-- [ ] final accepted output identity and affected independent judgment recorded
-- [ ] selected landing/final effects complete and status/event validated before terminal write
+- [x] Coordinator §5 rulings complete; no pending owed item (`O1` ruled `not material (observation)` under Coordinator `antigravity:thread:local:97f8d680-d228-41e8-8d05-2ec8ccf6ef82`; Candidate `822e7ac01cfd6ac14a06386dba5b4d8d5b67ca4c` unchanged)
+- [x] tfw-docs: N/A — полировка дизайн-токенов и реактивных DOM-связей страницы `/exam` выполнена строго в рамках существующей архитектуры и решений `REC__20261030__theme-tokenization-and-svg-logo.md` и `REC__20261029__exam-architecture-and-no-cheat-mode.md`; границы компонентов в `KNOWLEDGE.md` не менялись
+- [x] tfw-knowledge: N/A — человеко-ориентированные кандидаты фактов в `RF` и `REVIEW` отсутствуют (технические наблюдения `RF §7 S1/S2` покрыты существующими техническими записями `REC__20261030` и `REC__20261029`)
+- [x] one truthful task changelog entry preserved; no release inferred (`CHANGELOG.md` → `EXMPOL (OOP_20261103-233431_EXMPOL) — 2026-11-04`)
+- [x] task-owned sessions, worktrees/branches, helpers, containers/processes and temporary files each removed, specifically retained, or pending with actor/action: временный каталог `%TEMP%\tfw\OOP_20261103-233431_EXMPOL` удалён; фоновые процессы и побочные ветки не создавались; ролевые сессии Исполнителя и Ревьюера завершены
+- [x] final accepted output identity and affected independent judgment recorded: Candidate `822e7ac01cfd6ac14a06386dba5b4d8d5b67ca4c` независимо верифицирован и одобрен (`✅ APPROVE`) Ревьюером `antigravity:thread:local:d5a91fba-d490-4c6b-8fa0-ad63fb7fa7cb` в `REVIEW__OOP_20261103-233431_EXMPOL.md`
+- [x] selected landing/final effects complete and status/event validated before terminal write (`status.md` → `DONE`, `economics.md` сформирован по всем 3 ролевым юнитам)
 
 ## 7. Fact Candidates
 
