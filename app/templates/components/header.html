@@ -51,6 +51,17 @@
                         </select>
                     </div>
 
+                    <button
+                        id="theme-settings-btn"
+                        type="button"
+                        onclick="openThemeSettings()"
+                        title="Настройки оформления: палитра и режим свечения"
+                        class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 hover:border-[var(--theme-accent)] text-slate-300 hover:text-white text-xs font-semibold transition shrink-0"
+                    >
+                        <span>🎨</span>
+                        <span class="hidden md:inline">Тема</span>
+                    </button>
+
                     {% if is_exam %}
                     <div class="px-4 py-2 rounded-xl bg-slate-900/90 border border-amber-500/30 flex items-center gap-2 shadow-[0_0_15px_rgba(245,158,11,0.15)] exam-clean-no-glow">
                         <span class="text-xs text-slate-400">Экзамен:</span>
@@ -98,50 +109,44 @@
             </div>
         </div>
 
-        <!-- Row 2: Section Sub-Tabs & Collapse Toggle -->
-        <nav class="flex items-center gap-2 sm:gap-3 overflow-x-auto pt-1 border-t border-slate-800/80">
-            {% if is_exam %}
-            <button type="button" data-tab="home" onclick="switchSubTab('home')" class="subtab-btn subtab-active theme-accent-text font-bold px-4 py-2 rounded-xl text-sm transition shrink-0">
-                Инструкция и Регламент
-            </button>
-            <button type="button" data-tab="quiz" onclick="switchSubTab('quiz')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
-                Часть 1 · Тестирование (20 б.)
-            </button>
-            <button type="button" data-tab="practice" onclick="switchSubTab('practice')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
-                Часть 2 · Практика (20 б.)
-            </button>
-            <button type="button" data-tab="results" onclick="switchSubTab('results')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
-                Итоговая Ведомость (100 б.)
-            </button>
-            {% else %}
-            <button type="button" data-tab="home" onclick="switchSubTab('home')" class="subtab-btn subtab-active font-bold px-4 py-2 rounded-xl text-sm transition shrink-0">
-                Главная
-            </button>
-            <button type="button" data-tab="theory" onclick="switchSubTab('theory')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
-                Теория
-            </button>
-            <button type="button" data-tab="practice" onclick="switchSubTab('practice')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
-                Практика
-            </button>
-            <button type="button" data-tab="quiz" onclick="switchSubTab('quiz')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
-                Тестирование
-            </button>
-            <button type="button" data-tab="results" onclick="switchSubTab('results')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
-                Результаты
-            </button>
-            {% endif %}
-
-            <div class="ml-auto flex items-center gap-2 shrink-0">
-                <button
-                    id="theme-settings-btn"
-                    type="button"
-                    onclick="openThemeSettings()"
-                    title="Настройки оформления: выбор палитры и режима свечения"
-                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white text-xs font-semibold transition shrink-0"
-                >
-                    <span>🎨</span>
-                    <span class="hidden sm:inline">Тема</span>
+        <!-- Row 2: Section Sub-Tabs & Actions -->
+        <nav class="flex items-center justify-between gap-3 pt-1 border-t border-slate-800/80">
+            <!-- Left: Subtabs Container -->
+            <div class="flex items-center gap-2 overflow-x-auto min-w-0 flex-1 scrollbar-none">
+                {% if is_exam %}
+                <button type="button" data-tab="home" onclick="switchSubTab('home')" class="subtab-btn subtab-active theme-accent-text font-bold px-3.5 py-1.5 rounded-xl text-sm transition shrink-0">
+                    Инструкция
                 </button>
+                <button type="button" data-tab="quiz" onclick="switchSubTab('quiz')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-3.5 py-1.5 rounded-xl text-sm font-medium transition shrink-0">
+                    Часть 1 · Тестирование (20 б.)
+                </button>
+                <button type="button" data-tab="practice" onclick="switchSubTab('practice')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-3.5 py-1.5 rounded-xl text-sm font-medium transition shrink-0">
+                    Часть 2 · Практика (20 б.)
+                </button>
+                <button type="button" data-tab="results" onclick="switchSubTab('results')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-3.5 py-1.5 rounded-xl text-sm font-medium transition shrink-0">
+                    Итоговая Ведомость (100 б.)
+                </button>
+                {% else %}
+                <button type="button" data-tab="home" onclick="switchSubTab('home')" class="subtab-btn subtab-active font-bold px-4 py-2 rounded-xl text-sm transition shrink-0">
+                    Главная
+                </button>
+                <button type="button" data-tab="theory" onclick="switchSubTab('theory')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
+                    Теория
+                </button>
+                <button type="button" data-tab="practice" onclick="switchSubTab('practice')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
+                    Практика
+                </button>
+                <button type="button" data-tab="quiz" onclick="switchSubTab('quiz')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
+                    Тестирование
+                </button>
+                <button type="button" data-tab="results" onclick="switchSubTab('results')" class="subtab-btn text-slate-400 border border-transparent hover:text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition shrink-0">
+                    Результаты
+                </button>
+                {% endif %}
+            </div>
+
+            <!-- Right: Action Buttons Fixed (never scrolled out) -->
+            <div class="flex items-center gap-2 shrink-0">
                 <button type="button" onclick="openUmlDiagramSection()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border theme-border theme-accent-text hover:text-white text-xs font-bold transition shadow-[0_0_12px_var(--theme-glow)] exam-clean-no-glow shrink-0">
                     <span>📐 UML-Диаграммы</span>
                     <span class="text-[10px] px-1 rounded theme-badge">🔍 Лупа</span>
@@ -158,6 +163,18 @@
             </div>
         </nav>
     </div>
+
+    <!-- Header Collapse Handle / Curtain Tab at Bottom Center -->
+    <button
+        id="header-collapse-handle"
+        type="button"
+        onclick="toggleHeaderCollapse()"
+        title="Свернуть / развернуть меню (Ctrl+M или клик)"
+        aria-label="Свернуть или развернуть верхнюю шапку"
+        class="header-collapse-handle-btn exam-clean-no-glow"
+    >
+        <span id="header-collapse-handle-icon">▲</span>
+    </button>
 
     <!-- Theme & Display Settings Modal Overlay -->
     <div

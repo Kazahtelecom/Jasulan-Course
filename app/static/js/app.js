@@ -144,14 +144,26 @@ function showLockedWeekToast(weekTitle) {
 function applyHeaderCollapseState(isCollapsed) {
     const header = document.getElementById("main-site-header");
     const label = document.getElementById("header-collapse-label");
+    const handleIcon = document.getElementById("header-collapse-handle-icon");
+    const handleBtn = document.getElementById("header-collapse-handle");
     if (!header) return;
 
     if (isCollapsed) {
         header.classList.add("header-collapsed");
         if (label) label.textContent = "▼ Развернуть меню";
+        if (handleIcon) handleIcon.textContent = "▼";
+        if (handleBtn) {
+            handleBtn.setAttribute("title", "Развернуть меню шапки (Ctrl+M или клик)");
+            handleBtn.setAttribute("aria-label", "Развернуть меню шапки");
+        }
     } else {
         header.classList.remove("header-collapsed");
         if (label) label.textContent = "▲ Свернуть меню";
+        if (handleIcon) handleIcon.textContent = "▲";
+        if (handleBtn) {
+            handleBtn.setAttribute("title", "Свернуть меню шапки (Ctrl+M или клик)");
+            handleBtn.setAttribute("aria-label", "Свернуть меню шапки");
+        }
     }
 }
 
